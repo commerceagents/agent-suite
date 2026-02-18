@@ -1,0 +1,21 @@
+{
+  "name": "commerce-agents",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev:quote": "turbo dev --filter=agent-quote",
+    "dev:ops": "turbo dev --filter=agent-ops",
+    "dev:website": "turbo dev --filter=company-website",
+    "build:quote": "turbo build --filter=agent-quote"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0"
+  },
+  "packageManager": "npm@10.0.0"
+}
