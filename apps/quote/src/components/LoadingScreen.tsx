@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
 import RippleGrid from "./RippleGrid";
 
@@ -12,22 +12,14 @@ export default function LoadingScreen() {
 
   const TIMELINE = {
     TEXT_REVEAL_DELAY: 3.8,
-    CONTENT_FADE_DELAY: 5.5,  // logo+text fade out
-    TOTAL_HIDE_DELAY: 6.5,    // loading screen removed from DOM
-    BARS_OPEN_DELAY: 8.0,     // cinemascope bars start sliding
+    TOTAL_HIDE_DELAY: 6.5,
+    BARS_OPEN_DELAY: 8.0,
   };
-
-  const triggerRipples = useCallback(() => {
-    if (!showRipples) setShowRipples(true);
-  }, [showRipples]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Trigger ripples when logo fills complete
-    const rippleTimeout = setTimeout(() => {
-      triggerRipples();
-    }, 2400);
+    const rippleTimeout = setTimeout(() => setShowRipples(true), 2400);
 
     const textTimeout = setTimeout(() => {
       setShowText(true);
@@ -113,12 +105,7 @@ export default function LoadingScreen() {
               <motion.div className="flex items-center gap-1" layout transition={{ layout: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }}>
                 {/* Logo — starts centered, smoothly shifts left via layout animation */}
                 <motion.div className="relative z-20" layout>
-                  <AnimatedLogo
-                    size="base"
-                    delay={0.2}
-                    shimmerDelay={4.0}
-                    onShockwave={triggerRipples}
-                  />
+                  <AnimatedLogo size="base" delay={0.2} shimmerDelay={4.0} />
                 </motion.div>
 
                 {/* Text — smooth clipPath mask reveal */}
