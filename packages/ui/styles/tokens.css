@@ -26,11 +26,11 @@
   --gradient-chrome-h:   linear-gradient(90deg, #3A3A42 0%, #C0C0C8 50%, #FFFFFF 100%);
   --gradient-shimmer:    linear-gradient(90deg, transparent 0%, transparent 40%, rgba(255,255,255,0.8) 50%, transparent 60%, transparent 100%);
 
-  /* Accent — Warm Gold */
-  --color-accent:        #E8C547;
-  --color-accent-hover:  #F0D060;
-  --color-accent-dim:    rgba(232, 197, 71, 0.15);
-  --color-accent-glow:   rgba(232, 197, 71, 0.25);
+  /* Accent — Chrome White (primary CTA) */
+  --color-accent:        #FFFFFF;
+  --color-accent-hover:  #E8E8F0;
+  --color-accent-dim:    rgba(255, 255, 255, 0.15);
+  --color-accent-glow:   rgba(255, 255, 255, 0.25);
 
   /* Accent — Cool Blue */
   --color-link:          #5B8DEF;
@@ -101,7 +101,7 @@
   --shadow-lg:     0 8px 24px rgba(0, 0, 0, 0.7);
   --shadow-chrome: 0 0 20px rgba(192, 192, 200, 0.05);
   --shadow-glow:   0 0 30px rgba(192, 192, 200, 0.08);
-  --shadow-accent: 0 0 20px var(--color-accent-dim);
+  --shadow-accent: 0 0 30px rgba(255, 255, 255, 0.15);
 
   /* ─────────── Transitions ─────────── */
 

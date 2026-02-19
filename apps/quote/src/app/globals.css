@@ -62,9 +62,9 @@
   --color-chrome-glow: rgba(192, 192, 200, 0.15);
   --color-chrome-ghost: rgba(192, 192, 200, 0.06);
 
-  --color-accent: #E8C547;
-  --color-accent-hover: #F0D060;
-  --color-accent-dim: rgba(232, 197, 71, 0.15);
+  --color-accent: #FFFFFF;
+  --color-accent-hover: #E8E8F0;
+  --color-accent-dim: rgba(255, 255, 255, 0.15);
 
   --color-link: #5B8DEF;
   --color-link-hover: #7BA4F7;
@@ -95,8 +95,8 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-accent);
-  color: var(--color-bg);
+  background-color: rgba(192, 192, 200, 0.3);
+  color: #FFFFFF;
 }
 
 /* ── Typography ── */
@@ -183,8 +183,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Buttons ── */
 .btn-primary {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: #FFFFFF;
+  color: #08080A;
   font-family: var(--font-display);
   font-weight: 700;
   padding: 0.75rem 2rem;
@@ -198,7 +198,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--color-accent-dim);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
 .btn-glass {

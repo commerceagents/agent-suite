@@ -9,14 +9,16 @@ interface AnimatedLogoProps {
   delay?: number;
   shimmerDelay?: number;
   className?: string;
+  onShockwave?: () => void;
 }
 
 export default function AnimatedLogo({
   size = "base",
   loop = false,
   delay = 0,
-  shimmerDelay = 2.5,
+  shimmerDelay = 3.5,
   className = "",
+  onShockwave,
 }: AnimatedLogoProps) {
   const sizeClasses = {
     small: "w-12 h-12 md:w-16 md:h-16",
@@ -39,77 +41,123 @@ export default function AnimatedLogo({
 
   return (
     <div className={`relative ${sizeClasses[size]} ${className}`}>
-      <svg
-        viewBox="0 0 198 198"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full"
-      >
-        <defs>
-          {/* Chrome gradient fill */}
-          <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#3A3A42" />
-            <stop offset="30%" stopColor="#8A8A96" />
-            <stop offset="60%" stopColor="#D0D0DC" />
-            <stop offset="100%" stopColor="#FFFFFF" />
-          </linearGradient>
+      <div className="w-full h-full">
+        <svg
+          viewBox="0 0 198 198"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <defs>
+            <linearGradient id="chromeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#6A6A78" />
+              <stop offset="25%" stopColor="#9A9AA6" />
+              <stop offset="55%" stopColor="#D0D0DC" />
+              <stop offset="100%" stopColor="#FFFFFF" />
+            </linearGradient>
 
-          {/* Shimmer sweep gradient */}
-          <linearGradient id="iconShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="white" stopOpacity="0" />
-            <stop offset="45%" stopColor="white" stopOpacity="0" />
-            <stop offset="50%" stopColor="white" stopOpacity="1" />
-            <stop offset="55%" stopColor="white" stopOpacity="0" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
-          </linearGradient>
+            <linearGradient id="iconShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="white" stopOpacity="0" />
+              <stop offset="45%" stopColor="white" stopOpacity="0" />
+              <stop offset="50%" stopColor="white" stopOpacity="1" />
+              <stop offset="55%" stopColor="white" stopOpacity="0" />
+              <stop offset="100%" stopColor="white" stopOpacity="0" />
+            </linearGradient>
 
-          <mask id="iconShimmerMask">
-            <motion.rect
-              x="-200"
-              y="0"
-              width="400"
-              height="200"
-              fill="url(#iconShimmer)"
-              animate={{ x: [-200, 200] }}
-              transition={{
-                delay: delay + shimmerDelay,
-                duration: 2.0,
-                ease: "easeInOut",
-                repeat: Infinity,
-                repeatDelay: 2,
-              }}
-            />
-          </mask>
-        </defs>
+            <mask id="iconShimmerMask">
+              <motion.rect
+                x="-400"
+                y="0"
+                width="400"
+                height="200"
+                fill="url(#iconShimmer)"
+                animate={{ x: [-400, 400] }}
+                transition={{
+                  delay: delay + shimmerDelay,
+                  duration: 2.0,
+                  ease: "easeInOut",
+                }}
+              />
+            </mask>
+          </defs>
 
-        {/* BASE LOGO LAYER — uses chrome gradient */}
-        <g>
+          {/* ── 1. Star path traces first ── */}
           <motion.path
-            d={logoPaths.outerC}
-            stroke="url(#chromeGrad)"
-            strokeWidth="1.2"
-            fill="url(#chromeGrad)"
+            d={logoPaths.starPath}
+            stroke="rgba(192,192,200,0.6)"
+            strokeWidth="1.5"
+            fill="none"
             initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
+            animate={{ pathLength: 1, opacity: [0, 0.8, 0.8, 0] }}
             transition={{
-              delay: delay + 0.6,
+              delay: delay + 0.2,
               duration: 1.2,
               ease: "easeInOut",
               ...animationProps,
             }}
           />
+
+          {/* ── 2. Outer C traces ── */}
+          <motion.path
+            d={logoPaths.outerC}
+            stroke="rgba(192,192,200,0.5)"
+            strokeWidth="1.5"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: [0, 0.7, 0.7, 0.2] }}
+            transition={{
+              delay: delay + 0.6,
+              duration: 1.4,
+              ease: "easeInOut",
+              ...animationProps,
+            }}
+          />
+
+          {/* ── 3. Inner shape traces ── */}
+          <motion.path
+            d={logoPaths.innerComplex}
+            stroke="rgba(192,192,200,0.4)"
+            strokeWidth="1"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: [0, 0.6, 0.6, 0.2] }}
+            transition={{
+              delay: delay + 0.8,
+              duration: 1.2,
+              ease: "easeInOut",
+              ...animationProps,
+            }}
+          />
+
+          {/* ── 4. Outer C fill ── */}
+          <motion.path
+            d={logoPaths.outerC}
+            fill="url(#chromeGrad)"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              delay: delay + 1.6,
+              duration: 0.5,
+              ease: "easeOut",
+              ...animationProps,
+            }}
+          />
+
+          {/* ── 5. Inner shape fill ── */}
           <motion.path
             d={logoPaths.innerComplex}
             fill="url(#chromeGrad)"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{
-              delay: delay + 0.8,
-              duration: 1.2,
+              delay: delay + 1.7,
+              duration: 0.5,
               ease: "easeOut",
               ...animationProps,
             }}
           />
+
+          {/* ── 6. Small square snaps in ── */}
           <motion.rect
             x="143.927"
             y="142.277"
@@ -117,62 +165,33 @@ export default function AnimatedLogo({
             height="12.8228"
             fill="url(#chromeGrad)"
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{ scale: [0, 1.2, 1], opacity: 1 }}
             transition={{
-              delay: delay + 1.4,
-              duration: 0.6,
-              ease: "easeOut",
+              delay: delay + 2.0,
+              duration: 0.4,
+              ease: [0.34, 1.56, 0.64, 1] as const,
               ...animationProps,
             }}
           />
-        </g>
 
-        {/* SHIMMER HIGHLIGHT — chrome sweep effect */}
-        <g mask="url(#iconShimmerMask)" style={{ mixBlendMode: "overlay" }}>
-          <path d={logoPaths.outerC} fill="white" />
-          <path d={logoPaths.innerComplex} fill="white" />
-          <rect
-            x="143.927"
-            y="142.277"
-            width="12.8228"
-            height="12.8228"
-            fill="white"
-          />
-        </g>
-
-        {/* Star Trace — draws first */}
-        <motion.path
-          d={logoPaths.starPath}
-          stroke="#C0C0C8"
-          strokeWidth="2.5"
-          fill="none"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: [0, 1, 0] }}
-          transition={{
-            delay: delay + 0.2,
-            duration: 0.8,
-            ease: "easeOut",
-            ...animationProps,
-          }}
-        />
-      </svg>
-
-      {/* LENS FLARE — chrome-tinted */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: [0, 1, 0], scale: [0.5, 2.2, 0.5] }}
-        transition={{
-          delay: delay + 2.2,
-          duration: 1.2,
-          ease: "easeInOut",
-          ...animationProps,
-        }}
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-[70%] h-[70%]"
-      >
-        <div className="absolute inset-0 bg-white/60 rounded-full blur-[35px]" />
-        <div className="absolute top-1/2 left-[-60%] w-[220%] h-[2px] bg-gradient-to-r from-transparent via-white/80 to-transparent" />
-        <div className="absolute left-1/2 top-[-60%] w-[2px] h-[220%] bg-gradient-to-b from-transparent via-white/80 to-transparent" />
-      </motion.div>
+          {/* ── 7. Shimmer sweep ── */}
+          <motion.g
+            mask="url(#iconShimmerMask)"
+            style={{ mixBlendMode: "overlay", opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              delay: delay + shimmerDelay,
+              duration: 0.01,
+              ...animationProps,
+            }}
+          >
+            <path d={logoPaths.outerC} fill="white" />
+            <path d={logoPaths.innerComplex} fill="white" />
+            <rect x="143.927" y="142.277" width="12.8228" height="12.8228" fill="white" />
+          </motion.g>
+        </svg>
+      </div>
     </div>
   );
 }
