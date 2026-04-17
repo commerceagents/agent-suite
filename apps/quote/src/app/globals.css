@@ -174,9 +174,9 @@ h1, h2, h3, h4, h5, h6 {
 .film-grain {
   position: fixed;
   inset: 0;
-  opacity: 0.03;
+  opacity: 0.05;
   mix-blend-mode: overlay;
-  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  background-image: url('/noise.svg');
   pointer-events: none;
   z-index: 9998;
 }

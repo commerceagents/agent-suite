@@ -55,7 +55,11 @@ function LiquidBlob() {
 export default function MercuryCanvas() {
   return (
     <div className="absolute inset-0 z-0 opacity-80">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas 
+        camera={{ position: [0, 0, 5], fov: 45 }}
+        gl={{ antialias: true, powerPreference: "high-performance" }}
+        dpr={[1, 2]}
+      >
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
         <pointLight position={[-10, -10, -10]} intensity={0.5} />
