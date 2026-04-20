@@ -73,7 +73,7 @@ export default function PremiumHero() {
             className="group relative px-10 py-4 bg-white text-black font-medium text-sm tracking-wider uppercase overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95"
           >
             <span className="relative z-10">
-              {isMorphed ? 'System Unified' : 'Initialize Execution'}
+              {isMorphed ? 'Get in Touch' : 'Contact us'}
             </span>
             <div className="absolute inset-0 bg-zinc-200 translate-y-full transition-transform duration-500 group-hover:translate-y-0" />
             
