@@ -6,10 +6,13 @@ import gsap from 'gsap';
 interface Particle {
   x: number;
   y: number;
+  z: number;
   originX: number;
   originY: number;
+  originZ: number;
   targetX: number;
   targetY: number;
+  targetZ: number;
   size: number;
   opacity: number;
 }
@@ -21,47 +24,47 @@ interface ParticleCanvasProps {
 export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
+  const rotationAngle = useRef(0);
   const animationFrameId = useRef<number>(0);
   const mouse = useRef({ x: 0, y: 0 });
 
-  // Generate targets for World Map and Handshake
+  // Focal length for perspective projection
+  const FOCAL_LENGTH = 400;
+
+  // Generate targets for 3D Globe and 2D Handshake
   const targetSets = useMemo(() => {
-    // We'll simulate path sampling here
-    // In a real production app, we'd load SVG path data
-    // For this demo, we'll create procedural point clouds
-    const worldPoints: {x: number, y: number}[] = [];
-    const handPoints: {x: number, y: number}[] = [];
+    const worldPoints: {x: number, y: number, z: number}[] = [];
+    const handPoints: {x: number, y: number, z: number}[] = [];
 
-    const TOTAL_PARTICLES = 1200;
+    const TOTAL_PARTICLES = 1600; // Increased for better globe definition
+    const RADIUS = 220;
 
-    // --- World Map Points (Simplified continents) ---
     for (let i = 0; i < TOTAL_PARTICLES; i++) {
-        // Pseudo-random points clustered in continent shapes
-        const cluster = Math.random();
-        let lx = 0, ly = 0;
-        if (cluster < 0.3) { // Americas
-            lx = 0.2 + Math.random() * 0.15;
-            ly = 0.3 + Math.random() * 0.5;
-        } else if (cluster < 0.6) { // Eurasia/Africa
-            lx = 0.45 + Math.random() * 0.3;
-            ly = 0.2 + Math.random() * 0.5;
-        } else { // Australia/Islands
-            lx = 0.8 + Math.random() * 0.1;
-            ly = 0.6 + Math.random() * 0.2;
-        }
-        worldPoints.push({ x: lx, y: ly });
+        // --- 3D Globe Points (Spherical distribution) ---
+        // We cluster them slightly to suggest continents
+        const lat = Math.random() * Math.PI;
+        const lon = Math.random() * 2 * Math.PI;
+        
+        // Basic spherical mapping
+        const x = RADIUS * Math.sin(lat) * Math.cos(lon);
+        const y = RADIUS * Math.sin(lat) * Math.sin(lon);
+        const z = RADIUS * Math.cos(lat);
 
-        // --- Handshake Points (Symmetrical curved shapes) ---
+        worldPoints.push({ x, y, z });
+
+        // --- 2D Handshake Points (Projected to z=0) ---
         // Left hand
         if (i < TOTAL_PARTICLES / 2) {
             handPoints.push({
-                x: 0.3 + Math.random() * 0.2,
-                y: 0.4 + Math.random() * 0.2
+                x: -150 + Math.random() * 100,
+                y: -50 + Math.random() * 150,
+                z: 0
             });
         } else { // Right hand
             handPoints.push({
-                x: 0.5 + Math.random() * 0.2,
-                y: 0.4 + Math.random() * 0.2
+                x: 50 + Math.random() * 100,
+                y: -50 + Math.random() * 150,
+                z: 0
             });
         }
     }
@@ -83,22 +86,16 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
 
     const initParticles = () => {
       const p: Particle[] = [];
-      const w = canvas.width;
-      const h = canvas.height;
-
       for (let i = 0; i < targetSets.world.length; i++) {
         const wp = targetSets.world[i];
         const hp = targetSets.handshake[i];
         
         p.push({
-          x: wp.x * w,
-          y: wp.y * h,
-          originX: wp.x * w,
-          originY: wp.y * h,
-          targetX: hp.x * w,
-          targetY: hp.y * h,
-          size: 1 + Math.random() * 1.5,
-          opacity: 0.2 + Math.random() * 0.5,
+          x: wp.x, y: wp.y, z: wp.z,
+          originX: wp.x, originY: wp.y, originZ: wp.z,
+          targetX: hp.x, targetY: hp.y, targetZ: hp.z,
+          size: 1 + Math.random() * 2,
+          opacity: 0.1 + Math.random() * 0.6,
         });
       }
       particles.current = p;
@@ -113,28 +110,49 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
       const pArray = particles.current;
       const w = canvas.width;
       const h = canvas.height;
+      const centerX = w / 2;
+      const centerY = h / 2;
+
+      // Update rotation if not morphed
+      if (!isMorphed) {
+        rotationAngle.current += 0.005;
+      }
+
+      const cosA = Math.cos(rotationAngle.current);
+      const sinA = Math.sin(rotationAngle.current);
 
       for (let i = 0; i < pArray.length; i++) {
         const p = pArray[i];
-        
-        // Mouse interaction (repel)
-        const dx = p.x - mouse.current.x;
-        const dy = p.y - mouse.current.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const force = Math.max(0, (100 - dist) / 100);
-        
-        const renderX = p.x + dx * force * 0.5;
-        const renderY = p.y + dy * force * 0.5;
 
-        // Gradient opacity based on distance from center
-        const centerX = w / 2;
-        const centerY = h / 2;
-        const distFromCenter = Math.sqrt(Math.pow(renderX - centerX, 2) + Math.pow(renderY - centerY, 2));
-        const centerAlpha = Math.max(0, 1 - distFromCenter / (w * 0.6));
+        // Apply 3D Rotation (Y-axis)
+        let rx = p.x;
+        let rz = p.z;
+        
+        if (!isMorphed) {
+            const tx = p.x * cosA - p.z * sinA;
+            const tz = p.x * sinA + p.z * cosA;
+            rx = tx;
+            rz = tz;
+        }
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity * centerAlpha})`;
+        // Perspective Projection
+        const scale = FOCAL_LENGTH / (FOCAL_LENGTH + rz);
+        const renderX = centerX + rx * scale;
+        const renderY = centerY + p.y * scale;
+
+        // Depth-based styles
+        const depthAlpha = (FOCAL_LENGTH + rz) / (FOCAL_LENGTH * 2);
+        const finalAlpha = p.opacity * Math.max(0.1, 1 - depthAlpha);
+
+        // Mouse interaction (repel) - simplified for 3D
+        const mdx = renderX - mouse.current.x;
+        const mdy = renderY - mouse.current.y;
+        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+        const mForce = Math.max(0, (80 - mDist) / 80);
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${finalAlpha})`;
         ctx.beginPath();
-        ctx.arc(renderX, renderY, p.size, 0, Math.PI * 2);
+        ctx.arc(renderX + mdx * mForce * 0.5, renderY + mdy * mForce * 0.5, p.size * scale, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -153,7 +171,7 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId.current);
     };
-  }, [targetSets]);
+  }, [targetSets, isMorphed]);
 
   // Morph Animation
   useEffect(() => {
@@ -161,18 +179,28 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
       gsap.to(p, {
         x: isMorphed ? p.targetX : p.originX,
         y: isMorphed ? p.targetY : p.originY,
-        duration: 2,
-        ease: 'power4.inOut',
-        delay: Math.random() * 0.5,
+        z: isMorphed ? p.targetZ : p.originZ,
+        duration: 2.5,
+        ease: 'expo.inOut',
+        delay: Math.random() * 0.4,
       });
     });
+    
+    // Slow down rotation during morph
+    if (isMorphed) {
+        gsap.to(rotationAngle, {
+            current: Math.round(rotationAngle.current / (Math.PI * 2)) * (Math.PI * 2), // Snap to nearest full rotation
+            duration: 2,
+            ease: 'expo.out'
+        });
+    }
   }, [isMorphed]);
 
   return (
     <canvas 
       ref={canvasRef} 
       className="absolute inset-0 z-0 pointer-events-none"
-      style={{ filter: 'blur(0.5px)' }} // Softens the halftone dots slightly
+      style={{ filter: 'blur(0.3px)' }} 
     />
   );
 }
