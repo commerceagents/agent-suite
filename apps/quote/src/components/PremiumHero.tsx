@@ -70,7 +70,7 @@ export default function PremiumHero() {
         <motion.div variants={itemVars}>
           <button 
             onClick={() => setIsMorphed(!isMorphed)}
-            className="group relative px-8 py-3 bg-white text-black font-medium text-sm tracking-wider uppercase overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95"
+            className="group relative px-6 py-2.5 bg-white text-black font-medium text-sm tracking-wider uppercase overflow-hidden rounded-md transition-all duration-500 hover:scale-105 active:scale-95"
           >
             <span className="relative z-10">
               {isMorphed ? 'Get in Touch' : 'Contact us'}
