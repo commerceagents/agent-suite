@@ -108,10 +108,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Chrome Gradient Text ── */
 .chrome-text {
-  background: linear-gradient(180deg, #3A3A42 0%, #8A8A96 35%, #D0D0DC 65%, #FFFFFF 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 50%, #FFFFFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
 }
 
 .chrome-text-h {
@@ -239,4 +240,22 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Utility ── */
 .tracking-ultra {
   letter-spacing: 0.3em;
+}
+
+/* ── Mercury Lens Discovery Layer ── */
+.discovery-scramble {
+  filter: blur(15px);
+  opacity: 0.2;
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  pointer-events: none;
+}
+
+.glass-dock {
+  background: rgba(10, 10, 12, 0.4);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 
+    0 10px 40px -10px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }

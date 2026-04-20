@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Environment, Lightformer } from '@react-three/drei';
+import { Float, MeshTransmissionMaterial, Sphere, Environment, Lightformer } from '@react-three/drei';
 import * as THREE from 'three';
 
 function LiquidBlob() {
@@ -39,13 +39,19 @@ function LiquidBlob() {
   return (
     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
       <Sphere ref={meshRef} args={[1, 128, 128]} scale={1.8}>
-        <MeshDistortMaterial
+        <MeshTransmissionMaterial
+          backside
+          backsideThickness={5}
+          thickness={2}
+          samples={16}
+          transmission={1}
+          clearcoat={1}
+          clearcoatRoughness={0}
+          ior={1.2}
+          chromaticAberration={0.1}
+          roughness={0}
+          metalness={0.1}
           color="#ffffff"
-          roughness={0.05}
-          metalness={1}
-          distort={0.4}
-          speed={4}
-          bumpScale={0.05}
         />
       </Sphere>
     </Float>
