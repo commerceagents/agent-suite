@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen";
+import ConsoleFix from "@/components/ConsoleFix";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
           color: "#E8E8F0",
         }}
       >
+        <ConsoleFix />
         <LoadingScreen />
         {/* Film grain — always-on subtle texture overlay */}
         <div
@@ -49,7 +51,7 @@ export default function RootLayout({
             opacity: 0.03,
             mixBlendMode: "overlay",
             backgroundImage:
-              "url('https://grainy-gradients.vercel.app/noise.svg')",
+              "url('/noise.svg')",
           }}
         />
         {children}

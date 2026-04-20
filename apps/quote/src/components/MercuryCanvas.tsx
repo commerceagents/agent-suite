@@ -2,7 +2,7 @@
 
 import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Environment } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Sphere, Environment, Lightformer } from '@react-three/drei';
 import * as THREE from 'three';
 
 function LiquidBlob() {
@@ -38,7 +38,7 @@ function LiquidBlob() {
 
   return (
     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 512, 512]} scale={1.8}>
+      <Sphere ref={meshRef} args={[1, 128, 128]} scale={1.8}>
         <MeshDistortMaterial
           color="#ffffff"
           roughness={0.05}
@@ -57,14 +57,26 @@ export default function MercuryCanvas() {
     <div className="absolute inset-0 z-0 opacity-80">
       <Canvas 
         camera={{ position: [0, 0, 5], fov: 45 }}
-        gl={{ antialias: true, powerPreference: "high-performance" }}
+        gl={{ 
+          antialias: true, 
+          powerPreference: "high-performance",
+          precision: "highp"
+        }}
         dpr={[1, 2]}
       >
         <ambientLight intensity={0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
         <pointLight position={[-10, -10, -10]} intensity={0.5} />
         <LiquidBlob />
-        <Environment preset="studio" />
+        <Environment resolution={256}>
+          {/* Abstract light shapes to create metallic reflections without recognizable images */}
+          <group rotation={[-Math.PI / 4, 0, 0]}>
+            <Lightformer form="circle" intensity={4} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
+            <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
+            <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, -1, -1]} scale={2} />
+            <Lightformer form="rect" intensity={2} rotation-y={Math.PI / 2} position={[10, 1, 1]} scale={5} />
+          </group>
+        </Environment>
       </Canvas>
     </div>
   );
