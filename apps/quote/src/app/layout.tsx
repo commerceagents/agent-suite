@@ -30,14 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
         className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
         data-app="quote"
         style={{
           fontFamily: "'DM Sans', system-ui, sans-serif",
-          backgroundColor: "#FFFFFF",
-          color: "#000000",
+          backgroundColor: "#08080A",
+          color: "#E8E8F0",
         }}
       >
         <ConsoleFix />

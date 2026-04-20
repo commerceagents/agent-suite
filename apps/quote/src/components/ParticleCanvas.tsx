@@ -6,10 +6,13 @@ import gsap from 'gsap';
 interface Particle {
   x: number;
   y: number;
+  z: number;
   originX: number;
   originY: number;
+  originZ: number;
   targetX: number;
   targetY: number;
+  targetZ: number;
   size: number;
   opacity: number;
 }
@@ -21,48 +24,52 @@ interface ParticleCanvasProps {
 export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
+  const rotationAngle = useRef(0);
   const animationFrameId = useRef<number>(0);
-  const time = useRef(0);
+  const mouse = useRef({ x: 0, y: 0 });
 
-  const TOTAL_PARTICLES = 1800;
+  // Focal length for perspective projection
+  const FOCAL_LENGTH = 400;
 
-  const data = useMemo(() => {
-    const p: Particle[] = [];
-    
+  // Generate targets for 3D Globe and 2D Handshake
+  const targetSets = useMemo(() => {
+    const worldPoints: {x: number, y: number, z: number}[] = [];
+    const handPoints: {x: number, y: number, z: number}[] = [];
+
+    const TOTAL_PARTICLES = 1600; // Increased for better globe definition
+    const RADIUS = 220;
+
     for (let i = 0; i < TOTAL_PARTICLES; i++) {
-        const isLeft = i < TOTAL_PARTICLES / 2;
+        // --- 3D Globe Points (Spherical distribution) ---
+        // We cluster them slightly to suggest continents
+        const lat = Math.random() * Math.PI;
+        const lon = Math.random() * 2 * Math.PI;
         
-        // --- Split World Map Clusters (Left/Right) ---
-        let ox, oy;
-        if (isLeft) {
-            // Western Hemisphere (Left)
-            ox = 0.15 + Math.random() * 0.25;
-            oy = 0.3 + Math.random() * 0.4;
-        } else {
-            // Eastern Hemisphere (Right)
-            ox = 0.6 + Math.random() * 0.25;
-            oy = 0.3 + Math.random() * 0.4;
-        }
+        // Basic spherical mapping
+        const x = RADIUS * Math.sin(lat) * Math.cos(lon);
+        const y = RADIUS * Math.sin(lat) * Math.sin(lon);
+        const z = RADIUS * Math.cos(lat);
 
-        // --- Central Handshake ---
-        let tx, ty;
-        if (isLeft) {
-            tx = 0.4 + Math.random() * 0.08;
-            ty = 0.45 + Math.random() * 0.1;
-        } else {
-            tx = 0.52 + Math.random() * 0.08;
-            ty = 0.45 + Math.random() * 0.1;
-        }
+        worldPoints.push({ x, y, z });
 
-        p.push({
-            x: ox, y: oy,
-            originX: ox, originY: oy,
-            targetX: tx, targetY: ty,
-            size: 1.5, // Uniform sharp size
-            opacity: 0.8 // High contrast
-        });
+        // --- 2D Handshake Points (Projected to z=0) ---
+        // Left hand
+        if (i < TOTAL_PARTICLES / 2) {
+            handPoints.push({
+                x: -150 + Math.random() * 100,
+                y: -50 + Math.random() * 150,
+                z: 0
+            });
+        } else { // Right hand
+            handPoints.push({
+                x: 50 + Math.random() * 100,
+                y: -50 + Math.random() * 150,
+                z: 0
+            });
+        }
     }
-    return p;
+
+    return { world: worldPoints, handshake: handPoints };
   }, []);
 
   useEffect(() => {
@@ -74,27 +81,24 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      
-      // Map normalized coordinates to screen
-      if (particles.current.length === 0) {
-        particles.current = data.map(p => ({
-            ...p,
-            x: p.originX * canvas.width,
-            y: p.originY * canvas.height,
-            originX: p.originX * canvas.width,
-            originY: p.originY * canvas.height,
-            targetX: p.targetX * canvas.width,
-            targetY: p.targetY * canvas.height
-        }));
-      } else {
-          // Re-scale existing particles on resize
-          particles.current.forEach(p => {
-              p.originX = (p.originX / canvas.width) * window.innerWidth;
-              p.originY = (p.originY / canvas.height) * window.innerHeight;
-              p.targetX = (p.targetX / canvas.width) * window.innerWidth;
-              p.targetY = (p.targetY / canvas.height) * window.innerHeight;
-          });
+      initParticles();
+    };
+
+    const initParticles = () => {
+      const p: Particle[] = [];
+      for (let i = 0; i < targetSets.world.length; i++) {
+        const wp = targetSets.world[i];
+        const hp = targetSets.handshake[i];
+        
+        p.push({
+          x: wp.x, y: wp.y, z: wp.z,
+          originX: wp.x, originY: wp.y, originZ: wp.z,
+          targetX: hp.x, targetY: hp.y, targetZ: hp.z,
+          size: 1 + Math.random() * 2,
+          opacity: 0.1 + Math.random() * 0.6,
+        });
       }
+      particles.current = p;
     };
 
     window.addEventListener('resize', resize);
@@ -102,18 +106,53 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time.current += 0.01;
-
+      
       const pArray = particles.current;
+      const w = canvas.width;
+      const h = canvas.height;
+      const centerX = w / 2;
+      const centerY = h / 2;
+
+      // Update rotation if not morphed
+      if (!isMorphed) {
+        rotationAngle.current += 0.005;
+      }
+
+      const cosA = Math.cos(rotationAngle.current);
+      const sinA = Math.sin(rotationAngle.current);
+
       for (let i = 0; i < pArray.length; i++) {
         const p = pArray[i];
+
+        // Apply 3D Rotation (Y-axis)
+        let rx = p.x;
+        let rz = p.z;
         
-        // Subtle wave motion (only in non-morphed state)
-        const wave = isMorphed ? 0 : Math.sin(time.current + p.x * 0.01) * 10;
-        
-        ctx.fillStyle = `rgba(0, 0, 0, ${p.opacity})`;
+        if (!isMorphed) {
+            const tx = p.x * cosA - p.z * sinA;
+            const tz = p.x * sinA + p.z * cosA;
+            rx = tx;
+            rz = tz;
+        }
+
+        // Perspective Projection
+        const scale = FOCAL_LENGTH / (FOCAL_LENGTH + rz);
+        const renderX = centerX + rx * scale;
+        const renderY = centerY + p.y * scale;
+
+        // Depth-based styles
+        const depthAlpha = (FOCAL_LENGTH + rz) / (FOCAL_LENGTH * 2);
+        const finalAlpha = p.opacity * Math.max(0.1, 1 - depthAlpha);
+
+        // Mouse interaction (repel) - simplified for 3D
+        const mdx = renderX - mouse.current.x;
+        const mdy = renderY - mouse.current.y;
+        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+        const mForce = Math.max(0, (80 - mDist) / 80);
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${finalAlpha})`;
         ctx.beginPath();
-        ctx.arc(p.x, p.y + wave, p.size, 0, Math.PI * 2);
+        ctx.arc(renderX + mdx * mForce * 0.5, renderY + mdy * mForce * 0.5, p.size * scale, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -122,11 +161,17 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
 
     render();
 
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId.current);
     };
-  }, [data, isMorphed]);
+  }, [targetSets, isMorphed]);
 
   // Morph Animation
   useEffect(() => {
@@ -134,17 +179,28 @@ export default function ParticleCanvas({ isMorphed }: ParticleCanvasProps) {
       gsap.to(p, {
         x: isMorphed ? p.targetX : p.originX,
         y: isMorphed ? p.targetY : p.originY,
-        duration: 2.2,
+        z: isMorphed ? p.targetZ : p.originZ,
+        duration: 2.5,
         ease: 'expo.inOut',
-        delay: Math.random() * 0.4
+        delay: Math.random() * 0.4,
       });
     });
+    
+    // Slow down rotation during morph
+    if (isMorphed) {
+        gsap.to(rotationAngle, {
+            current: Math.round(rotationAngle.current / (Math.PI * 2)) * (Math.PI * 2), // Snap to nearest full rotation
+            duration: 2,
+            ease: 'expo.out'
+        });
+    }
   }, [isMorphed]);
 
   return (
     <canvas 
       ref={canvasRef} 
       className="absolute inset-0 z-0 pointer-events-none"
+      style={{ filter: 'blur(0.3px)' }} 
     />
   );
 }
