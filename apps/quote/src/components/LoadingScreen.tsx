@@ -169,7 +169,7 @@ export default function LoadingScreen() {
               style={{
                 opacity: 0.03,
                 mixBlendMode: "overlay",
-                backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')",
+                backgroundImage: "url('/noise.svg')",
                 zIndex: 20,
               }}
             />
