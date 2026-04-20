@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import MercuryCanvas from './MercuryCanvas';
-import Header from './Header';
 
 export default function HeroMercury() {
   const containerVars = {
@@ -17,7 +16,7 @@ export default function HeroMercury() {
   };
 
   const itemVars = {
-    initial: { y: 20, opacity: 0 },
+    initial: { y: 40, opacity: 0 },
     animate: {
       y: 0,
       opacity: 1,
@@ -29,62 +28,76 @@ export default function HeroMercury() {
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#050505]">
-      {/* 3D Mercury Canvas Layer */}
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black">
+      {/* 3D Mercury Layer */}
       <MercuryCanvas />
 
-      {/* Discovery Layer: Hidden/Blurry message for the lens to decode */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none z-0">
-        <div className="discovery-scramble text-white font-mono text-[8vw] md:text-[6vw] tracking-tighter mix-blend-screen leading-none">
-          STRATEGIC COMMERCE ORCHESTRATION
-        </div>
-      </div>
-
-      {/* Background HUD Grid */}
+      {/* HUD Grid Overlay */}
       <div className="absolute inset-0 hud-grid opacity-10 pointer-events-none" />
 
-      {/* Technical Corner Metadata (Fills the "Empty Space") */}
-      <div className="absolute top-10 left-10 flex flex-col gap-1 items-start">
-        <span className="blueprint-marker opacity-40">SYSTEM: ACTIVE</span>
-        <div className="w-12 h-[1px] bg-white/20" />
+      {/* Blueprint Corner Markers */}
+      <div className="absolute top-12 left-12 flex flex-col gap-1">
+        <span className="heading-sub">MEASURE</span>
+        <div className="hud-crosshair opacity-30" />
       </div>
-      <div className="absolute top-10 right-10 flex flex-col gap-1 items-end">
-        <span className="blueprint-marker opacity-40">AGENT_ID: CX_001</span>
-        <div className="w-12 h-[1px] bg-white/20" />
+      <div className="absolute top-12 right-12 flex flex-col items-end gap-1">
+        <span className="heading-sub">ANALYZE</span>
+        <div className="hud-crosshair opacity-30" />
       </div>
-      <div className="absolute bottom-10 left-10 flex flex-col gap-1 items-start">
-        <div className="w-12 h-[1px] bg-white/20" />
-        <span className="blueprint-marker opacity-40 text-[8px]">COORDS: 40.7128° N, 74.0060° W</span>
+      <div className="absolute bottom-12 left-12 flex flex-col gap-1">
+        <div className="hud-crosshair opacity-30 mb-1" />
+        <span className="heading-sub">IMPLEMENT</span>
       </div>
-      <div className="absolute bottom-10 right-10 flex flex-col gap-1 items-end">
-        <div className="w-12 h-[1px] bg-white/20" />
-        <span className="blueprint-marker opacity-40">VERSION: 0.1.0-MERCURY</span>
+      <div className="absolute bottom-12 right-12 flex flex-col items-end gap-1 text-[10px] font-mono text-zinc-700">
+        <span>01 / 01</span>
+        <span className="tracking-widest uppercase">SECTION 01</span>
       </div>
 
-      {/* Main Brand Content */}
+      {/* Main Content */}
       <motion.div
         variants={containerVars}
         initial="initial"
         animate="animate"
         className="relative z-10 flex flex-col items-center text-center max-w-5xl px-6"
       >
-        <motion.div variants={itemVars} className="mb-4">
-          <span className="blueprint-marker tracking-[0.8em] text-white/30">
-            Strategic — Precise — Autonomous
+        <motion.div variants={itemVars} className="mb-6">
+          <span className="heading-sub tracking-[0.6em] text-white/40">
+            Enquiry — Approval — Execution
           </span>
         </motion.div>
 
         <motion.h1 
           variants={itemVars}
-          className="chrome-text text-5xl md:text-8xl lg:text-9xl mb-2 font-display uppercase tracking-tight"
+          className="heading-wide text-5xl md:text-8xl lg:text-9xl mb-8"
         >
-          Commerce <br />
-          <span className="opacity-80">Agents.</span>
+          Project <br />
+          <span className="text-chrome">Simplified.</span>
         </motion.h1>
+
+        <motion.p
+          variants={itemVars}
+          className="max-w-xl text-zinc-500 text-lg md:text-xl font-light leading-relaxed mb-12"
+        >
+          From the first enquiry to the final task execution. 
+          Unmatched precision for the modern agency.
+        </motion.p>
+
+        <motion.div variants={itemVars} className="flex flex-col sm:flex-row gap-6">
+          <button className="btn-mercury">
+            Start Project Enquiry
+          </button>
+          <button className="btn-mercury-outline">
+            View Live Dashboard
+          </button>
+        </motion.div>
       </motion.div>
 
-      {/* Capsule Header Navigation */}
-      <Header />
+      {/* Floating Coordinate Labels */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden lg:block opacity-20 origin-left -rotate-90">
+        <span className="text-[10px] font-mono tracking-[0.5em] uppercase text-zinc-500">
+          Agent Quote // v0.1.0-mercury
+        </span>
+      </div>
     </section>
   );
 }

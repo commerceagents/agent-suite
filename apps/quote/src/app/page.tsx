@@ -1,12 +1,10 @@
-"use client";
-
-import HeroMercury from "@/components/HeroMercury";
+import PremiumHero from "@/components/PremiumHero";
 
 export default function Home() {
   return (
     <main>
-      <HeroMercury />
-      <div className="film-grain" />
+      <PremiumHero />
     </main>
   );
 }
+
