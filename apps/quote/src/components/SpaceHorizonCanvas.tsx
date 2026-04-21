@@ -2,15 +2,16 @@
 
 import React, { useEffect, useRef } from 'react';
 
-interface Line {
-  x: number;
-  y: number;
+interface Beam {
+  id: number;
+  angle: number; // Radial angle from central lunar origin
+  radius: number; // Current distance from lunar origin
   length: number;
   speed: number;
-  opacity: number;
-  width: number;
-  depth: number;
-  flickerOffset: number; 
+  baseOpacity: number;
+  thickness: number;
+  pulseOffset: number;
+  pulseSpeed: number;
 }
 
 interface SpaceHorizonCanvasProps {
@@ -19,8 +20,7 @@ interface SpaceHorizonCanvasProps {
 
 export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const lines = useRef<Line[]>([]);
-  const rotation = useRef(0);
+  const beams = useRef<Beam[]>([]);
   const animationFrameId = useRef<number>(0);
   const time = useRef(0);
 
@@ -39,118 +39,106 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
       }
-      initLines();
+      initBeams();
     };
 
-    const initLines = () => {
-      const newLineArray: Line[] = [];
-      const beamWidth = 220; // Slightly more focused for energy beams
-      const lineCount = linesOnly ? 16 : 28; 
+    const initBeams = () => {
+      const newBeams: Beam[] = [];
+      const beamCount = linesOnly ? 16 : 28;
       
-      const spacing = beamWidth / lineCount;
+      // Arc settings - origin deep below horizon to create the gentle curve
+      const spread = 0.45; // Radian spread (wider = more tilt at edges)
 
-      for (let i = 0; i < lineCount; i++) {
-        const depth = Math.random() > 0.5 ? 1 : 0;
-        newLineArray.push({
-          x: (canvas.width / 2 - beamWidth / 2) + (i * spacing) + (Math.random() * 4 - 2),
-          y: Math.random() * canvas.height,
-          length: 60 + Math.random() * 120,
-          speed: depth === 1 ? 0.4 + Math.random() * 0.5 : 0.2 + Math.random() * 0.3,
-          opacity: 0.6 + Math.random() * 0.4,
-          width: depth === 1 ? 1.2 : 0.8,
-          depth,
-          flickerOffset: Math.random() * Math.PI * 2
+      for (let i = 0; i < beamCount; i++) {
+        // Staggered distribution with some randomness
+        const normalizedPos = (i / (beamCount - 1)) - 0.5;
+        const angle = (-Math.PI / 2) + (normalizedPos * spread) + (Math.random() * 0.04 - 0.02);
+        
+        newBeams.push({
+          id: i,
+          angle,
+          radius: Math.random() * (canvas.height * 1.5),
+          length: 80 + Math.random() * 160,
+          speed: 0.8 + Math.random() * 1.2,
+          baseOpacity: 0.4 + Math.random() * 0.5,
+          thickness: 0.8 + Math.random() * 1.0,
+          pulseOffset: Math.random() * Math.PI * 2,
+          pulseSpeed: 2 + Math.random() * 3
         });
       }
-      lines.current = newLineArray;
+      beams.current = newBeams;
     };
 
     window.addEventListener('resize', resize);
     resize();
 
-    const drawHorizon = () => {
-      if (linesOnly) return;
-      // Horizon logic stays original for full background mode
-      const w = canvas.width;
-      const h = canvas.height;
-      const radius = w * 2; 
-      const centerX = w / 2;
-      const centerY = h * 0.78 + radius;
-
-      ctx.save();
-      const glowGrad = ctx.createRadialGradient(centerX, centerY - radius, 0, centerX, centerY - radius, 400);
-      glowGrad.addColorStop(0, "rgba(255, 255, 255, 0.04)");
-      glowGrad.addColorStop(1, "transparent");
-      ctx.fillStyle = glowGrad;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.translate(centerX, centerY);
-      ctx.rotate(rotation.current);
-      ctx.fillStyle = "#050505";
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      const edgeGrad = ctx.createRadialGradient(0, 0, radius - 3, 0, 0, radius);
-      edgeGrad.addColorStop(0, "transparent");
-      edgeGrad.addColorStop(0.98, "rgba(255, 255, 255, 0.1)");
-      edgeGrad.addColorStop(1, "rgba(255, 255, 255, 0.5)"); 
-      ctx.fillStyle = edgeGrad;
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    };
-
     const animate = () => {
-      time.current += 0.02;
+      time.current += 0.015;
 
-      // Transparent clear for overlay mode
-      if (linesOnly) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      } else {
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      // Transparent clear for overlay usage
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      rotation.current += 0.00003; 
-      
-      lines.current.forEach((line) => {
-        // ENERGY FLOW: Move UPWARD
-        line.y -= line.speed;
+      // Origin point for the Lunar Arc (Deep below center)
+      const originX = canvas.width / 2;
+      const originY = canvas.height * 1.6;
+      const baseRadius = canvas.height * 0.8;
+
+      beams.current.forEach((beam) => {
+        // ENERGY FLOW: Rise Upwards (Radius decreases as it moves towards center, wait...)
+        // Actually, since origin is below, moving UP means radius DECREASES.
+        beam.radius -= beam.speed;
         
-        // Wrap logic for rising energy
-        if (line.y + line.length < 0) {
-          line.y = canvas.height + Math.random() * 50;
+        // Wrap logic: when it gets too far up (off screen), reset to bottom horizon
+        if (beam.radius < 0) {
+          beam.radius = originY + 100;
         }
 
-        // PLASMA FLICKER: Modulate opacity with sine
-        const flicker = 0.7 + Math.sin(time.current * 4 + line.flickerOffset) * 0.3;
-        ctx.globalAlpha = line.opacity * flicker;
+        // 'Living Flame' Animation: Pulse scale and opacity
+        const pulse = Math.sin(time.current * beam.pulseSpeed + beam.pulseOffset);
+        const flicker = 0.8 + pulse * 0.2;
+        const currentOpacity = beam.baseOpacity * (0.6 + pulse * 0.4);
         
-        // GLOWING ENERGY BEAM: Layered Rendering
-        ctx.strokeStyle = "#ffffff";
+        // Beam points calculation
+        const startR = beam.radius;
+        const endR = beam.radius + (beam.length * flicker);
         
-        // Pass 1: Outer Plasma Glow (Soft)
+        const x1 = originX + Math.cos(beam.angle) * startR;
+        const y1 = originY + Math.sin(beam.angle) * startR;
+        const x2 = originX + Math.cos(beam.angle) * endR;
+        const y2 = originY + Math.sin(beam.angle) * endR;
+
+        // Skip if entirely off screen
+        if (y1 < -200 || y2 > canvas.height + 200) {
+          if (beam.radius < -200) beam.radius = originY;
+          return;
+        }
+
         ctx.save();
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = "rgba(255, 255, 255, 0.8)";
-        ctx.lineWidth = line.width * 2;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = currentOpacity;
+        
+        // PASS 1: Volumetric Outer Glow (Layered Blur)
+        ctx.shadowBlur = 12 * flicker;
+        ctx.shadowColor = "rgba(255, 255, 255, 0.9)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.lineWidth = beam.thickness * 2.5 * flicker;
+        
         ctx.beginPath();
-        ctx.moveTo(line.x, line.y);
-        ctx.lineTo(line.x, line.y + line.length);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
+        
+        // PASS 2: Sharp Inner Core (Digital Precision)
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = beam.thickness;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        
         ctx.restore();
-
-        // Pass 2: Inner Sharp Core (Digital Precision)
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(line.x, line.y);
-        ctx.lineTo(line.x, line.y + line.length);
-        ctx.stroke();
       });
-
-      drawHorizon();
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -166,7 +154,7 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
   return (
     <canvas 
       ref={canvasRef} 
-      className={`absolute inset-0 z-0 pointer-events-none ${linesOnly ? '' : 'bg-black'}`}
+      className={`absolute inset-0 z-0 pointer-events-none ${linesOnly ? '' : 'bg-transparent'}`}
     />
   );
 }
