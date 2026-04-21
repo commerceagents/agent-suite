@@ -59,10 +59,13 @@ export default function SpaceHorizonHero() {
           <video 
             ref={videoRef}
             autoPlay 
-            loop
             muted 
             playsInline 
             onTimeUpdate={handleTimeUpdate}
+            onEnded={(e) => {
+              const video = e.currentTarget;
+              video.pause();
+            }}
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
