@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import SpaceHorizonCanvas from './SpaceHorizonCanvas';
+import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -40,8 +41,11 @@ export default function SpaceHorizonHero() {
   };
 
   return (
-    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-16">
+    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-12">
       
+      {/* Floating Capsule Navigation */}
+      <Navigation />
+
       {/* Box Container - inspired by reference image */}
       <motion.div 
         variants={containerVars}
