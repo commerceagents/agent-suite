@@ -10,8 +10,13 @@ export default function SpaceHorizonHero() {
   const hasEnded = useRef(false);
 
   const handleTimeUpdate = () => {
+    // We only track the end state here
     if (hasEnded.current) return;
-    if (videoRef.current && videoRef.current.currentTime < 0.5) {
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current && !hasEnded.current) {
+      // One-time cinematic trim on load
       videoRef.current.currentTime = 0.5;
     }
   };
@@ -79,7 +84,9 @@ export default function SpaceHorizonHero() {
             autoPlay 
             muted 
             playsInline 
+            preload="auto"
             onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleEnded}
             className="w-full h-full object-cover opacity-60"
           >
