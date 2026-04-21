@@ -21,6 +21,17 @@ export default function SpaceHorizonHero() {
     if (videoRef.current) videoRef.current.pause();
   };
 
+  useEffect(() => {
+    if (videoRef.current) {
+      // Browsers often require explicit interaction unless muted.
+      // We force muted and play to guarantee the cinematic background starts.
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(err => {
+        console.warn("Hero video autoplay was blocked or failed:", err);
+      });
+    }
+  }, []);
+
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
     animate: {
@@ -73,7 +84,7 @@ export default function SpaceHorizonHero() {
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
-            <source src="/video-2.mp4#t=0.5" type="video/mp4" />
+            <source src="/video-2.mp4" type="video/mp4" />
           </video>
           {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
