@@ -9,7 +9,8 @@ interface Line {
   speed: number;
   opacity: number;
   width: number;
-  depth: number; 
+  depth: number;
+  flickerOffset: number; 
 }
 
 interface SpaceHorizonCanvasProps {
@@ -21,6 +22,7 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
   const lines = useRef<Line[]>([]);
   const rotation = useRef(0);
   const animationFrameId = useRef<number>(0);
+  const time = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,21 +44,22 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
 
     const initLines = () => {
       const newLineArray: Line[] = [];
-      const beamWidth = 240; 
-      const lineCount = linesOnly ? 20 : 28; // Slightly fewer for cleaner boxed look
+      const beamWidth = 220; // Slightly more focused for energy beams
+      const lineCount = linesOnly ? 16 : 28; 
       
       const spacing = beamWidth / lineCount;
 
       for (let i = 0; i < lineCount; i++) {
-        const depth = Math.random() > 0.4 ? 1 : 0;
+        const depth = Math.random() > 0.5 ? 1 : 0;
         newLineArray.push({
-          x: (canvas.width / 2 - beamWidth / 2) + (i * spacing),
-          y: Math.random() * (canvas.height / 2),
-          length: 40 + Math.random() * 100,
-          speed: depth === 1 ? 0.3 + Math.random() * 0.4 : 0.15 + Math.random() * 0.25,
-          opacity: depth === 1 ? 0.6 : 0.3,
-          width: depth === 1 ? 1.5 : 1,
-          depth
+          x: (canvas.width / 2 - beamWidth / 2) + (i * spacing) + (Math.random() * 4 - 2),
+          y: Math.random() * canvas.height,
+          length: 60 + Math.random() * 120,
+          speed: depth === 1 ? 0.4 + Math.random() * 0.5 : 0.2 + Math.random() * 0.3,
+          opacity: 0.6 + Math.random() * 0.4,
+          width: depth === 1 ? 1.2 : 0.8,
+          depth,
+          flickerOffset: Math.random() * Math.PI * 2
         });
       }
       lines.current = newLineArray;
@@ -67,7 +70,7 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
 
     const drawHorizon = () => {
       if (linesOnly) return;
-
+      // Horizon logic stays original for full background mode
       const w = canvas.width;
       const h = canvas.height;
       const radius = w * 2; 
@@ -100,7 +103,9 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
     };
 
     const animate = () => {
-      // Clear with transparency if linesOnly
+      time.current += 0.02;
+
+      // Transparent clear for overlay mode
       if (linesOnly) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       } else {
@@ -111,27 +116,38 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
       rotation.current += 0.00003; 
       
       lines.current.forEach((line) => {
-        line.y += line.speed;
+        // ENERGY FLOW: Move UPWARD
+        line.y -= line.speed;
         
-        if (line.y > canvas.height / 1.5) {
-          line.y = -line.length;
+        // Wrap logic for rising energy
+        if (line.y + line.length < 0) {
+          line.y = canvas.height + Math.random() * 50;
         }
 
-        ctx.globalAlpha = line.opacity;
+        // PLASMA FLICKER: Modulate opacity with sine
+        const flicker = 0.7 + Math.sin(time.current * 4 + line.flickerOffset) * 0.3;
+        ctx.globalAlpha = line.opacity * flicker;
+        
+        // GLOWING ENERGY BEAM: Layered Rendering
         ctx.strokeStyle = "#ffffff";
-        ctx.lineWidth = line.width;
         
-        if (line.depth === 0) {
-          ctx.filter = "blur(1.2px)";
-        } else {
-          ctx.filter = "none";
-        }
-
+        // Pass 1: Outer Plasma Glow (Soft)
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "rgba(255, 255, 255, 0.8)";
+        ctx.lineWidth = line.width * 2;
         ctx.beginPath();
         ctx.moveTo(line.x, line.y);
         ctx.lineTo(line.x, line.y + line.length);
         ctx.stroke();
-        ctx.filter = "none";
+        ctx.restore();
+
+        // Pass 2: Inner Sharp Core (Digital Precision)
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(line.x, line.y);
+        ctx.lineTo(line.x, line.y + line.length);
+        ctx.stroke();
       });
 
       drawHorizon();
