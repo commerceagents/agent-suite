@@ -95,10 +95,11 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time.current += 0.01;
+      time.current += 0.025; // Faster internal clock for higher frequency
       
-      // Accelerated Scan Cycle (Faster Speed)
-      scanY.current = (time.current * 180) % (canvas.height + 600) - 300;
+      // Accelerated Scan Cycle & Frequency
+      const range = canvas.height + 300;
+      scanY.current = (time.current * 120) % range - 150;
 
       const sArray = segments.current;
       
