@@ -79,10 +79,7 @@ export default function SpaceHorizonHero() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
         </div>
 
-        {/* Cinematic Glowing Energy Beams - Upward Flow */}
-        <div className="absolute inset-0 z-10">
-          <SpaceHorizonCanvas linesOnly={true} />
-        </div>
+
 
 
 
