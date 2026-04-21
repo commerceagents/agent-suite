@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import LineMatrixCanvas from './LineMatrixCanvas';
 
 export default function PremiumHero() {
@@ -13,7 +13,7 @@ export default function PremiumHero() {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2,
+        delayChildren: 0.3,
       },
     },
   };
@@ -24,7 +24,7 @@ export default function PremiumHero() {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 1.2,
         ease: [0.16, 1, 0.3, 1] as any,
       },
     },
@@ -32,7 +32,7 @@ export default function PremiumHero() {
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white">
-      {/* Dynamic Background Layer - Split Line Matrix */}
+      {/* Background Layer - Precision Line Matrix */}
       <LineMatrixCanvas isMorphed={isMorphed} />
 
       {/* Main Content */}
@@ -42,7 +42,7 @@ export default function PremiumHero() {
         animate="animate"
         className="relative z-10 flex flex-col items-center text-center px-6"
       >
-        <motion.div variants={itemVars} className="mb-6">
+        <motion.div variants={itemVars} className="mb-8">
           <span className="text-[10px] font-mono tracking-[0.8em] uppercase text-zinc-300">
             Systemic Logistics
           </span>
@@ -50,7 +50,7 @@ export default function PremiumHero() {
 
         <motion.h1 
           variants={itemVars}
-          className="text-black text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-10"
+          className="text-black text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-12"
           style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
         >
           COMMERCE <br />
@@ -59,7 +59,7 @@ export default function PremiumHero() {
 
         <motion.p
           variants={itemVars}
-          className="max-w-xl text-zinc-400 text-lg font-light leading-relaxed mb-12"
+          className="max-w-xl text-zinc-400 text-lg font-light leading-relaxed mb-14"
         >
           Orchestrating global commerce with architectural precision.
           The premium nexus for high-performance scale.
@@ -68,18 +68,18 @@ export default function PremiumHero() {
         <motion.div variants={itemVars}>
           <button 
             onClick={() => setIsMorphed(!isMorphed)}
-            className="px-14 py-4 bg-black text-white font-medium text-[10px] tracking-[0.3em] uppercase rounded-full transition-all duration-500 hover:bg-zinc-900 active:scale-95 shadow-2xl shadow-black/10"
+            className="px-16 py-5 bg-black text-white font-medium text-[10px] tracking-[0.4em] uppercase rounded-full transition-all duration-700 hover:bg-zinc-900 active:scale-95 shadow-2xl shadow-black/10"
           >
-            {isMorphed ? 'Connection Active' : 'Contact us'}
+            {isMorphed ? 'Network Connected' : 'Contact us'}
           </button>
         </motion.div>
 
-        {/* Scroll Indicator */}
+        {/* Minimal Scroll Indicator */}
         <motion.div 
           variants={itemVars}
           className="absolute bottom-12 flex flex-col items-center"
         >
-          <div className="w-[1px] h-12 bg-zinc-100" />
+          <div className="w-[1px] h-16 bg-zinc-100" />
         </motion.div>
       </motion.div>
     </section>
