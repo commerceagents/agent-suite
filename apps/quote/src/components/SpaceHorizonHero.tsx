@@ -51,16 +51,14 @@ export default function SpaceHorizonHero() {
         className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
       >
         
-        {/* Cinematic Video Background - No Loop, Start at 0.5s */}
+        {/* Cinematic Video Background - Continuous Loop */}
         <div className="absolute inset-0 z-0">
           <video 
             ref={videoRef}
             autoPlay 
+            loop
             muted 
             playsInline 
-            onEnded={() => {
-              if (videoRef.current) videoRef.current.pause();
-            }}
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
@@ -70,10 +68,7 @@ export default function SpaceHorizonHero() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
         </div>
 
-        {/* Looping White Lines Overlay - Persistent Flaming Lines */}
-        <div className="absolute inset-0 z-10">
-          <SpaceHorizonCanvas linesOnly={true} />
-        </div>
+        {/* Floating Lines removed as per request */}
 
         {/* Main Content Area - Centered Agency Title */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
