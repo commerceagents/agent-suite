@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ParticleCanvas from './ParticleCanvas';
 
 export default function PremiumHero() {
+  const [isMorphed, setIsMorphed] = useState(false);
+
   const containerVars = {
     initial: { opacity: 0 },
     animate: {
@@ -31,7 +33,7 @@ export default function PremiumHero() {
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white">
       {/* Background Layer */}
-      <ParticleCanvas />
+      <ParticleCanvas isMorphed={isMorphed} />
 
       {/* Main Content */}
       <motion.div
@@ -65,9 +67,10 @@ export default function PremiumHero() {
 
         <motion.div variants={itemVars}>
           <button 
+            onClick={() => setIsMorphed(!isMorphed)}
             className="px-12 py-3.5 bg-black text-white font-medium text-xs tracking-[0.2em] uppercase rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-black/10"
           >
-            Contact us
+            {isMorphed ? 'System Unified' : 'Contact us'}
           </button>
         </motion.div>
 
@@ -98,7 +101,7 @@ export default function PremiumHero() {
           STATUS: OPERATIONAL
         </span>
         <span className="text-[9px] font-mono tracking-widest uppercase text-black">
-          VER: 2.0.4
+          VER: 2.1.0
         </span>
       </div>
     </section>
