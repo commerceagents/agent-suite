@@ -54,7 +54,21 @@ export default function SpaceHorizonHero() {
         </div>
       </nav>
 
-      {/* Main Content Area - Removed */}
+      {/* Main Content Area - Centered Agency Title */}
+      <motion.div
+        variants={containerVars}
+        initial="initial"
+        animate="animate"
+        className="flex-1 relative z-20 w-full flex flex-col items-center justify-center px-12"
+      >
+        <motion.h1 
+          variants={itemVars}
+          className="text-white text-[10vw] font-bold tracking-[0.2em] leading-none uppercase select-none text-center"
+          style={{ fontFamily: "'Inter', 'SF Pro Display', sans-serif" }}
+        >
+          Commerce <br className="md:hidden" /> Agent
+        </motion.h1>
+      </motion.div>
 
       {/* No cards, no borders, no extra UI clutter as requested */}
     </section>
