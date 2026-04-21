@@ -53,26 +53,23 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       const segs: LineSegment[] = [];
       const w = canvas.width;
       const h = canvas.height;
-      const lineSpacing = 12;
+      const lineSpacing = 8; // Match user script
       const sampleStep = 4;
       
       const leftMask = new Path2D();
       const rightMask = new Path2D();
       
-      // Center the map more conservatively
       const scale = Math.min(w, h) * 0.0018;
-      const offsetX = w * 0.08;
-      const offsetY = h * 0.18;
+      const offsetX = w * 0.1;
+      const offsetY = h * 0.2;
 
       continentPaths.forEach(p => {
-        // Reduced lateral offsets to bring map clusters into view
-        const ox = p.side === 'left' ? -w * 0.1 : w * 0.1;
+        const ox = p.side === 'left' ? -w * 0.15 : w * 0.15;
         const matrix = new DOMMatrix().translate(offsetX + ox, offsetY).scale(scale, scale);
         const m = p.side === 'left' ? leftMask : rightMask;
         m.addPath(new Path2D(p.d), matrix);
       });
 
-      // Generate Continuous Horizontal Lines
       for (let y = 0; y < h; y += lineSpacing) {
         let currentSeg: { x1: number, y1: number } | null = null;
 
@@ -90,7 +87,6 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       }
 
       function addSeg(x1: number, y1: number, x2: number, y2: number) {
-        // Handshake Targets (Simplified Symmetrical Hands)
         const isLeft = x1 < w / 2;
         const tx1 = isLeft ? w * 0.42 + Math.random() * 30 : w * 0.58 - Math.random() * 30;
         const ty1 = h * 0.5 + (Math.random() - 0.5) * 60;
@@ -114,19 +110,16 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time.current += 0.02;
 
-      // Sharper Glowing Neon Style
-      ctx.strokeStyle = "#00FFFF";
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 6;
-      ctx.shadowColor = "#00FFFF";
+      // Slate Blueprint Style
+      ctx.strokeStyle = "#2f3e46";
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.8;
       
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
-        
-        // Horizontal Wave (Pulse)
-        const wave = isMorphed ? 0 : Math.sin(time.current + s.x1 * 0.012) * 2.5;
+        const wave = isMorphed ? 0 : Math.sin(time.current + s.x1 * 0.012) * 2;
         
         ctx.beginPath();
         ctx.moveTo(s.x1, s.y1 + wave);
@@ -145,7 +138,6 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
     };
   }, [continentPaths, isMorphed]);
 
-  // Morph Animation
   useEffect(() => {
     segments.current.forEach((s) => {
       gsap.to(s, {
@@ -153,7 +145,7 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
         y1: isMorphed ? s.targetY1 : s.originY1,
         x2: isMorphed ? s.targetX2 : s.originX2,
         y2: isMorphed ? s.targetY2 : s.originY2,
-        duration: 2.2,
+        duration: 2,
         ease: 'expo.inOut',
         delay: Math.random() * 0.4
       });
