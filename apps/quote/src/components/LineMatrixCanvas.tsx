@@ -26,8 +26,8 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
   const time = useRef(0);
   const scanY = useRef(0);
 
-  // REAL WORLD MAP PATH STRING (Simplified High-Quality Silhouettes)
-  const WORLD_MAP_PATH = "M130,140 L210,105 L260,130 L250,205 L170,225 L120,205 Z M220,265 L265,305 L245,385 L195,425 L175,355 Z M420,125 L500,125 L540,185 L505,265 L465,325 L425,265 L445,185 Z M545,125 L725,145 L765,225 L705,265 L625,245 L585,205 Z M725,325 L785,345 L765,385 L705,365 Z";
+  // FINAL FLATTENED PULSE PATH (From Design Spec)
+  const WORLD_MAP_PATH = "M42,235 L85,210 L130,215 L170,200 L210,220 L250,210 L300,220 L340,205 L380,215 L420,210 L460,225 L500,215 L540,220 L580,210 L620,220 L660,215 L700,225 L740,210 L780,220 L820,215 L860,225 L900,215 L940,220 L980,210 L980,260 L940,255 L900,265 L860,255 L820,270 L780,260 L740,275 L700,260 L660,270 L620,260 L580,275 L540,265 L500,275 L460,265 L420,275 L380,265 L340,275 L300,260 L250,275 L210,265 L170,275 L130,260 L85,275 L42,260 Z";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -45,16 +45,17 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       const segs: LineSegment[] = [];
       const w = canvas.width;
       const h = canvas.height;
-      const lineSpacing = 10;
+      const lineSpacing = 8;
       const sampleStep = 8;
       
       const mask = new Path2D(WORLD_MAP_PATH);
       
-      // Scale and Center the Real Map
-      const scale = Math.min(w, h) * 0.0016;
-      const offsetX = w * 0.1;
-      const offsetY = h * 0.12;
-      const matrix = new DOMMatrix().translate(offsetX, offsetY).scale(scale, scale);
+      // Scaling for "130% wide" stylized look
+      const scaleX = (w * 1.3) / 1000;
+      const scaleY = (h * 0.8) / 500;
+      const offsetX = -w * 0.15;
+      const offsetY = h * 0.1;
+      const matrix = new DOMMatrix().translate(offsetX, offsetY).scale(scaleX, scaleY);
       const scaledMask = new Path2D();
       scaledMask.addPath(mask, matrix);
 
@@ -76,7 +77,6 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
       function addSeg(x1: number, y1: number, x2: number, y2: number) {
         const isLeft = x1 < w / 2;
-        // Symmetric Handshake Targets
         const tx1 = isLeft ? w * 0.44 + Math.random() * 25 : w * 0.56 - Math.random() * 25;
         const ty1 = h * 0.5 + (Math.random() - 0.5) * 110;
         
@@ -97,37 +97,31 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time.current += 0.01; // Slower, more premium pace (8s rhythm)
+      time.current += 0.016; // 6s rhythm equivalent
       
-      const scrollOffset = (time.current * 60) % 80;
-      scanY.current = (time.current * 100) % (canvas.height + 300) - 150;
+      const scrollOffset = (time.current * 80) % 80;
+      scanY.current = (time.current * 120) % (canvas.height + 400) - 200;
 
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
-        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 50) * 0.01) * 1.5;
-        const scroll = isMorphed ? 0 : scrollOffset % 12;
+        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 50) * 0.01) * 1.2;
+        const scroll = isMorphed ? 0 : scrollOffset % 15;
         const py = s.y1 + wave + scroll;
 
-        // Scanning Pulse Intensity
         const distToScan = Math.abs(py - scanY.current);
-        const scanIntensity = Math.max(0, 1 - distToScan / 120);
+        const scanIntensity = Math.max(0, 1 - distToScan / 150);
 
-        // ATMOSPHERIC FADE (Premium Map Reference)
-        // Softens edges, brightens center vertically
         const verticalPos = py / canvas.height;
-        const fadeIntensity = 1 - Math.pow(Math.abs(verticalPos - 0.5) * 2, 2);
+        const fadeIntensity = 1 - Math.pow(Math.abs(verticalPos - 0.5) * 2, 2.5);
 
-        // Premium Palette: #00f7ff
-        ctx.strokeStyle = "#00f7ff";
+        ctx.strokeStyle = "#00e5ff";
         ctx.lineWidth = 1;
-        
-        // Combined Opacity: Base + Atmospheric Fade + Scan Highlight
         ctx.globalAlpha = (0.2 * fadeIntensity) + (scanIntensity * 0.8);
         
-        ctx.shadowBlur = scanIntensity * 15;
-        ctx.shadowColor = "#00f7ff";
+        ctx.shadowBlur = 4 + scanIntensity * 12;
+        ctx.shadowColor = "#00e5ff";
 
         ctx.beginPath();
         ctx.moveTo(s.x1, py);
@@ -135,14 +129,13 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
         ctx.stroke();
       }
 
-      // Scanner Overlay Overlay (Enhanced Softness)
-      const gradient = ctx.createLinearGradient(0, scanY.current - 60, 0, scanY.current + 60);
+      // Enhanced Scan Glow
+      const gradient = ctx.createLinearGradient(0, scanY.current - 80, 0, scanY.current + 80);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(0.5, "rgba(0, 247, 255, 0.25)");
+      gradient.addColorStop(0.5, "rgba(0, 229, 255, 0.2)");
       gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
-      ctx.shadowBlur = 0;
-      ctx.fillRect(0, scanY.current - 60, canvas.width, 120);
+      ctx.fillRect(0, scanY.current - 80, canvas.width, 160);
 
       animationFrameId.current = requestAnimationFrame(render);
     };

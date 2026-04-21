@@ -31,55 +31,55 @@ export default function PremiumHero() {
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black">
-      {/* Background Layer - Glowing Line Matrix */}
-      <LineMatrixCanvas isMorphed={isMorphed} />
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black hero">
+      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-85 scale-[1.3]">
+        <LineMatrixCanvas isMorphed={isMorphed} />
+      </div>
 
-      {/* Main Content */}
       <motion.div
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="relative z-10 flex flex-col items-center text-center px-6"
+        className="relative z-10 flex flex-col items-center text-center px-6 hero-content"
       >
-        <motion.div variants={itemVars} className="mb-8">
-          <span className="text-[10px] font-mono tracking-[0.8em] uppercase text-cyan-400 opacity-60">
-            Systemic Logistics
-          </span>
-        </motion.div>
-
         <motion.h1 
           variants={itemVars}
-          className="text-white opacity-90 text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-12 select-none"
-          style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+          className="text-white font-bold mb-0 select-none uppercase"
+          style={{ 
+            fontFamily: "Arial, Helvetica, sans-serif",
+            fontSize: "120px",
+            lineHeight: "0.9",
+            letterSpacing: "3px"
+          }}
         >
-          COMMERCE <br />
-          AGENT.
+          COMMERCE<br />AGENT.
         </motion.h1>
 
         <motion.p
           variants={itemVars}
-          className="max-w-xl text-white opacity-60 text-lg font-light leading-relaxed mb-14"
+          className="max-w-2xl text-white opacity-80 mb-10"
+          style={{
+            fontSize: "18px",
+            marginTop: "20px"
+          }}
         >
           Orchestrating global commerce with architectural precision.
-          The premium nexus for high-performance scale.
         </motion.p>
 
         <motion.div variants={itemVars}>
           <button 
             onClick={() => setIsMorphed(!isMorphed)}
-            className="px-16 py-5 bg-white text-black font-medium text-[10px] tracking-[0.4em] uppercase rounded-full transition-all duration-700 hover:bg-cyan-400 hover:text-black active:scale-95 shadow-2xl shadow-cyan-500/20"
+            className="bg-white text-black font-bold transition-all duration-700 hover:bg-cyan-400 hover:text-black active:scale-95"
+            style={{
+              marginTop: "35px",
+              padding: "18px 60px",
+              borderRadius: "40px",
+              fontSize: "14px",
+              letterSpacing: "2px"
+            }}
           >
-            {isMorphed ? 'Connection Active' : 'Contact us'}
+            {isMorphed ? 'CONNECTION ACTIVE' : 'CONTACT US'}
           </button>
-        </motion.div>
-
-        {/* Minimal Scroll Indicator */}
-        <motion.div 
-          variants={itemVars}
-          className="absolute bottom-12 flex flex-col items-center"
-        >
-          <div className="w-[1px] h-16 bg-gradient-to-b from-cyan-400/50 to-transparent" />
         </motion.div>
       </motion.div>
     </section>
