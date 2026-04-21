@@ -96,26 +96,30 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time.current += 0.01;
-      scanY.current = (time.current * 80) % (canvas.height + 400) - 200;
+      
+      // Accelerated Scan Cycle (Faster Speed)
+      scanY.current = (time.current * 180) % (canvas.height + 600) - 300;
 
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
-        
-        // NO SHAKING - Wave and scroll removed for stability as per request
         const py = s.y1; 
 
+        // Sharper Pulse Profile
         const distToScan = Math.abs(py - scanY.current);
-        const scanIntensity = Math.max(0, 1 - distToScan / 150);
+        const scanIntensity = Math.max(0, 1 - distToScan / 80); // Tighter scan beam
+        
         const verticalPos = py / canvas.height;
         const fadeIntensity = 1 - Math.pow(Math.abs(verticalPos - 0.5) * 2, 2.5);
 
         ctx.strokeStyle = "#00e5ff";
         ctx.lineWidth = 1;
-        ctx.globalAlpha = (0.25 * fadeIntensity) + (scanIntensity * 0.75);
         
-        ctx.shadowBlur = 4 + scanIntensity * 15;
+        // Lower Base Visibility: Map is a 'ghost' until scanned
+        ctx.globalAlpha = (0.12 * fadeIntensity) + (scanIntensity * 0.88);
+        
+        ctx.shadowBlur = 2 + scanIntensity * 15;
         ctx.shadowColor = "#00e5ff";
 
         ctx.beginPath();
