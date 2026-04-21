@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import GlobalNetwork from './GlobalNetwork';
 
 export default function PremiumHero() {
   const containerVars = {
@@ -29,14 +30,8 @@ export default function PremiumHero() {
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white">
-      {/* Background Layer - Static World Map */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-70 pointer-events-none">
-        <img 
-          src="/images/world-map.png" 
-          alt="World Map Grid" 
-          className="w-full max-w-[1200px] h-auto object-contain scale-110"
-        />
-      </div>
+      {/* Dynamic Background Layer - Pure Code HUD */}
+      <GlobalNetwork />
 
       {/* Main Content */}
       <motion.div
@@ -88,22 +83,22 @@ export default function PremiumHero() {
         </motion.div>
       </motion.div>
 
-      {/* Side Decorative Metadata */}
-      <div className="absolute left-8 bottom-12 hidden lg:flex flex-col gap-2 opacity-20">
-        <span className="text-[9px] font-mono tracking-widest uppercase text-black">
-          LAT: 40.7128° N
+      {/* HUD Side Metadata */}
+      <div className="absolute left-8 bottom-12 hidden lg:flex flex-col gap-2 opacity-30 select-none">
+        <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-black">
+          REGISTRY: AC-942
         </span>
-        <span className="text-[9px] font-mono tracking-widest uppercase text-black">
-          LON: 74.0060° W
+        <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-black">
+          LOC: 40.71° N, 74.00° W
         </span>
       </div>
       
-      <div className="absolute right-8 bottom-12 hidden lg:flex flex-col gap-2 text-right opacity-20">
-        <span className="text-[9px] font-mono tracking-widest uppercase text-black">
-          STATUS: OPERATIONAL
+      <div className="absolute right-8 bottom-12 hidden lg:flex flex-col gap-2 text-right opacity-30 select-none">
+        <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-black">
+          CORE: ACTIVE
         </span>
-        <span className="text-[9px] font-mono tracking-widest uppercase text-black">
-          VER: 2.2.0
+        <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-black">
+          NET: STABLE
         </span>
       </div>
     </section>
