@@ -7,11 +7,18 @@ import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hasEnded = useRef(false);
 
   const handleTimeUpdate = () => {
+    if (hasEnded.current) return;
     if (videoRef.current && videoRef.current.currentTime < 0.5) {
       videoRef.current.currentTime = 0.5;
     }
+  };
+
+  const handleEnded = () => {
+    hasEnded.current = true;
+    if (videoRef.current) videoRef.current.pause();
   };
 
   const containerVars = {
@@ -62,10 +69,7 @@ export default function SpaceHorizonHero() {
             muted 
             playsInline 
             onTimeUpdate={handleTimeUpdate}
-            onEnded={(e) => {
-              const video = e.currentTarget;
-              video.pause();
-            }}
+            onEnded={handleEnded}
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
