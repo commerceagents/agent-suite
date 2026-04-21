@@ -1,83 +1,81 @@
 'use client';
 
-import { useRef, useMemo, useState, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, Environment, Lightformer } from '@react-three/drei';
-import * as THREE from 'three';
-
-function LiquidBlob() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  // Handle mouse movement for reactivity
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMouse({
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1,
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    // Smoothly interpolate mesh position towards mouse
-    const targetX = mouse.x * 2;
-    const targetY = mouse.y * 1.5;
-    
-    meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.05);
-    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.05);
-    
-    // Subtle continuous rotation
-    meshRef.current.rotation.x += 0.005;
-    meshRef.current.rotation.y += 0.005;
-  });
-
-  return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[1, 128, 128]} scale={1.8}>
-        <MeshDistortMaterial
-          color="#ffffff"
-          roughness={0.05}
-          metalness={1}
-          distort={0.4}
-          speed={4}
-          bumpScale={0.05}
-        />
-      </Sphere>
-    </Float>
-  );
-}
+import React, { useEffect, useRef } from 'react';
 
 export default function MercuryCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameId = useRef<number>(0);
+  const time = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const blobs = [
+      { x: 0.2, y: 0.3, r: 0.4, color: 'rgba(255, 255, 255, 0.08)', speed: 0.005 },
+      { x: 0.8, y: 0.7, r: 0.5, color: 'rgba(200, 220, 255, 0.05)', speed: 0.003 },
+      { x: 0.5, y: 0.5, r: 0.6, color: 'rgba(180, 200, 255, 0.06)', speed: 0.004 },
+      { x: 0.3, y: 0.8, r: 0.3, color: 'rgba(255, 255, 255, 0.07)', speed: 0.006 },
+    ];
+
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      time.current += 0.01;
+
+      // Draw Soft Blobs
+      blobs.forEach((b, i) => {
+        const dx = Math.sin(time.current * b.speed + i) * 100;
+        const dy = Math.cos(time.current * b.speed * 0.8 + i) * 100;
+        const x = b.x * canvas.width + dx;
+        const y = b.y * canvas.height + dy;
+        const r = b.r * Math.min(canvas.width, canvas.height);
+
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+        grad.addColorStop(0, b.color);
+        grad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Simple Grain Overlay logic (or we can use SVG filter)
+      // For performance, we'll use a CSS filter for the grain, 
+      // but we ensure the blobs look soft here.
+
+      animationFrameId.current = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animationFrameId.current);
+    };
+  }, []);
+
   return (
-    <div className="absolute inset-0 z-0 opacity-80">
-      <Canvas 
-        camera={{ position: [0, 0, 5], fov: 45 }}
-        gl={{ 
-          antialias: true, 
-          powerPreference: "high-performance",
-          precision: "highp"
-        }}
-        dpr={[1, 2]}
-      >
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} />
-        <LiquidBlob />
-        <Environment resolution={256}>
-          {/* Abstract light shapes to create metallic reflections without recognizable images */}
-          <group rotation={[-Math.PI / 4, 0, 0]}>
-            <Lightformer form="circle" intensity={4} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={2} />
-            <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, 1, -1]} scale={2} />
-            <Lightformer form="circle" intensity={2} rotation-y={Math.PI / 2} position={[-5, -1, -1]} scale={2} />
-            <Lightformer form="rect" intensity={2} rotation-y={Math.PI / 2} position={[10, 1, 1]} scale={5} />
-          </group>
-        </Environment>
-      </Canvas>
+    <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+      <canvas 
+        ref={canvasRef} 
+        className="w-full h-full opacity-60 blur-3xl"
+      />
+      {/* Grainy Texture Overlay */}
+      <div className="absolute inset-0 z-10 pointer-events-none opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      
+      {/* Depth vignette */}
+      <div className="absolute inset-0 z-20 pointer-events-none bg-gradient-to-b from-black/20 via-transparent to-black/60" />
     </div>
   );
 }

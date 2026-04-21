@@ -1,9 +1,9 @@
-import AntiGravityHero from "@/components/AntiGravityHero";
+import HeroMercury from "@/components/HeroMercury";
 
 export default function Home() {
   return (
     <main>
-      <AntiGravityHero />
+      <HeroMercury />
     </main>
   );
 }
