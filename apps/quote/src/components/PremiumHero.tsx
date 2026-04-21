@@ -31,57 +31,58 @@ export default function PremiumHero() {
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black hero">
-      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-85 scale-[1.3]">
-        <LineMatrixCanvas isMorphed={isMorphed} />
-      </div>
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black">
+      {/* Background - Stable Geographic Matrix */}
+      <LineMatrixCanvas isMorphed={isMorphed} />
 
       <motion.div
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="relative z-10 flex flex-col items-center text-center px-6 hero-content"
+        className="relative z-10 flex flex-col items-center text-center px-6"
       >
+        {/* Top Header - Spread out as seen in screenshot */}
+        <motion.div variants={itemVars} className="mb-12">
+          <span className="text-[10px] font-mono tracking-[1em] uppercase text-cyan-400 opacity-80">
+            SYSTEMIC LOGISTICS
+          </span>
+        </motion.div>
+
+        {/* Main Title - Large and Bold */}
         <motion.h1 
           variants={itemVars}
-          className="text-white font-bold mb-0 select-none uppercase"
+          className="text-white font-bold leading-none select-none tracking-tight mb-8"
           style={{ 
-            fontFamily: "Arial, Helvetica, sans-serif",
-            fontSize: "120px",
-            lineHeight: "0.9",
-            letterSpacing: "3px"
+            fontFamily: "var(--font-dm-sans), sans-serif",
+            fontSize: "clamp(60px, 12vw, 120px)" 
           }}
         >
           COMMERCE<br />AGENT.
         </motion.h1>
 
-        <motion.p
-          variants={itemVars}
-          className="max-w-2xl text-white opacity-80 mb-10"
-          style={{
-            fontSize: "18px",
-            marginTop: "20px"
-          }}
-        >
-          Orchestrating global commerce with architectural precision.
-        </motion.p>
+        {/* Subtext - Aligned with screenshot */}
+        <motion.div variants={itemVars} className="max-w-xl space-y-2 mb-16 px-4">
+          <p className="text-white opacity-80 text-lg font-light leading-relaxed">
+            Orchestrating global commerce with architectural precision.
+          </p>
+          <p className="text-white opacity-60 text-sm font-light tracking-wide italic">
+             The premium nexus for high-performance scale.
+          </p>
+        </motion.div>
 
+        {/* Primary CTA - White Rounded Button */}
         <motion.div variants={itemVars}>
           <button 
             onClick={() => setIsMorphed(!isMorphed)}
-            className="bg-white text-black font-bold transition-all duration-700 hover:bg-cyan-400 hover:text-black active:scale-95"
-            style={{
-              marginTop: "35px",
-              padding: "18px 60px",
-              borderRadius: "40px",
-              fontSize: "14px",
-              letterSpacing: "2px"
-            }}
+            className="px-20 py-5 bg-white text-black font-bold text-[10px] tracking-[0.3em] uppercase rounded-full transition-all duration-700 hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/10"
           >
-            {isMorphed ? 'CONNECTION ACTIVE' : 'CONTACT US'}
+            {isMorphed ? 'CONTINUE EXPLORING' : 'CONTACT US'}
           </button>
         </motion.div>
       </motion.div>
+
+      {/* Decorative vertical line at bottom center */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1px] h-20 bg-gradient-to-t from-cyan-400/40 to-transparent" />
     </section>
   );
 }
