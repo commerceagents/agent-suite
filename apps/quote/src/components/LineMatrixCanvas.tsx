@@ -96,29 +96,33 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time.current += 0.02;
-      scanY.current = (time.current * 100) % (canvas.height + 200) - 100;
+      time.current += 0.015;
+      
+      // Vertical Scroll Offset (Mimicking your moveLines CSS animation)
+      const scrollOffset = (time.current * 80) % 100;
+      scanY.current = (time.current * 120) % (canvas.height + 200) - 100;
 
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
         
-        // Continuous wave motion
-        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 40) * 0.01) * 3;
-        const py = s.y1 + wave;
+        // Combine your vertical motion + subtle wave
+        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 50) * 0.01) * 2;
+        const scroll = isMorphed ? 0 : scrollOffset % 10; 
+        const py = s.y1 + wave + scroll;
 
-        // Scanning highlight logic
         const distToScan = Math.abs(py - scanY.current);
-        const scanIntensity = Math.max(0, 1 - distToScan / 80);
+        const scanIntensity = Math.max(0, 1 - distToScan / 100);
 
-        ctx.strokeStyle = "#00ffff";
+        // SVG Reference Color: #00eaff
+        ctx.strokeStyle = "#00eaff";
         ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.3 + scanIntensity * 0.7;
+        ctx.globalAlpha = 0.4 + scanIntensity * 0.6;
         
-        // Glow effect
-        ctx.shadowBlur = scanIntensity * 10;
-        ctx.shadowColor = "#00ffff";
+        // Premium SVG-Style Glow
+        ctx.shadowBlur = scanIntensity * 12;
+        ctx.shadowColor = "#00eaff";
 
         ctx.beginPath();
         ctx.moveTo(s.x1, py);
@@ -127,13 +131,13 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       }
 
       // Scanner Beam Overlay
-      const gradient = ctx.createLinearGradient(0, scanY.current - 40, 0, scanY.current + 40);
+      const gradient = ctx.createLinearGradient(0, scanY.current - 50, 0, scanY.current + 50);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(0.5, "rgba(0, 255, 255, 0.4)");
+      gradient.addColorStop(0.5, "rgba(0, 234, 255, 0.35)");
       gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
       ctx.shadowBlur = 0;
-      ctx.fillRect(0, scanY.current - 40, canvas.width, 80);
+      ctx.fillRect(0, scanY.current - 50, canvas.width, 100);
 
       animationFrameId.current = requestAnimationFrame(render);
     };
