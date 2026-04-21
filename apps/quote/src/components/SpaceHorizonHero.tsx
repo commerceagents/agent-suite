@@ -1,15 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 
 export default function SpaceHorizonHero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      // Crop first 0.5s as requested
+      videoRef.current.currentTime = 0.5;
+    }
+  }, []);
+
   const containerVars = {
-    initial: { opacity: 0 },
+    initial: { opacity: 0, scale: 0.98 },
     animate: {
       opacity: 1,
+      scale: 1,
       transition: {
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1] as any,
         staggerChildren: 0.2,
         delayChildren: 0.6,
       },
@@ -17,52 +29,75 @@ export default function SpaceHorizonHero() {
   };
 
   const itemVars = {
-    initial: { y: 30, opacity: 0 },
+    initial: { y: 20, opacity: 0 },
     animate: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 1.5,
+        duration: 1,
         ease: [0.16, 1, 0.3, 1] as any,
       },
     },
   };
 
   return (
-    <section className="relative h-screen w-full flex flex-col bg-black overflow-hidden font-sans select-none">
-      {/* Cinematic Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="w-full h-full object-cover opacity-80"
-        >
-          <source src="/video-1.mp4" type="video/mp4" />
-        </video>
-        {/* Subtle Dark Overlay for Legibility */}
-        <div className="absolute inset-0 bg-black/40 z-10" />
-      </div>
-
-      {/* Main Content Area - Centered Agency Title */}
-      <motion.div
+    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-16">
+      
+      {/* Box Container - inspired by reference image */}
+      <motion.div 
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="flex-1 relative z-20 w-full flex flex-col items-center justify-center px-10"
+        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
       >
-        <motion.h1 
-          variants={itemVars}
-          className="text-white font-bold tracking-[0.25em] leading-none uppercase select-none text-center whitespace-nowrap"
-          style={{ 
-            fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-            fontSize: "clamp(32px, 9vw, 60px)"
-          }}
-        >
-          COMMERCE AGENTS
-        </motion.h1>
+        
+        {/* Cinematic Video Background - No Loop, Start at 0.5s */}
+        <div className="absolute inset-0 z-0">
+          <video 
+            ref={videoRef}
+            autoPlay 
+            muted 
+            playsInline 
+            onEnded={() => {
+              if (videoRef.current) videoRef.current.pause();
+            }}
+            className="w-full h-full object-cover opacity-60"
+          >
+            {/* Using #t=0.5 as backup for native browser seeking */}
+            <source src="/video-1.mp4#t=0.5" type="video/mp4" />
+          </video>
+          {/* Studio Shadow Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
+        </div>
+
+        {/* Looping White Lines Overlay - Persistent Flaming Lines */}
+        <div className="absolute inset-0 z-10">
+          <SpaceHorizonCanvas linesOnly={true} />
+        </div>
+
+        {/* Main Content Area - Centered Agency Title */}
+        <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
+          <motion.h1 
+            variants={itemVars}
+            className="text-white font-bold tracking-[0.3em] leading-none uppercase select-none text-center whitespace-nowrap"
+            style={{ 
+              fontFamily: "'Inter', 'SF Pro Display', sans-serif",
+              fontSize: "clamp(24px, 8vw, 56px)"
+            }}
+          >
+            COMMERCE AGENTS
+          </motion.h1>
+          
+          <motion.div 
+            variants={itemVars}
+            className="mt-8 overflow-hidden"
+          >
+            <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+          </motion.div>
+        </div>
+
       </motion.div>
+
     </section>
   );
 }
