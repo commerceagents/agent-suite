@@ -63,10 +63,10 @@ export default function SpaceHorizonHero() {
       >
         <motion.h1 
           variants={itemVars}
-          className="text-white text-[10vw] font-bold tracking-[0.2em] leading-none uppercase select-none text-center"
+          className="text-white text-[6vw] md:text-[8vw] font-bold tracking-[0.25em] leading-none uppercase select-none text-center whitespace-nowrap"
           style={{ fontFamily: "'Inter', 'SF Pro Display', sans-serif" }}
         >
-          Commerce <br className="md:hidden" /> Agent
+          Commerce Agents
         </motion.h1>
       </motion.div>
 
