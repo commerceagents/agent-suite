@@ -97,14 +97,19 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
       const sArray = segments.current;
       
-      // Horizontal Lens Flare (As seen in the screenshot)
+      // Dynamic Horizon Pulse (Animated to prevent 'stuck' feeling)
       if (!isMorphed) {
-        const grad = ctx.createLinearGradient(0, canvas.height / 2 - 2, 0, canvas.height / 2 + 2);
+        const drift = Math.sin(time.current * 0.5) * 10;
+        const pulse = 0.3 + Math.sin(time.current * 1.5) * 0.15;
+        const centerY = canvas.height / 2 + drift;
+        
+        const grad = ctx.createLinearGradient(0, centerY - 40, 0, centerY + 40);
         grad.addColorStop(0, "transparent");
-        grad.addColorStop(0.5, "rgba(0, 229, 255, 0.4)");
+        grad.addColorStop(0.5, `rgba(0, 229, 255, ${pulse})`);
         grad.addColorStop(1, "transparent");
+        
         ctx.fillStyle = grad;
-        ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 80);
+        ctx.fillRect(0, centerY - 40, canvas.width, 80);
       }
 
       for (let i = 0; i < sArray.length; i++) {
