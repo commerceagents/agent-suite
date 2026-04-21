@@ -68,7 +68,10 @@ export default function SpaceHorizonHero() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
         </div>
 
-        {/* Floating Lines removed as per request */}
+        {/* Looping White Lines Overlay - Persistent Flaming Lines (Restored) */}
+        <div className="absolute inset-0 z-10">
+          <SpaceHorizonCanvas linesOnly={true} />
+        </div>
 
         {/* Main Content Area - Centered Agency Title */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
