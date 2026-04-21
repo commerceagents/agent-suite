@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Quote — Commerce Agents",
+  title: "COMMERCE AGENTS | V.2.0",
   description:
     "AI-powered quotation management for premium digital agencies.",
 };
