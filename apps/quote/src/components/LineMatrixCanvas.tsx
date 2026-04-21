@@ -25,6 +25,8 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
   const animationFrameId = useRef<number>(0);
   const time = useRef(0);
 
+  const scanY = useRef(0);
+
   // Simplified but Robust Continental Silhouettes (for 100% visibility)
   const continentPaths = useMemo(() => [
     // North America
@@ -59,7 +61,6 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       const leftMask = new Path2D();
       const rightMask = new Path2D();
       
-      // Scaling and Centering Logic
       const scale = Math.min(w, h) * 0.0014;
       const offsetX = w * 0.1;
       const offsetY = h * 0.15;
@@ -89,7 +90,6 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
       function addSeg(x1: number, y1: number, x2: number, y2: number) {
         const isLeft = x1 < w / 2;
-        // Handshake Morph Targets - Improved Symmetry
         const tx1 = isLeft ? w * 0.45 + Math.random() * 20 : w * 0.55 - Math.random() * 20;
         const ty1 = h * 0.5 + (Math.random() - 0.5) * 80;
         
@@ -111,18 +111,25 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time.current += 0.03;
+      scanY.current += 2.5;
+      if (scanY.current > canvas.height + 100) scanY.current = -100;
 
-      // Digital Radiance Style
-      ctx.strokeStyle = "#00FFFF";
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = "#00FFFF";
-      
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
         const wave = isMorphed ? 0 : Math.sin(time.current + s.x1 * 0.01) * 3;
+        
+        // Dynamic Distance from Scan Line
+        const distToScan = Math.abs((s.y1 + wave) - scanY.current);
+        const scanIntensity = Math.max(0, 1 - distToScan / 100);
+
+        // Core Glowing Stroke
+        ctx.strokeStyle = "#00FFFF";
+        ctx.lineWidth = 1 + scanIntensity * 1.5;
+        ctx.globalAlpha = 0.2 + scanIntensity * 0.8;
+        ctx.shadowBlur = 4 + scanIntensity * 12;
+        ctx.shadowColor = "#00FFFF";
         
         ctx.beginPath();
         ctx.moveTo(s.x1, s.y1 + wave);
