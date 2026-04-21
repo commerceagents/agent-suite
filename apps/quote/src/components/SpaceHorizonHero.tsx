@@ -29,7 +29,7 @@ export default function SpaceHorizonHero() {
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col bg-black overflow-hidden font-sans select-none">
+    <section className="relative h-screen w-full flex flex-col bg-black overflow-hidden font-sans select-none">
       {/* Background Engine - Strict Vis Rules */}
       <SpaceHorizonCanvas />
 
@@ -59,12 +59,15 @@ export default function SpaceHorizonHero() {
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="flex-1 relative z-20 w-full flex flex-col items-center justify-center px-12"
+        className="flex-1 relative z-20 w-full flex flex-col items-center justify-center px-6"
       >
         <motion.h1 
           variants={itemVars}
-          className="text-white text-[6vw] md:text-[8vw] font-bold tracking-[0.25em] leading-none uppercase select-none text-center whitespace-nowrap"
-          style={{ fontFamily: "'Inter', 'SF Pro Display', sans-serif" }}
+          className="text-white font-bold tracking-[0.25em] leading-none uppercase select-none text-center"
+          style={{ 
+            fontFamily: "'Inter', 'SF Pro Display', sans-serif",
+            fontSize: "clamp(24px, 8vw, 120px)"
+          }}
         >
           Commerce Agents
         </motion.h1>
