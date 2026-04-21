@@ -7,8 +7,8 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 export default function SpaceHorizonHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleVideoLoad = () => {
-    if (videoRef.current) {
+  const handleTimeUpdate = () => {
+    if (videoRef.current && videoRef.current.currentTime < 0.5) {
       videoRef.current.currentTime = 0.5;
     }
   };
@@ -58,7 +58,7 @@ export default function SpaceHorizonHero() {
             loop
             muted 
             playsInline 
-            onLoadedMetadata={handleVideoLoad}
+            onTimeUpdate={handleTimeUpdate}
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
