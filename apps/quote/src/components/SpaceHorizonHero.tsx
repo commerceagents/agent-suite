@@ -30,8 +30,20 @@ export default function SpaceHorizonHero() {
 
   return (
     <section className="relative h-screen w-full flex flex-col bg-black overflow-hidden font-sans select-none">
-      {/* Background Cinematic Engine - Pure Visual Mode */}
-      <SpaceHorizonCanvas />
+      {/* Cinematic Video Background */}
+      <div className="absolute inset-0 z-0">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="w-full h-full object-cover opacity-80"
+        >
+          <source src="/video-1.mp4" type="video/mp4" />
+        </video>
+        {/* Subtle Dark Overlay for Legibility */}
+        <div className="absolute inset-0 bg-black/40 z-10" />
+      </div>
 
       {/* Main Content Area - Centered Agency Title */}
       <motion.div
@@ -51,11 +63,6 @@ export default function SpaceHorizonHero() {
           COMMERCE AGENTS
         </motion.h1>
       </motion.div>
-
-      {/* Deployment Verification Marker */}
-      <div className="absolute bottom-4 right-4 z-50 text-[10px] font-mono text-white/20 select-none pointer-events-none">
-        BUILD // ID: CA-SP-120
-      </div>
     </section>
   );
 }
