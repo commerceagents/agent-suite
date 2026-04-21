@@ -97,29 +97,37 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time.current += 0.012;
-
-      const scrollOffset = (time.current * 70) % 80;
-      scanY.current = (time.current * 140) % (canvas.height + 250) - 120;
+      time.current += 0.01; // Slower, more premium pace (8s rhythm)
+      
+      const scrollOffset = (time.current * 60) % 80;
+      scanY.current = (time.current * 100) % (canvas.height + 300) - 150;
 
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
         const s = sArray[i];
-        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 60) * 0.01) * 2;
-        const scroll = isMorphed ? 0 : scrollOffset % 10;
+        const wave = isMorphed ? 0 : Math.sin((s.x1 + time.current * 50) * 0.01) * 1.5;
+        const scroll = isMorphed ? 0 : scrollOffset % 12;
         const py = s.y1 + wave + scroll;
 
+        // Scanning Pulse Intensity
         const distToScan = Math.abs(py - scanY.current);
         const scanIntensity = Math.max(0, 1 - distToScan / 120);
 
-        // SVG Teal Accent: #00eaff
-        ctx.strokeStyle = "#00eaff";
+        // ATMOSPHERIC FADE (Premium Map Reference)
+        // Softens edges, brightens center vertically
+        const verticalPos = py / canvas.height;
+        const fadeIntensity = 1 - Math.pow(Math.abs(verticalPos - 0.5) * 2, 2);
+
+        // Premium Palette: #00f7ff
+        ctx.strokeStyle = "#00f7ff";
         ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.35 + scanIntensity * 0.65;
         
-        ctx.shadowBlur = scanIntensity * 14;
-        ctx.shadowColor = "#00eaff";
+        // Combined Opacity: Base + Atmospheric Fade + Scan Highlight
+        ctx.globalAlpha = (0.2 * fadeIntensity) + (scanIntensity * 0.8);
+        
+        ctx.shadowBlur = scanIntensity * 15;
+        ctx.shadowColor = "#00f7ff";
 
         ctx.beginPath();
         ctx.moveTo(s.x1, py);
@@ -127,14 +135,14 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
         ctx.stroke();
       }
 
-      // Scanner Overlay
-      const gradient = ctx.createLinearGradient(0, scanY.current - 50, 0, scanY.current + 50);
+      // Scanner Overlay Overlay (Enhanced Softness)
+      const gradient = ctx.createLinearGradient(0, scanY.current - 60, 0, scanY.current + 60);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(0.5, "rgba(0, 234, 255, 0.3)");
+      gradient.addColorStop(0.5, "rgba(0, 247, 255, 0.25)");
       gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
       ctx.shadowBlur = 0;
-      ctx.fillRect(0, scanY.current - 50, canvas.width, 100);
+      ctx.fillRect(0, scanY.current - 60, canvas.width, 120);
 
       animationFrameId.current = requestAnimationFrame(render);
     };
