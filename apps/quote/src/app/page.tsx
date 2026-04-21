@@ -1,10 +1,9 @@
-import PremiumHero from "@/components/PremiumHero";
+import AntiGravityHero from "@/components/AntiGravityHero";
 
 export default function Home() {
   return (
     <main>
-      <PremiumHero />
+      <AntiGravityHero />
     </main>
   );
 }
-

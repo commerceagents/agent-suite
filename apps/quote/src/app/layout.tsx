@@ -36,8 +36,9 @@ export default function RootLayout({
         data-app="quote"
         style={{
           fontFamily: "'DM Sans', system-ui, sans-serif",
-          backgroundColor: "#000000",
+          background: "radial-gradient(circle at center, #0d021f 0%, #050a1f 40%, #000000 100%)",
           color: "#FFFFFF",
+          minHeight: "100vh"
         }}
       >
         <ConsoleFix />
