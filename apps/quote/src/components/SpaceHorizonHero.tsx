@@ -84,7 +84,7 @@ export default function SpaceHorizonHero() {
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
-            <source src="/video-3.mov" type="video/quicktime" />
+            <source src="/video-3.mp4" type="video/mp4" />
           </video>
           {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
