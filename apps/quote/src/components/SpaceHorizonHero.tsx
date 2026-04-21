@@ -6,6 +6,7 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
+  const [videoSrc, setVideoSrc] = React.useState("/video-3.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasEnded = useRef(false);
 
@@ -26,16 +27,24 @@ export default function SpaceHorizonHero() {
     if (videoRef.current) videoRef.current.pause();
   };
 
+  const handleVideoError = () => {
+    console.warn("Video 3 failed to decode (unsupported codec). Falling back to Video 2.");
+    if (videoSrc !== "/video-2.mp4") {
+      setVideoSrc("/video-2.mp4");
+      hasEnded.current = false;
+    }
+  };
+
   useEffect(() => {
     if (videoRef.current) {
-      // Browsers often require explicit interaction unless muted.
-      // We force muted and play to guarantee the cinematic background starts.
       videoRef.current.muted = true;
       videoRef.current.play().catch(err => {
-        console.warn("Hero video autoplay was blocked or failed:", err);
+        console.warn("Hero video autoplay or decode failed:", err);
+        // Fallback on play fail (e.g. codec issues masquerading as NotAllowedError)
+        handleVideoError();
       });
     }
-  }, []);
+  }, [videoSrc]);
 
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
@@ -88,10 +97,11 @@ export default function SpaceHorizonHero() {
             onTimeUpdate={handleTimeUpdate}
             onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleEnded}
+            onError={handleVideoError}
             className="w-full h-full object-cover opacity-60"
           >
-            {/* Using #t=0.5 as backup for native browser seeking */}
-            <source src="/video-3.mp4" type="video/mp4" />
+            {/* Using dynamic src for graceful fallback */}
+            <source src={videoSrc} type="video/mp4" />
           </video>
           {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
