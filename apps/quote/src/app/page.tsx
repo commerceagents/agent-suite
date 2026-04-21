@@ -1,9 +1,9 @@
-import HeroMercury from "@/components/HeroMercury";
+import SpaceHorizonHero from "@/components/SpaceHorizonHero";
 
 export default function Home() {
   return (
     <main>
-      <HeroMercury />
+      <SpaceHorizonHero />
     </main>
   );
 }

@@ -35,8 +35,8 @@ export default function RootLayout({
         className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
         data-app="quote"
         style={{
-          fontFamily: "'DM Sans', system-ui, sans-serif",
-          background: "radial-gradient(circle at center, #0d021f 0%, #050a1f 40%, #000000 100%)",
+          fontFamily: "'Inter', system-ui, sans-serif",
+          backgroundColor: "#000000",
           color: "#FFFFFF",
           minHeight: "100vh"
         }}
