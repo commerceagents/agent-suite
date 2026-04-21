@@ -59,13 +59,14 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       const leftMask = new Path2D();
       const rightMask = new Path2D();
       
-      // AmCharts reference viewbox is ~1000x800
-      const scale = Math.min(w, h) * 0.0016;
-      const offsetX = w * 0.02;
-      const offsetY = h * 0.15;
+      // Center the map more conservatively
+      const scale = Math.min(w, h) * 0.0018;
+      const offsetX = w * 0.08;
+      const offsetY = h * 0.18;
 
       continentPaths.forEach(p => {
-        const ox = p.side === 'left' ? -w * 0.15 : w * 0.15;
+        // Reduced lateral offsets to bring map clusters into view
+        const ox = p.side === 'left' ? -w * 0.1 : w * 0.1;
         const matrix = new DOMMatrix().translate(offsetX + ox, offsetY).scale(scale, scale);
         const m = p.side === 'left' ? leftMask : rightMask;
         m.addPath(new Path2D(p.d), matrix);
@@ -99,7 +100,7 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
           originX1: x1, originY1: y1, originX2: x2, originY2: y2,
           targetX1: tx1, targetY1: ty1,
           targetX2: tx1 + (x2-x1)*0.4, targetY2: ty1,
-          opacity: 0.8
+          opacity: 1.0
         });
       }
 
@@ -113,10 +114,10 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time.current += 0.02;
 
-      // Glowing Neon Style
+      // Sharper Glowing Neon Style
       ctx.strokeStyle = "#00FFFF";
-      ctx.lineWidth = 1.2;
-      ctx.shadowBlur = 12;
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 6;
       ctx.shadowColor = "#00FFFF";
       
       const sArray = segments.current;
