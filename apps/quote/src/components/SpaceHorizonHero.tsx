@@ -7,12 +7,11 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 export default function SpaceHorizonHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
+  const handleVideoLoad = () => {
     if (videoRef.current) {
-      // Crop first 0.5s as requested
       videoRef.current.currentTime = 0.5;
     }
-  }, []);
+  };
 
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
@@ -59,6 +58,7 @@ export default function SpaceHorizonHero() {
             loop
             muted 
             playsInline 
+            onLoadedMetadata={handleVideoLoad}
             className="w-full h-full object-cover opacity-60"
           >
             {/* Using #t=0.5 as backup for native browser seeking */}
