@@ -31,7 +31,7 @@ export default function PremiumHero() {
   };
 
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-white">
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-black">
       {/* Background Layer - Precision Line Matrix */}
       <LineMatrixCanvas isMorphed={isMorphed} />
 
@@ -43,23 +43,23 @@ export default function PremiumHero() {
         className="relative z-10 flex flex-col items-center text-center px-6"
       >
         <motion.div variants={itemVars} className="mb-8">
-          <span className="text-[10px] font-mono tracking-[0.8em] uppercase text-zinc-300">
+          <span className="text-[10px] font-mono tracking-[0.8em] uppercase text-zinc-600">
             Systemic Logistics
           </span>
         </motion.div>
 
         <motion.h1 
           variants={itemVars}
-          className="text-black text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-12"
+          className="text-white text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-12"
           style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
         >
           COMMERCE <br />
-          <span className="text-zinc-100">AGENTS.</span>
+          <span className="text-zinc-800">AGENTS.</span>
         </motion.h1>
 
         <motion.p
           variants={itemVars}
-          className="max-w-xl text-zinc-400 text-lg font-light leading-relaxed mb-14"
+          className="max-w-xl text-zinc-500 text-lg font-light leading-relaxed mb-14"
         >
           Orchestrating global commerce with architectural precision.
           The premium nexus for high-performance scale.
@@ -68,7 +68,7 @@ export default function PremiumHero() {
         <motion.div variants={itemVars}>
           <button 
             onClick={() => setIsMorphed(!isMorphed)}
-            className="px-16 py-5 bg-black text-white font-medium text-[10px] tracking-[0.4em] uppercase rounded-full transition-all duration-700 hover:bg-zinc-900 active:scale-95 shadow-2xl shadow-black/10"
+            className="px-16 py-5 bg-white text-black font-medium text-[10px] tracking-[0.4em] uppercase rounded-full transition-all duration-700 hover:bg-zinc-200 active:scale-95 shadow-2xl shadow-white/5"
           >
             {isMorphed ? 'Network Connected' : 'Contact us'}
           </button>

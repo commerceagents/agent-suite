@@ -36,8 +36,8 @@ export default function RootLayout({
         data-app="quote"
         style={{
           fontFamily: "'DM Sans', system-ui, sans-serif",
-          backgroundColor: "#FFFFFF",
-          color: "#000000",
+          backgroundColor: "#000000",
+          color: "#FFFFFF",
         }}
       >
         <ConsoleFix />

@@ -113,8 +113,12 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       time.current += 0.02;
 
-      ctx.strokeStyle = "rgba(0,0,0,0.9)";
-      ctx.lineWidth = 1;
+      // Glowing Neon Style
+      ctx.strokeStyle = "#00FFFF";
+      ctx.lineWidth = 1.2;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = "#00FFFF";
+      
       const sArray = segments.current;
       
       for (let i = 0; i < sArray.length; i++) {
