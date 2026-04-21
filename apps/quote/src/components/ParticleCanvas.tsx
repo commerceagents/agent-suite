@@ -60,10 +60,16 @@ export default function ParticleCanvas({ isMorphed }: { isMorphed?: boolean }) {
       const sampleStep = 4;
       
       const mask = new Path2D();
-      // Adjust scale and offset for amCharts coordinates (~1000x800 range)
-      const scale = Math.min(w, h) * 0.0011;
-      const offsetX = w * 0.05;
-      const offsetY = -h * 0.05;
+      // amCharts coordinates are roughly in a 1000x600 range
+      // Let's use a scale that fits 80% of the screen width
+      const baseMapWidth = 1000;
+      const baseMapHeight = 600;
+      
+      const scale = Math.min(w / baseMapWidth, h / baseMapHeight) * 0.8;
+      
+      // Center the map
+      const offsetX = (w - baseMapWidth * scale) / 2;
+      const offsetY = (h - baseMapHeight * scale) / 2;
 
       continentPaths.forEach(d => {
         const matrix = new DOMMatrix().translate(offsetX, offsetY).scale(scale, scale);
