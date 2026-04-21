@@ -45,14 +45,17 @@ export default function LineMatrixCanvas({ isMorphed }: { isMorphed?: boolean })
       const segs: LineSegment[] = [];
       const w = canvas.width;
       const h = canvas.height;
-      const lineSpacing = 10;
-      const sampleStep = 8;
+      const lineSpacing = 12; // Adjusted for better clarity at large scale
+      const sampleStep = 10;
       
       const mask = new Path2D(WORLD_MAP_PATH);
       
-      const scale = Math.min(w, h) * 0.0017;
-      const offsetX = w * 0.1;
-      const offsetY = h * 0.12;
+      // Dynamic Centering & Scaling
+      // The WORLD_MAP_PATH data is centered roughly at (450, 250) with width ~800
+      const scale = (w * 0.9) / 800; // Aim for 90% screen width
+      const offsetX = w / 2 - (450 * scale);
+      const offsetY = h / 2 - (250 * scale);
+
       const matrix = new DOMMatrix().translate(offsetX, offsetY).scale(scale, scale);
       const scaledMask = new Path2D();
       scaledMask.addPath(mask, matrix);
