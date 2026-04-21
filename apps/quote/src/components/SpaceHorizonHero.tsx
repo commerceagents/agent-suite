@@ -88,12 +88,7 @@ export default function SpaceHorizonHero() {
             COMMERCE AGENTS
           </motion.h1>
           
-          <motion.div 
-            variants={itemVars}
-            className="mt-8 overflow-hidden"
-          >
-            <div className="h-px w-24 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-          </motion.div>
+
         </div>
 
       </motion.div>
