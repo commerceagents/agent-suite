@@ -48,9 +48,14 @@ export default function SpaceHorizonHero() {
             fontSize: "clamp(32px, 9vw, 60px)"
           }}
         >
-          Commerce Agents
+          COMMERCE AGENTS
         </motion.h1>
       </motion.div>
+
+      {/* Deployment Verification Marker */}
+      <div className="absolute bottom-4 right-4 z-50 text-[10px] font-mono text-white/20 select-none pointer-events-none">
+        BUILD // ID: CA-SP-120
+      </div>
     </section>
   );
 }
