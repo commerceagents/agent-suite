@@ -9,9 +9,10 @@ export default function SpaceHorizonHero() {
 
   useEffect(() => {
     // Stage 1: Logo Intro (1.5s)
-    const t1 = setTimeout(() => setPhase('blank'), 2000);
+    const t1 = setTimeout(() => setPhase('blank'), 1500);
+    
     // Stage 2: Blank State (0.8s)
-    const t2 = setTimeout(() => setPhase('main'), 2800);
+    const t2 = setTimeout(() => setPhase('main'), 2300);
 
     return () => {
       clearTimeout(t1);
@@ -24,16 +25,19 @@ export default function SpaceHorizonHero() {
       
       {/* INITIAL LOGO INTRO LAYER */}
       <AnimatePresence mode="wait">
-        {phase === 'intro' && (
+        {phase !== 'main' && (
           <motion.div
             key="intro-logo"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: phase === 'intro' ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             className="absolute inset-0 z-[100] flex items-center justify-center bg-black"
           >
-            <img 
+            <motion.img 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: phase === 'intro' ? 1 : 1.1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
               src="/ca-logo.png" 
               alt="Logo" 
               className="w-24 md:w-32 lg:w-40 h-auto object-contain mix-blend-screen brightness-125"
