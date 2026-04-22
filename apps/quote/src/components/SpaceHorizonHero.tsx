@@ -52,7 +52,7 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-emerald-500/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
@@ -62,8 +62,9 @@ export default function SpaceHorizonHero() {
               WebkitMaskImage: '-webkit-radial-gradient(white, black)'
             }}
           >
-            {/* Soft Ambient Green Tint & Highlight Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-emerald-500/5 pointer-events-none" />
+            {/* Multi-layered Ambient Glow Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/[0.05] via-transparent to-emerald-500/[0.08] pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.05),transparent_50%)] pointer-events-none" />
             
             {/* Top-Edge Glass Reflection */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
