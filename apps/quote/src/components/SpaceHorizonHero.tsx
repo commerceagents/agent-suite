@@ -43,7 +43,7 @@ export default function SpaceHorizonHero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           src="/ca-logo.png"
           alt="Commerce Agents Logo"
-          className="w-[50px] md:w-[70px] h-auto object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+          className="w-[50px] md:w-[70px] h-auto object-contain mix-blend-screen"
         />
       </div>
 
