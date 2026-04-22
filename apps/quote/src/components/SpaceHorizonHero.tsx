@@ -6,7 +6,7 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
-  const [videoSrc] = React.useState("/video-5.mp4");
+  const [videoSrc] = React.useState("/video-6.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const containerVars = {
