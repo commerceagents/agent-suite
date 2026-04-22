@@ -44,39 +44,39 @@ export default function SpaceHorizonHero() {
         {/* Floating Capsule Navigation */}
         <Navigation />
 
-        {/* Main Content Area - Realistic Glass Card */}
-        <div className="flex-1 flex items-center justify-center">
+        {/* Main Content Area - Fluid Glass Card */}
+        <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[95%] max-w-[1600px] min-h-[400px] md:min-h-[600px] px-12 py-16 md:px-32 md:py-24 rounded-[30px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[92vw] md:w-[85vw] lg:w-[80vw] max-w-[1600px] min-h-[30vh] md:min-h-[50vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[30px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
               WebkitBackfaceVisibility: 'hidden',
               WebkitPerspective: 1000,
               WebkitTransform: 'translate3d(0,0,0)',
-              WebkitMaskImage: '-webkit-radial-gradient(white, black)' // Critical fix for the 'blinking' edge glitch on rounded corners
+              WebkitMaskImage: '-webkit-radial-gradient(white, black)'
             }}
           >
             {/* Soft Ambient Green Tint & Highlight Gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-emerald-500/5 pointer-events-none" />
             
             {/* Top-Edge Glass Reflection */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
             
             {/* Inner Vignette for Depth */}
-            <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.2)] pointer-events-none rounded-[30px]" />
+            <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.1)] pointer-events-none rounded-[20px] md:rounded-[30px]" />
 
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 2, delay: 0.5 }}
-              className="relative z-10 text-white font-bold tracking-[0.5em] leading-none uppercase select-none text-center whitespace-nowrap drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+              className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
               style={{ 
                 fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-                fontSize: "clamp(16px, 4vw, 52px)"
+                fontSize: "clamp(20px, 4.5vw, 52px)"
               }}
             >
               COMMERCE AGENTS
