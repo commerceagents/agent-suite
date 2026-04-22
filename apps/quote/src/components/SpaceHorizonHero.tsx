@@ -58,6 +58,12 @@ export default function SpaceHorizonHero() {
 
         {/* Main Content Area - Centered Agency Title */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
+          <motion.img
+            variants={itemVars}
+            src="/ca-logo.png"
+            alt="Commerce Agents Logo"
+            className="w-[100px] md:w-[140px] h-auto object-contain mb-6 md:mb-8 filter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+          />
           <motion.h1 
             variants={itemVars}
             className="text-white font-bold tracking-[0.3em] leading-none uppercase select-none text-center whitespace-nowrap"
@@ -69,7 +75,6 @@ export default function SpaceHorizonHero() {
             COMMERCE AGENTS
           </motion.h1>
           
-
         </div>
 
       </motion.div>
