@@ -33,7 +33,7 @@ export default function SpaceHorizonHero() {
   };
 
   return (
-    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-12">
+    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none px-4 pt-4 pb-2 md:px-8 md:pt-6 md:pb-4 lg:px-10 lg:pt-8 lg:pb-6">
       
       {/* Floating Capsule Navigation (Logo is now inside this component) */}
       <Navigation />
@@ -43,7 +43,7 @@ export default function SpaceHorizonHero() {
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
+        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden shadow-2xl"
       >
         
         {/* Cinematic Solid Background */}

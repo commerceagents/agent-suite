@@ -8,7 +8,6 @@ const navLinks = [
   { name: 'Projects', href: '#', active: true },
   { name: 'People', href: '#', active: false },
   { name: 'Testimonial', href: '#', active: false },
-  { name: 'Contact us', href: '#', active: false },
 ];
 
 export default function Navigation() {
@@ -23,14 +22,14 @@ export default function Navigation() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           src="/ca-logo.png"
           alt="Commerce Agents Logo"
-          className="w-[50px] md:w-[60px] lg:w-[70px] h-auto object-contain mix-blend-screen"
+          className="w-[50px] md:w-[60px] lg:w-[70px] h-auto object-contain mix-blend-screen contrast-125 brightness-110"
         />
       </div>
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center gap-2 px-8 py-3 bg-[#1a1a1a]/60 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl"
+        className="flex items-center gap-2 px-8 py-3 bg-[#1a1a1a]/60 backdrop-blur-xl rounded-full shadow-2xl"
       >
         {navLinks.map((link) => (
           <div key={link.name} className="relative px-4 group">
@@ -60,6 +59,19 @@ export default function Navigation() {
           </div>
         ))}
       </motion.div>
+
+      {/* Contact Us Button - Aligned far right */}
+      <div className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full">
+        <motion.button 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold tracking-wide hover:bg-gray-200 transition-colors"
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
+          Contact us
+        </motion.button>
+      </div>
     </nav>
   );
 }
