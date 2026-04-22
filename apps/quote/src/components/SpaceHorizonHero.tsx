@@ -9,19 +9,24 @@ export default function SpaceHorizonHero() {
   const [videoSrc] = React.useState("/video-6.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const hasMounted = useRef(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && videoRef.current) {
-            // Restart video perfectly when user scrolls back to Hero
-            videoRef.current.currentTime = 0;
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(e => {
-                if (e.name !== 'AbortError') console.warn(e);
-              });
+            if (hasMounted.current) {
+              // Restart video perfectly when user scrolls back to Hero
+              videoRef.current.currentTime = 0;
+              const playPromise = videoRef.current.play();
+              if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                  if (e.name !== 'AbortError') console.warn(e);
+                });
+              }
+            } else {
+              hasMounted.current = true;
             }
           } else if (!entry.isIntersecting && videoRef.current) {
             // Pause video to save bandwidth/CPU when out of view
