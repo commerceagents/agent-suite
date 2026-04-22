@@ -45,7 +45,7 @@ export default function SpaceHorizonHero() {
         <Navigation />
 
         {/* Main Content Area - Fluid Glass Card */}
-        <div className="flex-1 flex items-start justify-center p-4 md:p-8 lg:p-12 pt-16 md:pt-24 lg:pt-32">
+        <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
