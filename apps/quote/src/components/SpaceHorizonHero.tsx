@@ -20,10 +20,11 @@ export default function SpaceHorizonHero() {
   };
 
   const itemVars = {
-    initial: { y: 20, opacity: 0 },
+    initial: { y: 20, opacity: 0, scale: 1.15 },
     animate: {
       y: 0,
       opacity: 1,
+      scale: 1,
       transition: {
         duration: 1,
         ease: [0.16, 1, 0.3, 1] as any,
