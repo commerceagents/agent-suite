@@ -41,8 +41,8 @@ export default function SpaceHorizonHero() {
 
       {/* Main UI Layer */}
       <div className="relative z-20 h-full w-full flex flex-col">
-        {/* Navigation - Positioned ABOVE the box with generous margins */}
-        <div className="w-full px-4 pt-6 md:px-8 md:pt-8 lg:px-10 lg:pt-12 mb-12">
+        {/* Navigation - Positioned ABOVE the box with tight margins */}
+        <div className="w-full px-4 pt-3 md:px-8 md:pt-4 lg:px-10 lg:pt-5 mb-2">
           <Navigation />
         </div>
 
