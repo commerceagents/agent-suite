@@ -41,18 +41,13 @@ export default function SpaceHorizonHero() {
 
       {/* Main UI Layer */}
       <div className="relative z-20 h-full w-full">
-        {/* Navigation - Fixed at top with generous breathing room */}
-        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-6 md:px-8 md:pt-8 lg:px-10 lg:pt-12">
-          <Navigation />
-        </div>
-
-        {/* Card Centering Layer - Extended upwards to header */}
+        {/* Card Centering Layer - Integrated UI */}
         <div className="absolute inset-0 flex items-center justify-center p-4 pt-10">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[90vw] max-w-[1600px] min-h-[60vh] md:min-h-[90vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[90vw] max-w-[1600px] min-h-[60vh] md:min-h-[90vh] rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex flex-col transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
@@ -71,18 +66,26 @@ export default function SpaceHorizonHero() {
             {/* Inner Vignette for Depth */}
             <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.1)] pointer-events-none rounded-[20px] md:rounded-[30px]" />
 
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 2, delay: 0.5 }}
-              className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
-              style={{ 
-                fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-                fontSize: "clamp(20px, 4.5vw, 52px)"
-              }}
-            >
-              COMMERCE AGENTS
-            </motion.h1>
+            {/* Navigation - Now Integrated at the Top of the Box */}
+            <div className="relative z-50 w-full px-6 py-4 md:px-10 md:py-6">
+              <Navigation />
+            </div>
+
+            {/* Main Brand Centered in the remaining space */}
+            <div className="flex-1 flex items-center justify-center px-6 pb-20">
+              <motion.h1
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 2, delay: 0.5 }}
+                className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
+                style={{ 
+                  fontFamily: "'Inter', 'SF Pro Display', sans-serif",
+                  fontSize: "clamp(20px, 4.5vw, 52px)"
+                }}
+              >
+                COMMERCE AGENTS
+              </motion.h1>
+            </div>
           </motion.div>
         </div>
       </div>
