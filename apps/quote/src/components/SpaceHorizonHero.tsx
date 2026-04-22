@@ -46,7 +46,7 @@ export default function SpaceHorizonHero() {
             className="text-white font-bold tracking-[0.5em] leading-none uppercase select-none text-center whitespace-nowrap"
             style={{ 
               fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-              fontSize: "clamp(16px, 4vw, 32px)"
+              fontSize: "clamp(16px, 4vw, 60px)"
             }}
           >
             COMMERCE AGENTS
