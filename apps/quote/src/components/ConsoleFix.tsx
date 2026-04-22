@@ -22,6 +22,30 @@ export default function ConsoleFix() {
       originalWarn.apply(console, args);
     };
 
+    // Aggressively unregister any rogue service workers from other localhost:3000 projects
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        let hasServiceWorker = false;
+        for(let registration of registrations) {
+          registration.unregister();
+          hasServiceWorker = true;
+          console.log("🧹 Unregistered Rogue Service Worker.");
+        }
+        
+        // Clear caches that might be interfering
+        if (hasServiceWorker && 'caches' in window) {
+          caches.keys().then((names) => {
+            for (let name of names) {
+              caches.delete(name);
+            }
+            console.log("🧹 Cleared Stale Localhost Caches.");
+            // Optional: force reload to fetch fresh assets
+            // window.location.reload(); 
+          });
+        }
+      });
+    }
+
     return () => {
       console.warn = originalWarn;
     };
