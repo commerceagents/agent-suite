@@ -35,6 +35,18 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-12">
       
+      {/* Top Left Brand Logo */}
+      <div className="absolute top-6 left-6 md:top-10 md:left-10 lg:top-12 lg:left-12 z-50">
+        <motion.img
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          src="/ca-logo.png"
+          alt="Commerce Agents Logo"
+          className="w-[50px] md:w-[70px] h-auto object-contain filter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+        />
+      </div>
+
       {/* Floating Capsule Navigation */}
       <Navigation />
 
@@ -58,12 +70,6 @@ export default function SpaceHorizonHero() {
 
         {/* Main Content Area - Centered Agency Title */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
-          <motion.img
-            variants={itemVars}
-            src="/ca-logo.png"
-            alt="Commerce Agents Logo"
-            className="w-[100px] md:w-[140px] h-auto object-contain mb-6 md:mb-8 filter drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]"
-          />
           <motion.h1 
             variants={itemVars}
             className="text-white font-bold tracking-[0.3em] leading-none uppercase select-none text-center whitespace-nowrap"
