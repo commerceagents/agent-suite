@@ -21,37 +21,31 @@ export default function SpaceHorizonHero() {
 
 
   return (
-    <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none px-4 pt-4 pb-2 md:px-8 md:pt-6 md:pb-4 lg:px-10 lg:pt-8 lg:pb-6">
+    <section className="relative h-screen w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* Floating Capsule Navigation (Logo is now inside this component) */}
-      <Navigation />
-
-      {/* Box Container - inspired by reference image */}
-      <motion.div 
-        variants={containerVars}
-        initial="initial"
-        animate="animate"
-        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
-      >
+      {/* Atmospheric Background System (Full Screen) */}
+      <div className="absolute inset-0 z-0 bg-black">
+        {/* Cinematic Video Background */}
+        <video 
+          src="/video-7.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+        />
         
-        {/* Atmospheric Background System */}
-        <div className="absolute inset-0 z-0 bg-black">
-          {/* Cinematic Video Background */}
-          <video 
-            src="/video-7.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
-          />
-          
-          {/* Studio Shadow Overlay to ensure readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-5" />
-        </div>
+        {/* Studio Shadow Overlay to ensure readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-5" />
+      </div>
+
+      {/* Main UI Layer */}
+      <div className="relative z-20 h-full flex flex-col px-4 pt-4 pb-2 md:px-8 md:pt-6 md:pb-4 lg:px-10 lg:pt-8 lg:pb-6">
+        {/* Floating Capsule Navigation */}
+        <Navigation />
 
         {/* Main Content Area - Clean Centered Text */}
-        <div className="relative z-20 w-full h-full flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center">
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -65,8 +59,7 @@ export default function SpaceHorizonHero() {
             COMMERCE AGENTS
           </motion.h1>
         </div>
-
-      </motion.div>
+      </div>
 
     </section>
   );
