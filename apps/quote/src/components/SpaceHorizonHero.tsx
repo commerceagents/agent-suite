@@ -50,7 +50,7 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[95%] max-w-[1600px] min-h-[400px] md:min-h-[600px] px-12 py-16 md:px-32 md:py-24 rounded-[30px] overflow-hidden border-2 border-red-500 bg-white/[0.12] backdrop-blur-[0px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[95%] max-w-[1600px] min-h-[400px] md:min-h-[600px] px-12 py-16 md:px-32 md:py-24 rounded-[30px] overflow-hidden border border-white/10 bg-white/[0.12] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
