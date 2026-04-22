@@ -1,47 +1,17 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
-  const [videoSrc, setVideoSrc] = React.useState("/video-4.mp4");
+  const [videoSrc] = React.useState("/video-4.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hasEnded = useRef(false);
-
-  const handleTimeUpdate = () => {
-    // We only track the end state here
-    if (hasEnded.current) return;
-  };
-
-  const handleLoadedMetadata = () => {
-    // Trim logic temporarily suspended to maximize codec compatibility
-  };
 
   const handleEnded = () => {
-    hasEnded.current = true;
     if (videoRef.current) videoRef.current.pause();
   };
-
-  const handleVideoError = () => {
-    console.warn("Video 4 failed to decode (unsupported codec). Falling back to Video 2.");
-    if (videoSrc !== "/video-2.mp4") {
-      setVideoSrc("/video-2.mp4");
-      hasEnded.current = false;
-    }
-  };
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.load(); // Force browser reload when src dynamically changes
-      videoRef.current.play().catch(err => {
-        console.warn("Hero video autoplay or decode failed:", err);
-        handleVideoError();
-      });
-    }
-  }, [videoSrc]);
 
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
@@ -92,10 +62,7 @@ export default function SpaceHorizonHero() {
             muted 
             playsInline 
             preload="auto"
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
             onEnded={handleEnded}
-            onError={handleVideoError}
             className="w-full h-full object-cover opacity-60"
           />
           {/* Studio Shadow Overlay */}
