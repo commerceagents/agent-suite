@@ -47,7 +47,7 @@ export default function Navigation() {
             {link.active && (
               <motion.div 
                 layoutId="activeNav"
-                className="absolute -bottom-1 left-4 right-4 h-[2px] bg-[#00e5ff] shadow-[0_0_10px_#00e5ff]"
+                className="absolute -bottom-1 left-4 right-4 h-[2px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
