@@ -40,12 +40,14 @@ export default function SpaceHorizonHero() {
       </div>
 
       {/* Main UI Layer */}
-      <div className="relative z-20 h-full flex flex-col px-4 pt-4 pb-2 md:px-8 md:pt-6 md:pb-4 lg:px-10 lg:pt-8 lg:pb-6">
-        {/* Floating Capsule Navigation */}
-        <Navigation />
+      <div className="relative z-20 h-full w-full">
+        {/* Navigation - Fixed at top with safe margins */}
+        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-4 md:px-8 md:pt-6 lg:px-10 lg:pt-8">
+          <Navigation />
+        </div>
 
-        {/* Main Content Area - Fluid Glass Card */}
-        <div className="flex-1 flex items-center justify-center p-4 md:p-8 lg:p-12">
+        {/* Card Centering Layer - Truly absolute center of screen */}
+        <div className="absolute inset-0 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
