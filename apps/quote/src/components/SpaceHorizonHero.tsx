@@ -44,20 +44,36 @@ export default function SpaceHorizonHero() {
         {/* Floating Capsule Navigation */}
         <Navigation />
 
-        {/* Main Content Area - Clean Centered Text */}
+        {/* Main Content Area - Realistic Glass Card */}
         <div className="flex-1 flex items-center justify-center">
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 0.5 }}
-            className="text-white font-bold tracking-[0.5em] leading-none uppercase select-none text-center whitespace-nowrap"
-            style={{ 
-              fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-              fontSize: "clamp(16px, 4vw, 60px)"
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="relative px-12 py-8 md:px-20 md:py-14 rounded-[30px] overflow-hidden border border-white/10 bg-white/[0.12] backdrop-blur-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10"
           >
-            COMMERCE AGENTS
-          </motion.h1>
+            {/* Soft Ambient Green Tint & Highlight Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-emerald-500/5 pointer-events-none" />
+            
+            {/* Top-Edge Glass Reflection */}
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+            
+            {/* Inner Vignette for Depth */}
+            <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.2)] pointer-events-none rounded-[30px]" />
+
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 2, delay: 0.5 }}
+              className="relative z-10 text-white font-bold tracking-[0.5em] leading-none uppercase select-none text-center whitespace-nowrap drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]"
+              style={{ 
+                fontFamily: "'Inter', 'SF Pro Display', sans-serif",
+                fontSize: "clamp(16px, 4vw, 52px)"
+              }}
+            >
+              COMMERCE AGENTS
+            </motion.h1>
+          </motion.div>
         </div>
       </div>
 
