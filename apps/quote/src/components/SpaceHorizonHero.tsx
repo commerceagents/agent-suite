@@ -8,47 +8,32 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* INITIAL LOGO INTRO LAYER - Atomic Auto-Sequence */}
+      {/* INITIAL BLANK / DARK OVERLAY - Cinematic Void */}
       <motion.div
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
-        transition={{ duration: 0.8, delay: 2.5, ease: "easeInOut" }}
-        className="absolute inset-0 z-[100] flex items-center justify-center bg-black pointer-events-none"
-      >
-        <motion.img 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: [0, 1, 1, 0], scale: [0.9, 1, 1, 1.1] }}
-          transition={{ 
-            duration: 2.5, 
-            times: [0, 0.2, 0.8, 1],
-            ease: "easeInOut" 
-          }}
-          src="/ca-logo.png" 
-          alt="Logo" 
-          className="w-24 md:w-32 lg:w-40 h-auto object-contain mix-blend-screen brightness-125"
-        />
-      </motion.div>
+        transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }}
+        className="absolute inset-0 z-[100] bg-black pointer-events-none"
+      />
 
       {/* MAIN CONTENT LAYER */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 2.5, ease: "easeInOut" as any }}
-        className="relative h-full w-full"
-      >
+      <div className="relative h-full w-full">
         {/* Atmospheric Background System (Full Screen) */}
         <div className="absolute inset-0 z-0 bg-black">
-          {/* Cinematic Video Background */}
-          <video 
+          {/* Cinematic Video Background - Fades in from void */}
+          <motion.video 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            transition={{ duration: 2, delay: 0.8, ease: "easeInOut" }}
             src="/video-7.mp4"
             autoPlay
             muted
             loop
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           />
           
-          {/* Studio Shadow Overlay to ensure readability */}
+          {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-5" />
         </div>
 
@@ -56,7 +41,7 @@ export default function SpaceHorizonHero() {
         <div className="relative z-20 h-full w-full flex flex-col">
           {/* Navigation - Staggered reveal synchronized via delay */}
           <div className="w-full px-[4vw] pt-[2vh] mb-[1vh]">
-            <Navigation show={true} delay={3.5} />
+            <Navigation show={true} delay={2.8} />
           </div>
 
           {/* Card Area - Emerging from bottom */}
@@ -64,7 +49,7 @@ export default function SpaceHorizonHero() {
             <motion.div
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.8, delay: 2.8, ease: [0.16, 1, 0.3, 1] as any }}
+              transition={{ duration: 1.8, delay: 1.5, ease: [0.16, 1, 0.3, 1] as any }}
               className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
               style={{ 
                 isolation: 'isolate',
@@ -92,7 +77,7 @@ export default function SpaceHorizonHero() {
               <motion.h1
                 initial={{ opacity: 0, scale: 1.5 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 2, delay: 3.2, ease: [0.16, 1, 0.3, 1] as any }}
+                transition={{ duration: 2, delay: 2.2, ease: [0.16, 1, 0.3, 1] as any }}
                 className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
                 style={{ 
                   fontFamily: "'Inter', 'SF Pro Display', sans-serif",
@@ -105,7 +90,7 @@ export default function SpaceHorizonHero() {
             </motion.div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
     </section>
   );
