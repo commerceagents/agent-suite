@@ -12,7 +12,7 @@ export default function SpaceHorizonHero() {
       scale: 1,
       transition: {
         duration: 1.2,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.16, 1, 0.3, 1] as any,
         staggerChildren: 0.2,
         delayChildren: 0.6,
       },
@@ -26,7 +26,7 @@ export default function SpaceHorizonHero() {
       opacity: 1,
       transition: {
         duration: 1,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.16, 1, 0.3, 1] as any,
       },
     },
   };
