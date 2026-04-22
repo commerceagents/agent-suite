@@ -39,7 +39,3 @@ export default function SpaceHorizonHero() {
     </section>
   );
 }
-
-    </section>
-  );
-}
