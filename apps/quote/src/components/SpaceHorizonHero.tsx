@@ -7,7 +7,34 @@ import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
   const [videoSrc] = React.useState("/video-6.mp4");
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [activeVideo, setActiveVideo] = React.useState<1 | 2>(1);
+  const video1Ref = useRef<HTMLVideoElement>(null);
+  const video2Ref = useRef<HTMLVideoElement>(null);
+
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    const crossfadeTriggerTime = 1.5; // Trigger crossfade 1.5 seconds before end
+    
+    if (video.duration && (video.duration - video.currentTime) <= crossfadeTriggerTime) {
+      if (activeVideo === 1) {
+        if (video2Ref.current && video2Ref.current.paused) {
+          video2Ref.current.currentTime = 0;
+          video2Ref.current.play();
+          setActiveVideo(2);
+        }
+      } else {
+        if (video1Ref.current && video1Ref.current.paused) {
+          video1Ref.current.currentTime = 0;
+          video1Ref.current.play();
+          setActiveVideo(1);
+        }
+      }
+    }
+  };
+
+  const handleEnded = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    e.currentTarget.pause();
+  };
 
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
@@ -49,17 +76,31 @@ export default function SpaceHorizonHero() {
         className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
       >
         
-        {/* Cinematic Video Background - Continuous Loop */}
-        <div className="absolute inset-0 z-0">
+        {/* Cinematic Video Background - Dual Crossfade Loop System */}
+        <div className="absolute inset-0 z-0 bg-black">
+          {/* Video 1 */}
           <video 
-            ref={videoRef}
+            ref={video1Ref}
             src={videoSrc}
-            autoPlay 
+            autoPlay={true}
             muted 
             playsInline 
-            loop
             preload="auto"
-            className="w-full h-full object-cover opacity-60"
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={handleEnded}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${activeVideo === 1 ? 'opacity-60' : 'opacity-0'}`}
+          />
+          {/* Video 2 */}
+          <video 
+            ref={video2Ref}
+            src={videoSrc}
+            autoPlay={false}
+            muted 
+            playsInline 
+            preload="auto"
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={handleEnded}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${activeVideo === 2 ? 'opacity-60' : 'opacity-0'}`}
           />
           {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
