@@ -31,6 +31,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                    console.log("💥 Nuked rogue service worker from inline script.");
+                  }
+                });
+              }
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
         data-app="quote"
