@@ -29,7 +29,7 @@ export default function Navigation() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center gap-1 px-4 py-2"
+        className="flex items-center gap-1 px-4 py-5"
       >
         {navLinks.map((link) => (
           <div key={link.name} className="relative px-3 group">

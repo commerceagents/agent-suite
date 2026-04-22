@@ -41,18 +41,18 @@ export default function SpaceHorizonHero() {
 
       {/* Main UI Layer */}
       <div className="relative z-20 h-full w-full">
-        {/* Navigation - Fixed at top with compact margins */}
-        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-3 md:px-8 md:pt-4 lg:px-10 lg:pt-5">
+        {/* Navigation - Fixed at top with generous breathing room */}
+        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-6 md:px-8 md:pt-8 lg:px-10 lg:pt-12">
           <Navigation />
         </div>
 
-        {/* Card Centering Layer - Offset from top to create space for header */}
-        <div className="absolute inset-0 flex items-center justify-center p-4 pt-20">
+        {/* Card Centering Layer - Lowered to accommodate expanded header */}
+        <div className="absolute inset-0 flex items-center justify-center p-4 pt-40">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 20 }}
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 40 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[90vw] max-w-[1600px] min-h-[50vh] md:min-h-[75vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[90vw] max-w-[1600px] min-h-[50vh] md:min-h-[75vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
