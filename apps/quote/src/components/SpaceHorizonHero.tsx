@@ -71,15 +71,10 @@ export default function SpaceHorizonHero() {
 
         {/* Main UI Layer */}
         <div className="relative z-20 h-full w-full flex flex-col">
-          {/* Navigation - Staggered reveal via parent delay */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: phase === 'main' ? 1 : 0, y: phase === 'main' ? 0 : -20 }}
-            transition={{ duration: 1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full px-[4vw] pt-[2vh] mb-[1vh]"
-          >
-            <Navigation />
-          </motion.div>
+          {/* Navigation - Staggered reveal synchronized with phase */}
+          <div className="w-full px-[4vw] pt-[2vh] mb-[1vh]">
+            <Navigation show={phase === 'main'} delay={1.2} />
+          </div>
 
           {/* Card Area - Emerging from bottom */}
           <div className="flex-1 flex items-center justify-center p-[2vw] pb-[4vh]">
@@ -112,9 +107,9 @@ export default function SpaceHorizonHero() {
               <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
               <motion.h1
-                initial={{ opacity: 0, scale: 1.2 }}
-                animate={{ opacity: phase === 'main' ? 1 : 0, scale: phase === 'main' ? 1 : 1.2 }}
-                transition={{ duration: 2, delay: 1, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, scale: 1.5 }}
+                animate={{ opacity: phase === 'main' ? 1 : 0, scale: phase === 'main' ? 1 : 1.5 }}
+                transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
                 style={{ 
                   fontFamily: "'Inter', 'SF Pro Display', sans-serif",

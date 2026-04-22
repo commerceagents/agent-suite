@@ -10,29 +10,43 @@ const navLinks = [
   { name: 'Testimonial', href: '#', active: false },
 ];
 
-export default function Navigation() {
+export default function Navigation({ show = true, delay = 0 }) {
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: delay,
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: -20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <nav className="relative flex justify-center items-center w-full mb-8 z-50">
+    <motion.nav 
+      variants={container}
+      initial="hidden"
+      animate={show ? "show" : "hidden"}
+      className="relative flex justify-center items-center w-full mb-8 z-50"
+    >
       
       {/* Brand Logo - Aligned far left, vertically centered with header */}
-      <div className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full">
-        <motion.img
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      <motion.div variants={item} className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full">
+        <img
           src="/ca-logo.png"
           alt="Commerce Agents Logo"
           className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain mix-blend-screen contrast-125 brightness-110"
         />
-      </div>
-      <motion.div 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="flex items-center gap-1 px-4 py-5"
-      >
+      </motion.div>
+
+      <div className="flex items-center gap-1 px-4 py-5">
         {navLinks.map((link) => (
-          <div key={link.name} className="relative px-3 group">
+          <motion.div variants={item} key={link.name} className="relative px-3 group">
             <a 
               href={link.href}
               className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none ${
@@ -56,22 +70,19 @@ export default function Navigation() {
             {!link.active && (
               <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
             )}
-          </div>
+          </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       {/* Contact Us Button - Aligned far right */}
-      <div className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full">
-        <motion.button 
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      <motion.div variants={item} className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full">
+        <button 
           className="bg-white text-black px-4 py-1.5 text-[12px] font-bold tracking-wide hover:bg-gray-200 transition-colors"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Contact us
-        </motion.button>
-      </div>
-    </nav>
+        </button>
+      </motion.div>
+    </motion.nav>
   );
 }
