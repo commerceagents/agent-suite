@@ -6,12 +6,8 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
-  const [videoSrc] = React.useState("/video-4.mp4");
+  const [videoSrc] = React.useState("/video-5.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleEnded = () => {
-    if (videoRef.current) videoRef.current.pause();
-  };
 
   const containerVars = {
     initial: { opacity: 0, scale: 0.98 },
@@ -61,8 +57,8 @@ export default function SpaceHorizonHero() {
             autoPlay 
             muted 
             playsInline 
+            loop
             preload="auto"
-            onEnded={handleEnded}
             className="w-full h-full object-cover opacity-60"
           />
           {/* Studio Shadow Overlay */}
