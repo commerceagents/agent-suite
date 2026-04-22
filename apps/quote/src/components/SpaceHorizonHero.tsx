@@ -6,7 +6,7 @@ import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
-  const [videoSrc, setVideoSrc] = React.useState("/video-3.mp4");
+  const [videoSrc, setVideoSrc] = React.useState("/video-4.mp4");
   const videoRef = useRef<HTMLVideoElement>(null);
   const hasEnded = useRef(false);
 
@@ -28,7 +28,7 @@ export default function SpaceHorizonHero() {
   };
 
   const handleVideoError = () => {
-    console.warn("Video 3 failed to decode (unsupported codec). Falling back to Video 2.");
+    console.warn("Video 4 failed to decode (unsupported codec). Falling back to Video 2.");
     if (videoSrc !== "/video-2.mp4") {
       setVideoSrc("/video-2.mp4");
       hasEnded.current = false;
