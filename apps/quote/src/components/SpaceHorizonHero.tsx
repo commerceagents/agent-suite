@@ -41,8 +41,8 @@ export default function SpaceHorizonHero() {
 
       {/* Main UI Layer */}
       <div className="relative z-20 h-full w-full">
-        {/* Navigation - Fixed at top with safe margins */}
-        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-4 md:px-8 md:pt-6 lg:px-10 lg:pt-8">
+        {/* Navigation - Fixed at top with compact margins */}
+        <div className="absolute top-0 left-0 right-0 z-50 px-4 pt-3 md:px-8 md:pt-4 lg:px-10 lg:pt-5">
           <Navigation />
         </div>
 
@@ -52,7 +52,7 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[96vw] max-w-[1800px] min-h-[60vh] md:min-h-[85vh] p-6 md:p-12 lg:p-24 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[90vw] max-w-[1600px] min-h-[50vh] md:min-h-[75vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
