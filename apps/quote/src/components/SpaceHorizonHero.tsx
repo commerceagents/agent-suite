@@ -35,7 +35,20 @@ export default function SpaceHorizonHero() {
       >
         
         {/* Atmospheric Background System */}
-        <div className="absolute inset-0 z-0 bg-black" />
+        <div className="absolute inset-0 z-0 bg-black">
+          {/* Cinematic Video Background */}
+          <video 
+            src="/video-7.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none"
+          />
+          
+          {/* Studio Shadow Overlay to ensure readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-5" />
+        </div>
 
         {/* Main Content Area - Clean Centered Text */}
         <div className="relative z-20 w-full h-full flex items-center justify-center">
