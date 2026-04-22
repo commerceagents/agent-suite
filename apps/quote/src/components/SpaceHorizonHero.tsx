@@ -19,21 +19,23 @@ export default function SpaceHorizonHero() {
       if (activeVideo === 1) {
         if (video2Ref.current && video2Ref.current.paused) {
           video2Ref.current.currentTime = 0;
-          video2Ref.current.play();
+          const playPromise = video2Ref.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(error => { if (error.name !== 'AbortError') console.warn(error) });
+          }
           setActiveVideo(2);
         }
       } else {
         if (video1Ref.current && video1Ref.current.paused) {
           video1Ref.current.currentTime = 0;
-          video1Ref.current.play();
+          const playPromise = video1Ref.current.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(error => { if (error.name !== 'AbortError') console.warn(error) });
+          }
           setActiveVideo(1);
         }
       }
     }
-  };
-
-  const handleEnded = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    e.currentTarget.pause();
   };
 
   const containerVars = {
@@ -87,7 +89,6 @@ export default function SpaceHorizonHero() {
             playsInline 
             preload="auto"
             onTimeUpdate={handleTimeUpdate}
-            onEnded={handleEnded}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${activeVideo === 1 ? 'opacity-60' : 'opacity-0'}`}
           />
           {/* Video 2 */}
@@ -99,7 +100,6 @@ export default function SpaceHorizonHero() {
             playsInline 
             preload="auto"
             onTimeUpdate={handleTimeUpdate}
-            onEnded={handleEnded}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${activeVideo === 2 ? 'opacity-60' : 'opacity-0'}`}
           />
           {/* Studio Shadow Overlay */}
