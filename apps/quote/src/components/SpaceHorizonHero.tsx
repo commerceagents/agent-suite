@@ -19,17 +19,6 @@ export default function SpaceHorizonHero() {
     },
   };
 
-  const itemVars = {
-    initial: { opacity: 0, scale: 8 },
-    animate: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 2.5,
-        ease: [0.16, 1, 0.3, 1] as any,
-      },
-    },
-  };
 
   return (
     <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none px-4 pt-4 pb-2 md:px-8 md:pt-6 md:pb-4 lg:px-10 lg:pt-8 lg:pb-6">
@@ -58,7 +47,13 @@ export default function SpaceHorizonHero() {
         {/* Main Content Area - Centered Agency Title */}
         <div className="relative z-20 w-full h-full flex flex-col items-center justify-center px-6">
           <motion.h1 
-            variants={itemVars}
+            initial={{ opacity: 0, scale: 5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ 
+              duration: 2.5, 
+              delay: 0.8,
+              ease: [0.16, 1, 0.3, 1] 
+            }}
             className="text-white font-bold tracking-[0.3em] leading-none uppercase select-none text-center whitespace-nowrap"
             style={{ 
               fontFamily: "'Inter', 'SF Pro Display', sans-serif",
