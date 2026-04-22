@@ -43,7 +43,7 @@ export default function SpaceHorizonHero() {
         variants={containerVars}
         initial="initial"
         animate="animate"
-        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden shadow-2xl"
+        className="relative flex-1 w-full h-full bg-black rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl ring-1 ring-white/10"
       >
         
         {/* Cinematic Solid Background */}
