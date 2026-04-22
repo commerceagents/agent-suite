@@ -20,7 +20,7 @@ export default function SpaceHorizonHero() {
   };
 
   const itemVars = {
-    initial: { opacity: 0, scale: 1.5 },
+    initial: { opacity: 0, scale: 8 },
     animate: {
       opacity: 1,
       scale: 1,
