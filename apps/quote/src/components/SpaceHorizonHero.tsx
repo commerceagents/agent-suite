@@ -52,25 +52,29 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-emerald-500/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/80 backdrop-blur-[12px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
               WebkitBackfaceVisibility: 'hidden',
               WebkitPerspective: 1000,
               WebkitTransform: 'translate3d(0,0,0)',
-              WebkitMaskImage: '-webkit-radial-gradient(white, black)'
             }}
           >
-            {/* Multi-layered Ambient Glow Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/[0.05] via-transparent to-emerald-500/[0.08] pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.05),transparent_50%)] pointer-events-none" />
+            {/* Grain Texture Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} />
+
+            {/* Neon Bottom Glow System */}
+            <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[50%] bg-purple-600/20 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[50%] bg-indigo-600/20 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-0 left-0 right-0 h-[30%] bg-gradient-to-t from-violet-600/10 to-transparent pointer-events-none" />
             
             {/* Top-Edge Glass Reflection */}
             <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
             
             {/* Inner Vignette for Depth */}
-            <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.1)] pointer-events-none rounded-[20px] md:rounded-[30px]" />
+            <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
             <motion.h1
               initial={{ opacity: 0 }}
@@ -79,7 +83,8 @@ export default function SpaceHorizonHero() {
               className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
               style={{ 
                 fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-                fontSize: "clamp(20px, 4.5vw, 52px)"
+                fontSize: "clamp(20px, 4.5vw, 52px)",
+                textShadow: "0 0 20px rgba(255,255,255,0.1)"
               }}
             >
               COMMERCE AGENTS
