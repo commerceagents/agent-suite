@@ -28,10 +28,10 @@ export default function SpaceHorizonHero() {
         {phase !== 'main' && (
           <motion.div
             key="intro-logo"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: phase === 'intro' ? 1 : 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
             className="absolute inset-0 z-[100] flex items-center justify-center bg-black"
           >
             <motion.img 
@@ -50,7 +50,7 @@ export default function SpaceHorizonHero() {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: phase === 'main' ? 1 : 0 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
+        transition={{ duration: 1.5, ease: "easeInOut" as any }}
         className="relative h-full w-full"
       >
         {/* Atmospheric Background System (Full Screen) */}
@@ -81,7 +81,7 @@ export default function SpaceHorizonHero() {
             <motion.div
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: phase === 'main' ? 1 : 0, y: phase === 'main' ? 0 : 60 }}
-              transition={{ duration: 1.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] as any }}
               className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
               style={{ 
                 isolation: 'isolate',
@@ -109,7 +109,7 @@ export default function SpaceHorizonHero() {
               <motion.h1
                 initial={{ opacity: 0, scale: 1.5 }}
                 animate={{ opacity: phase === 'main' ? 1 : 0, scale: phase === 'main' ? 1 : 1.5 }}
-                transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 2, delay: 0.8, ease: [0.16, 1, 0.3, 1] as any }}
                 className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
                 style={{ 
                   fontFamily: "'Inter', 'SF Pro Display', sans-serif",
