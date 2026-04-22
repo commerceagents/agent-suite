@@ -66,7 +66,7 @@ export default function Navigation() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold tracking-wide hover:bg-gray-200 transition-colors"
+          className="bg-white text-black px-6 py-2.5 text-sm font-bold tracking-wide hover:bg-gray-200 transition-colors"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Contact us
