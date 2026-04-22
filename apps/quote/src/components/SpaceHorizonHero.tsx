@@ -8,7 +8,7 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* 1) INITIAL BLANK SCREEN OVERLAY (0.5s) */}
+      {/* STEP 1: INITIAL BLANK SCREEN (0s - 0.5s) */}
       <motion.div
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
@@ -16,10 +16,10 @@ export default function SpaceHorizonHero() {
         className="absolute inset-0 z-[100] bg-black pointer-events-none"
       />
 
-      {/* MAIN CONTAINER */}
+      {/* MAIN CONTENT AREA */}
       <div className="relative h-full w-full">
         
-        {/* 2) BACKGROUND VIDEO (Fade in 1s starting at 0.5s) */}
+        {/* STEP 2: BACKGROUND VIDEO (0.5s - 1.5s) */}
         <div className="absolute inset-0 z-0 bg-black">
           <motion.video 
             initial={{ opacity: 0 }}
@@ -38,13 +38,13 @@ export default function SpaceHorizonHero() {
         {/* UI LAYER */}
         <div className="relative z-20 h-full w-full flex flex-col">
           
-          {/* 5) HEADER ITEMS (Staggered reveal starting at 2.9s) */}
+          {/* STEP 5: HEADER ITEMS (Staggered reveal starting at 2.9s) */}
           <div className="w-full px-[4vw] pt-[2vh] mb-[1vh]">
             <Navigation show={true} delay={2.9} />
           </div>
 
           <div className="flex-1 flex items-center justify-center p-[2vw] pb-[4vh]">
-            {/* 3) GLASS CARD (Fade + translateY starting at 1.5s) */}
+            {/* STEP 3: GLASS CARD (Fade + translateY starting at 1.5s) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -55,16 +55,18 @@ export default function SpaceHorizonHero() {
                 willChange: 'transform, opacity',
               }}
             >
+              {/* Grain Texture Overlay */}
               <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} />
 
+              {/* Decorative Glows */}
               <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[50%] bg-purple-600/20 blur-[100px] rounded-full pointer-events-none" />
               <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[50%] bg-indigo-600/20 blur-[100px] rounded-full pointer-events-none" />
               <div className="absolute bottom-0 left-0 right-0 h-[30%] bg-gradient-to-t from-violet-600/10 to-transparent pointer-events-none" />
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
               <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
-              {/* 4) TEXT ANIMATION (Scale 1.2 -> 1 starting at 2.3s) */}
+              {/* STEP 4: TEXT ANIMATION (Scale 1.2 -> 1 starting at 2.3s) */}
               <motion.h1
                 initial={{ opacity: 0, scale: 1.2 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -86,4 +88,3 @@ export default function SpaceHorizonHero() {
     </section>
   );
 }
-
