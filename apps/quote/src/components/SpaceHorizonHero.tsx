@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import SpaceHorizonCanvas from './SpaceHorizonCanvas';
 import Navigation from './Navigation';
 
 export default function SpaceHorizonHero() {
@@ -13,7 +12,7 @@ export default function SpaceHorizonHero() {
       scale: 1,
       transition: {
         duration: 1.2,
-        ease: [0.16, 1, 0.3, 1] as any,
+        ease: [0.16, 1, 0.3, 1],
         staggerChildren: 0.2,
         delayChildren: 0.6,
       },
@@ -27,7 +26,7 @@ export default function SpaceHorizonHero() {
       opacity: 1,
       transition: {
         duration: 1,
-        ease: [0.16, 1, 0.3, 1] as any,
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   };
