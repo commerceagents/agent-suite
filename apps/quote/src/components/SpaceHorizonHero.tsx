@@ -86,6 +86,7 @@ export default function SpaceHorizonHero() {
           <video 
             ref={videoRef}
             src={videoSrc}
+            autoPlay
             muted 
             playsInline 
             preload="auto"
