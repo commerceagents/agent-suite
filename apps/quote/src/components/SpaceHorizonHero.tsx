@@ -21,7 +21,7 @@ export default function SpaceHorizonHero() {
 
 
   return (
-    <section className="relative h-screen w-full bg-black overflow-hidden font-sans select-none">
+    <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
       {/* Atmospheric Background System (Full Screen) */}
       <div className="absolute inset-0 z-0 bg-black">
@@ -41,18 +41,18 @@ export default function SpaceHorizonHero() {
 
       {/* Main UI Layer */}
       <div className="relative z-20 h-full w-full flex flex-col">
-        {/* Navigation - Positioned ABOVE the box with tight margins */}
-        <div className="w-full px-4 pt-3 md:px-8 md:pt-4 lg:px-10 lg:pt-5 mb-2">
+        {/* Navigation - Proportional top spacing */}
+        <div className="w-full px-[4vw] pt-[2vh] mb-[1vh]">
           <Navigation />
         </div>
 
-        {/* Card Area - Positioned below the header with clear space */}
-        <div className="flex-1 flex items-center justify-center p-4 pb-12">
+        {/* Card Area - Proportional scaling across all devices */}
+        <div className="flex-1 flex items-center justify-center p-[2vw] pb-[4vh]">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative w-[90vw] max-w-[1600px] min-h-[50vh] md:min-h-[80vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
+            className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[20px] md:rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.05] backdrop-blur-[4px] shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_0_30px_rgba(255,255,255,0.05)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, backdrop-filter',
