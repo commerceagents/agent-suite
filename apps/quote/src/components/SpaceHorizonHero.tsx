@@ -16,10 +16,7 @@ export default function SpaceHorizonHero() {
   };
 
   const handleLoadedMetadata = () => {
-    if (videoRef.current && !hasEnded.current) {
-      // One-time cinematic trim on load
-      videoRef.current.currentTime = 0.5;
-    }
+    // Trim logic temporarily suspended to maximize codec compatibility
   };
 
   const handleEnded = () => {
@@ -38,9 +35,9 @@ export default function SpaceHorizonHero() {
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = true;
+      videoRef.current.load(); // Force browser reload when src dynamically changes
       videoRef.current.play().catch(err => {
         console.warn("Hero video autoplay or decode failed:", err);
-        // Fallback on play fail (e.g. codec issues masquerading as NotAllowedError)
         handleVideoError();
       });
     }
@@ -90,6 +87,7 @@ export default function SpaceHorizonHero() {
         <div className="absolute inset-0 z-0">
           <video 
             ref={videoRef}
+            src={videoSrc}
             autoPlay 
             muted 
             playsInline 
@@ -99,10 +97,7 @@ export default function SpaceHorizonHero() {
             onEnded={handleEnded}
             onError={handleVideoError}
             className="w-full h-full object-cover opacity-60"
-          >
-            {/* Using dynamic src for graceful fallback */}
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+          />
           {/* Studio Shadow Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 z-5" />
         </div>
