@@ -13,7 +13,19 @@ const navLinks = [
 
 export default function Navigation() {
   return (
-    <nav className="flex justify-center w-full mb-8">
+    <nav className="relative flex justify-center items-center w-full mb-8 z-50">
+      
+      {/* Brand Logo - Aligned far left, vertically centered with header */}
+      <div className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full">
+        <motion.img
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          src="/ca-logo.png"
+          alt="Commerce Agents Logo"
+          className="w-[50px] md:w-[60px] lg:w-[70px] h-auto object-contain mix-blend-screen"
+        />
+      </div>
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

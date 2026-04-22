@@ -35,19 +35,7 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-screen w-full flex flex-col bg-[#050505] overflow-hidden font-sans select-none p-6 md:p-10 lg:p-12">
       
-      {/* Top Left Brand Logo */}
-      <div className="absolute top-6 left-6 md:top-10 md:left-10 lg:top-12 lg:left-12 z-50">
-        <motion.img
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          src="/ca-logo.png"
-          alt="Commerce Agents Logo"
-          className="w-[50px] md:w-[70px] h-auto object-contain mix-blend-screen"
-        />
-      </div>
-
-      {/* Floating Capsule Navigation */}
+      {/* Floating Capsule Navigation (Logo is now inside this component) */}
       <Navigation />
 
       {/* Box Container - inspired by reference image */}
