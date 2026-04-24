@@ -72,6 +72,24 @@ export default function SpaceHorizonHero() {
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
           <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
+          {/* BRAND TEXT - 'OUTSIDE TO INSIDE' REVEAL */}
+          <motion.h1
+            initial={{ opacity: 0, scale: 1.5, letterSpacing: "0.8em" }}
+            animate={{ opacity: 1, scale: 1, letterSpacing: "0.5em" }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 10.5, 
+              ease: [0.16, 1, 0.3, 1] as any 
+            }}
+            className="relative z-10 text-white font-bold leading-tight uppercase select-none text-center max-w-full break-words"
+            style={{ 
+              fontFamily: "'Inter', 'SF Pro Display', sans-serif",
+              fontSize: "clamp(20px, 4.5vw, 52px)",
+              textShadow: "0 0 30px rgba(255,255,255,0.2)"
+            }}
+          >
+            COMMERCE AGENTS
+          </motion.h1>
         </motion.div>
       </div>
 
