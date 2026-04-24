@@ -25,10 +25,10 @@ export default function SpaceHorizonHero() {
       
       {/* GLOBAL IDENTITY - TOP LEFT LOGO (Starts at 12s) */}
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
+        initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
-        className="absolute top-5 right-8 z-[100]"
+        className="absolute top-5 left-8 z-[100]"
       >
         <img 
           src="/image/ca-logo.png" 
