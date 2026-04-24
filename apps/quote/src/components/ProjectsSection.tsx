@@ -50,7 +50,7 @@ export default function ProjectsSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-300 to-neutral-500"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-400 to-neutral-700"
           >
             Project<span className="text-white/20">s</span>
           </motion.h2>

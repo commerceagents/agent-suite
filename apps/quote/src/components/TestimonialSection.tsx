@@ -52,7 +52,7 @@ export default function TestimonialSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-300 to-neutral-500"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-400 to-neutral-700"
           >
             Testimonial<span className="text-white/20">s</span>
           </motion.h2>
