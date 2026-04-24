@@ -33,9 +33,9 @@ export default function SpaceHorizonHero() {
             className="absolute top-8 left-0 pointer-events-auto"
           >
             <img 
-              src="/image/ca-logo.png" 
+              src="/image/CA_logo-PNG.png" 
               alt="CA Logo" 
-              className="w-12 h-12 object-contain mix-blend-screen brightness-[2] contrast-[1.5]" 
+              className="w-12 h-12 object-contain" 
             />
           </motion.div>
         </div>
