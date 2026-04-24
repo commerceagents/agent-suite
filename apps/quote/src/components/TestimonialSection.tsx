@@ -79,7 +79,7 @@ export default function TestimonialSection() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="w-full max-w-4xl"
             >
-              <p className="text-white text-2xl md:text-4xl lg:text-5xl font-light leading-tight mb-12 italic">
+              <p className="text-white text-2xl md:text-4xl lg:text-5xl font-light leading-tight mb-12">
                 "{testimonials[index].content}"
               </p>
               

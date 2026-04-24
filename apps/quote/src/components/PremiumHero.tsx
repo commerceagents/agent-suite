@@ -65,7 +65,7 @@ export default function PremiumHero() {
           <p className="text-white opacity-80 text-lg font-light leading-relaxed">
             Orchestrating global commerce with architectural precision.
           </p>
-          <p className="text-white opacity-60 text-sm font-light tracking-wide italic">
+          <p className="text-white opacity-60 text-sm font-light tracking-wide">
              The premium nexus for high-performance scale.
           </p>
         </motion.div>
