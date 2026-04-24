@@ -11,7 +11,7 @@ const navLinks = [
     href: '#projects', 
     active: true,
   },
-  { name: 'People', href: '#', active: false },
+  { name: 'People', href: '#people', active: false },
   { name: 'Testimonial', href: '#', active: false },
 ];
  
@@ -28,8 +28,13 @@ export default function Navigation({ show = true, delay = 0 }) {
       
       // HERO = 0 to 0.6H -> Projects (Default)
       // ABOUT = 0.6H to 1.6H -> About us
-      // PROJECTS = > 1.6H -> Projects
-      if (scrollPos > windowHeight * 0.6 && scrollPos < windowHeight * 1.6) {
+      // PROJECTS = 1.6H to 4.4H -> Projects
+      // PEOPLE = > 4.4H -> People
+      if (scrollPos > windowHeight * 4.4) {
+        setActiveSection('People');
+      } else if (scrollPos > windowHeight * 1.6) {
+        setActiveSection('Projects');
+      } else if (scrollPos > windowHeight * 0.6) {
         setActiveSection('About us');
       } else {
         setActiveSection('Projects');

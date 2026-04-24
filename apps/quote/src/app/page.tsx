@@ -1,6 +1,7 @@
 import SpaceHorizonHero from "@/components/SpaceHorizonHero";
 import AboutSection from "@/components/AboutSection";
 import ProjectsSection from "@/components/ProjectsSection";
+import PeopleSection from "@/components/PeopleSection";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <SpaceHorizonHero />
       <AboutSection />
       <ProjectsSection />
+      <PeopleSection />
     </main>
   );
 }
