@@ -29,7 +29,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative bg-[#050508] pt-24 pb-12 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5">
+    <footer className="relative bg-[#050508] pt-12 pb-12 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5">
       
       {/* ATMOSPHERIC GLOW */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[100%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />

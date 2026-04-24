@@ -46,11 +46,10 @@ export default function ServicesSection() {
   return (
     <section 
       id="services" 
-      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
+      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
     >
       
-      {/* ATMOSPHERIC DECORATION */}
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[40%] h-[60%] bg-white/[0.02] blur-[140px] rounded-full pointer-events-none" />
+
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         
@@ -91,8 +90,15 @@ export default function ServicesSection() {
             >
               <div>
                 <motion.div 
-                  whileHover={{ scale: 1.1 }}
-                  className="w-16 h-16 rounded-2xl bg-white/[0.05] flex items-center justify-center text-white/40 group-hover:text-white group-hover:bg-white/[0.08] transition-all duration-500 mb-12"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    backgroundColor: '#FFFFFF', 
+                    color: '#000000', 
+                    boxShadow: "0 0 30px rgba(255,255,255,0.3)" 
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white/40 transition-all duration-500 mb-12"
                 >
                   {service.icon}
                 </motion.div>

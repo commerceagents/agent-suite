@@ -35,10 +35,9 @@ const stats = [
 
 export default function StatsSection() {
   return (
-    <section className="relative w-full bg-[#050508] py-32 md:py-48 px-6 md:px-12 lg:px-24 overflow-hidden border-y border-white/5">
+    <section className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-y border-white/5">
       
-      {/* ATMOSPHERIC GLOW */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
+
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24">

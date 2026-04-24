@@ -111,12 +111,22 @@ export default function ProjectsSection() {
               </div>
 
               {/* Corner Accent */}
-              <div className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <motion.div 
+                whileHover={{ 
+                  scale: 1.1, 
+                  backgroundColor: '#FFFFFF', 
+                  color: '#000000', 
+                  boxShadow: "0 0 20px rgba(255,255,255,0.3)" 
+                }}
+                whileTap={{ scale: 0.95 }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+                className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center rounded-full border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-300 text-white"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="7" y1="17" x2="17" y2="7"></line>
                   <polyline points="7 7 17 7 17 17"></polyline>
                 </svg>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
           

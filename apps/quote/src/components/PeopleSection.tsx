@@ -34,11 +34,8 @@ export default function PeopleSection() {
   return (
     <section 
       id="people" 
-      className="relative min-h-screen w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
+      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
     >
-      
-      {/* BACKGROUND ACCENTS */}
-      <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
       
       <div className="max-w-[1400px] mx-auto relative z-10">
         
@@ -90,9 +87,19 @@ export default function PeopleSection() {
                 
                 {/* Social Connect (Fade In on Hover) */}
                 <div className="absolute top-6 right-6 flex flex-col gap-3 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
-                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center text-white/40 hover:text-white transition-colors border border-white/10">
+                  <motion.div 
+                    whileHover={{ 
+                      scale: 1.1, 
+                      backgroundColor: '#FFFFFF', 
+                      color: '#000000', 
+                      boxShadow: "0 0 15px rgba(255,255,255,0.4)" 
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
+                    className="w-10 h-10 rounded-full backdrop-blur-xl flex items-center justify-center text-white/40 border border-white/10 transition-all duration-500"
+                  >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Internal Designation Overlay */}
@@ -120,7 +127,7 @@ export default function PeopleSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="mt-48 pt-16 border-t border-white/5 text-center"
+          className="mt-24 pt-16 border-t border-white/5 text-center"
         >
           <p className="text-white/20 text-xs tracking-[0.6em] uppercase mb-8">Guided by Human Intelligence</p>
           <p className="text-white/60 text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed">

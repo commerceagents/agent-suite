@@ -18,18 +18,10 @@ export default function AboutSection() {
     <section 
       id="about" 
       ref={containerRef}
-      className="relative min-h-screen w-full bg-[#050508] overflow-hidden py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 scroll-mt-24"
+      className="relative w-full bg-[#050508] overflow-hidden py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 scroll-mt-24"
     >
       
-      {/* ── PARALLAX BACKGROUND DECORATION ── */}
-      <motion.div 
-        style={{ y: bgY1 }}
-        className="absolute top-0 left-[10%] w-[60%] h-[60%] bg-violet-600/5 blur-[140px] rounded-full pointer-events-none" 
-      />
-      <motion.div 
-        style={{ y: bgY2 }}
-        className="absolute bottom-0 right-[10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full pointer-events-none" 
-      />
+
       
       <div className="max-w-[1400px] mx-auto relative z-10">
         
@@ -58,7 +50,7 @@ export default function AboutSection() {
         </div>
 
         {/* ── STORY BLOCK 1: THE ORIGIN (Image Slide Left, Text Slide Right) ── */}
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-48 lg:mb-64">
+        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-24 lg:mb-32">
           <motion.div 
             initial={{ opacity: 0, x: -100 }}
             whileInView={{ opacity: 1, x: 0 }}

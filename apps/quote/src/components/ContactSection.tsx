@@ -5,11 +5,8 @@ import { motion } from 'framer-motion';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5">
+    <section id="contact" className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5">
       
-      {/* ATMOSPHERIC GLOWS */}
-      <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
-
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -36,18 +33,28 @@ export default function ContactSection() {
 
             <div className="space-y-8">
               <div className="flex items-center gap-6 group cursor-pointer">
-                <div className="w-12 h-12 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/40 group-hover:text-white group-hover:bg-white/[0.1] transition-all duration-500">
+                <motion.div 
+                whileHover={{ scale: 1.1, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 20px rgba(255,255,255,0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-white/40 transition-all duration-500"
+              >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                </div>
+                </motion.div>
                 <div>
                   <p className="text-white/20 text-[10px] uppercase tracking-widest mb-1">Direct Line</p>
                   <p className="text-white text-lg">+91 9941292729</p>
                 </div>
               </div>
               <div className="flex items-center gap-6 group cursor-pointer">
-                <div className="w-12 h-12 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/40 group-hover:text-white group-hover:bg-white/[0.1] transition-all duration-500">
+                <motion.div 
+                whileHover={{ scale: 1.1, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 20px rgba(255,255,255,0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                className="w-12 h-12 rounded-2xl border border-white/10 flex items-center justify-center text-white/40 transition-all duration-500"
+              >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-                </div>
+                </motion.div>
                 <div>
                   <p className="text-white/20 text-[10px] uppercase tracking-widest mb-1">Satellite Transmission</p>
                   <p className="text-white text-lg">admin@commerce-agent.design</p>
@@ -102,7 +109,7 @@ export default function ContactSection() {
                 suppressHydrationWarning
                 className="w-full h-16 rounded-2xl border border-white/20 flex items-center justify-center text-white text-sm font-bold uppercase tracking-[0.4em] transition-all duration-500 overflow-hidden relative group mt-8"
               >
-                <span className="relative z-10">Initiate Transmission</span>
+                <span className="relative z-10">Send Message</span>
                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               </motion.button>
             </form>

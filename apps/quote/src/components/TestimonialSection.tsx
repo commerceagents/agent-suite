@@ -28,7 +28,7 @@ export default function TestimonialSection() {
   return (
     <section 
       id="testimonial" 
-      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
     >
       
       {/* ATMOSPHERIC DECORATION */}
