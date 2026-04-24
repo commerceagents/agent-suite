@@ -37,80 +37,74 @@ export default function TestimonialSection() {
   return (
     <section 
       id="testimonial" 
-      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 overflow-hidden border-t border-white/5"
     >
       
-      {/* ATMOSPHERIC DECORATION */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[40%] h-[60%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
+      {/* CENTRAL ATMOSPHERIC GLOW */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-white/[0.02] blur-[160px] rounded-full pointer-events-none" />
 
-      <div className="max-w-[1400px] mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 text-center">
         
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 items-start">
-          
-          {/* LEFT: SECTION IDENTITY */}
-          <div className="w-full lg:w-1/3 lg:sticky lg:top-48">
+        {/* SECTION IDENTITY */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          className="mb-16 md:mb-24"
+        >
+          <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4">Voice of the Network</span>
+          <h2 
+            className="text-4xl md:text-5xl font-bold text-white/20"
+            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+          >
+            Testimonials.
+          </h2>
+        </motion.div>
+
+        {/* THE CONTENT STAGE */}
+        <div className="relative min-h-[450px] md:min-h-[350px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              className="mb-8"
+              key={index}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 1.05, y: -20 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex flex-col items-center"
             >
-              <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4">Voice of the Network</span>
-              <h2 
-                className="text-5xl md:text-7xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
-                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                Testimonials.
-              </h2>
-            </motion.div>
+              {/* QUOTE ICON */}
+              <div className="text-white/10 text-7xl md:text-8xl mb-12 font-serif select-none">
+                &ldquo;
+              </div>
 
-            {/* SLIDER INDICATORS */}
-            <div className="flex gap-4 mt-12">
-              {testimonials.map((_, idx) => (
-                <button 
-                  key={idx}
-                  onClick={() => setIndex(idx)}
-                  className={`h-[2px] transition-all duration-700 ${idx === index ? 'w-12 bg-white' : 'w-6 bg-white/10'}`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT: THE CONTENT STAGE */}
-          <div className="w-full lg:w-2/3 min-h-[400px] flex items-center">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full"
-              >
-                <div className="mb-12">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-20 mb-8">
-                    <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5M13 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5" />
-                  </svg>
-                  <p className="text-white text-2xl md:text-4xl lg:text-5xl font-light leading-tight tracking-tight">
-                    {testimonials[index].content}
+              <p className="text-white text-2xl md:text-4xl lg:text-5xl font-light leading-tight tracking-tight max-w-5xl mb-16">
+                {testimonials[index].content}
+              </p>
+              
+              <div className="flex flex-col items-center gap-6">
+                <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <div className="text-center">
+                  <h4 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
+                    {testimonials[index].author}
+                  </h4>
+                  <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] mt-3">
+                    {testimonials[index].role} — {testimonials[index].company}
                   </p>
                 </div>
-                
-                <div className="flex items-center gap-6">
-                  <div className="h-[1px] w-12 bg-white/20" />
-                  <div>
-                    <h4 className="text-white text-xl font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
-                      {testimonials[index].author}
-                    </h4>
-                    <p className="text-white/40 text-[10px] uppercase tracking-[0.4em] mt-2">
-                      {testimonials[index].role} — {testimonials[index].company}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
+        {/* CENTRIC INDICATORS */}
+        <div className="flex justify-center gap-6 mt-24">
+          {testimonials.map((_, idx) => (
+            <button 
+              key={idx}
+              onClick={() => setIndex(idx)}
+              className={`h-[1px] transition-all duration-700 ${idx === index ? 'w-16 bg-white' : 'w-8 bg-white/10'}`}
+            />
+          ))}
         </div>
 
       </div>
