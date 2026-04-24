@@ -68,17 +68,6 @@ export default function SpaceHorizonHero() {
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
           <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
-          {/* BRAND TEXT - NOW STATIC WITHIN CARD */}
-          <h1
-            className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
-            style={{ 
-              fontFamily: "'Inter', 'SF Pro Display', sans-serif",
-              fontSize: "clamp(20px, 4.5vw, 52px)",
-              textShadow: "0 0 20px rgba(255,255,255,0.1)"
-            }}
-          >
-            COMMERCE AGENTS
-          </h1>
         </motion.div>
       </div>
 
