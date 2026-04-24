@@ -31,8 +31,7 @@ export default function TestimonialSection() {
       className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
     >
       
-      {/* ATMOSPHERIC DECORATION */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
+
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         
