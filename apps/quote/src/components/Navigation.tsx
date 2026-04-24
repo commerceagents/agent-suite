@@ -142,22 +142,6 @@ export default function Navigation({ show = true, delay = 0 }) {
             Contact us
           </button>
           
-          <AnimatePresence>
-            {hoveredSection === 'contact' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute top-full right-0 pt-2"
-              >
-                <div className="w-56 py-2 bg-[#0A0A0F]/80 backdrop-blur-[12px] border border-white/10 rounded-xl shadow-2xl">
-                  <a href="#" className="block px-5 py-3 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5">Email: hello@ca.com</a>
-                  <a href="#" className="block px-5 py-3 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all border-b border-white/5">WhatsApp: +1 234 567</a>
-                  <a href="#" className="block px-5 py-3 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all">Schedule a Call</a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
     </motion.nav>
