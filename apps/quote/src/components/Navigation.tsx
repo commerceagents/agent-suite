@@ -144,7 +144,7 @@ export default function Navigation({ show = true, delay = 0 }) {
             }}
             suppressHydrationWarning
             className="bg-white text-black px-4 py-1.5 text-[12px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
             Contact us
           </button>

@@ -51,7 +51,7 @@ export default function AboutSection() {
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] max-w-5xl text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
             About us
           </motion.h2>
