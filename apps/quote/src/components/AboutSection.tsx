@@ -64,7 +64,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full lg:w-1/2 aspect-[4/3] rounded-[40px] overflow-hidden border border-white/5 relative group"
+            className="w-full lg:w-1/2 aspect-[4/3] overflow-hidden relative group"
           >
             <img 
               src="/about-hero.png" 
@@ -114,7 +114,7 @@ export default function AboutSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ duration: 0.8, delay: 0.2 + (idx * 0.2) }}
-              className="p-12 md:p-16 rounded-[40px] border border-white/5 bg-white/[0.02] backdrop-blur-md relative overflow-hidden group hover:bg-white/[0.04] transition-all duration-500"
+              className="p-12 md:p-16 relative overflow-hidden group transition-all duration-500"
             >
               <div className="text-white/80 text-4xl mb-10">{item.icon}</div>
               <h4 className="text-white text-2xl md:text-3xl font-bold mb-6">{item.title}</h4>
