@@ -34,10 +34,10 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="text-white text-6xl md:text-8xl font-bold leading-[1] mb-12 tracking-tighter"
+              className="text-6xl md:text-8xl font-bold leading-[1] mb-12 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40"
             >
               Get in <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/30">Touch</span>
+              Touch
             </motion.h2>
 
             <motion.p
