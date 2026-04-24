@@ -30,9 +30,7 @@ export default function SpaceHorizonHero() {
         transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
         className="absolute top-8 left-8 z-[100]"
       >
-        <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center p-2">
-          <img src="/image/ca-logo.png" alt="CA Logo" className="w-full h-full object-contain" />
-        </div>
+        <img src="/image/ca-logo.png" alt="CA Logo" className="w-12 h-12 object-contain" />
       </motion.div>
 
       {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
