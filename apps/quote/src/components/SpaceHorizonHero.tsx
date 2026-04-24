@@ -50,7 +50,11 @@ export default function SpaceHorizonHero() {
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 9.5, ease: [0.16, 1, 0.3, 1] as any }}
+          transition={{ 
+            duration: 1.5, 
+            delay: 9.5, 
+            ease: [0.16, 1, 0.3, 1] as any 
+          }}
           className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
           style={{ 
             isolation: 'isolate',
