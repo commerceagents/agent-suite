@@ -47,9 +47,9 @@ export default function SpaceHorizonHero() {
       <div className="relative z-20 h-full w-full flex items-end justify-center p-[4vw] pb-[6vh]">
         <div className="w-[92vw] max-w-[1700px] flex flex-col gap-6">
           
-          {/* HEADER LAYER (Starts 11s) */}
+          {/* HEADER LAYER (Starts 14s - After 'Commerce Agents' settles) */}
           <div className="w-full">
-            <Navigation show={true} delay={11.0} />
+            <Navigation show={true} delay={14.0} />
           </div>
 
           {/* STEP 2: GLASS CARD REVEAL (Starts 9.5s) */}
