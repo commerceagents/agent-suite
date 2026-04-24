@@ -30,7 +30,7 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
-            className="absolute top-8 left-0 pointer-events-auto"
+            className="absolute top-4 left-0 pointer-events-auto"
           >
             <img 
               src="/image/CA_logo-PNG.png" 
