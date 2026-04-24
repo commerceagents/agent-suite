@@ -48,9 +48,9 @@ export default function SpaceHorizonHero() {
         
         {/* STEP 1: GLASS CARD REVEAL (Starts when Loader clears at 8s) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 8.0, ease: [0.16, 1, 0.3, 1] as any }}
+          transition={{ duration: 1.5, delay: 8.0, ease: [0.16, 1, 0.3, 1] as any }}
           className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
           style={{ 
             isolation: 'isolate',
@@ -68,11 +68,8 @@ export default function SpaceHorizonHero() {
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
           <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.4)] pointer-events-none" />
 
-          {/* BRAND TEXT */}
-          <motion.h1
-            initial={{ opacity: 0, scale: 1.2 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 8.5, ease: "easeOut" }}
+          {/* BRAND TEXT - NOW STATIC WITHIN CARD */}
+          <h1
             className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
             style={{ 
               fontFamily: "'Inter', 'SF Pro Display', sans-serif",
@@ -81,7 +78,7 @@ export default function SpaceHorizonHero() {
             }}
           >
             COMMERCE AGENTS
-          </motion.h1>
+          </h1>
         </motion.div>
       </div>
 
