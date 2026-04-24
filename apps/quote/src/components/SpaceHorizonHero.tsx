@@ -28,14 +28,11 @@ export default function SpaceHorizonHero() {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
-        className="absolute top-8 left-8 z-[100] flex items-center gap-4"
+        className="absolute top-8 left-8 z-[100]"
       >
         <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center p-2">
           <img src="/ca-logo.png" alt="CA" className="w-full h-full object-contain brightness-0 invert" />
         </div>
-        <span className="text-white/40 text-xs tracking-[0.3em] font-medium uppercase hidden md:block">
-          System Identity
-        </span>
       </motion.div>
 
       {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
