@@ -64,8 +64,8 @@ export default function PeopleSection() {
           </motion.h2>
         </div>
 
-        {/* TEAM GRID - 4 IN ONE LINE ON DESKTOP */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        {/* TEAM GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           {team.map((member, idx) => (
             <motion.div
               key={member.name}
@@ -73,36 +73,42 @@ export default function PeopleSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: idx * 0.1 }}
-              className={`relative group ${idx % 2 === 1 ? 'lg:translate-y-16' : ''}`}
+              whileHover={{ y: -10 }}
+              className="relative group cursor-pointer"
             >
-              {/* Portrait Image Container */}
-              <div className="relative aspect-[4/5] rounded-[40px] overflow-hidden border border-white/5 bg-white/[0.02]">
-                <img 
+              {/* Portrait Image Container with Soft Zoom */}
+              <div className="relative aspect-[4/5] rounded-[40px] overflow-hidden border border-white/5 bg-white/[0.02] backdrop-blur-md mb-8">
+                <motion.img 
+                  initial={{ scale: 0.95 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                   src={member.image} 
                   alt={member.name}
-                  className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 scale-105 group-hover:scale-100"
+                  className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
                 />
                 
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-                
-                {/* Floating Bio Card (on hover) */}
-                <div className="absolute bottom-6 left-6 right-6 p-6 rounded-[24px] bg-white/[0.05] backdrop-blur-xl border border-white/10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                  <h3 className="text-white text-xl font-bold mb-1">{member.name}</h3>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-3">{member.role}</p>
-                  <p className="text-white/60 text-xs font-light leading-relaxed">
-                    "{member.bio}"
-                  </p>
+                {/* Social Connect (Fade In on Hover) */}
+                <div className="absolute top-6 right-6 flex flex-col gap-3 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500">
+                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center text-white/40 hover:text-white transition-colors border border-white/10">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                  </div>
+                </div>
+
+                {/* Internal Designation Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                  <p className="text-white/60 text-[10px] font-light leading-relaxed">"{member.bio}"</p>
                 </div>
               </div>
 
-              {/* External Metadata (Visible by default) */}
-              <div className="mt-8 px-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="h-[1px] w-8 bg-white/20" />
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest">{member.role}</span>
-                </div>
-                <h4 className="text-white text-2xl font-bold">{member.name}</h4>
+              {/* External Identity Layer */}
+              <div className="px-4">
+                <h4 className="text-white text-2xl font-bold mb-1" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
+                  {member.name}
+                </h4>
+                <p className="text-white/30 text-[10px] uppercase tracking-[0.4em]">
+                  {member.role}
+                </p>
               </div>
             </motion.div>
           ))}

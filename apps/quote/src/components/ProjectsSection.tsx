@@ -60,20 +60,26 @@ export default function ProjectsSection() {
 
         {/* HORIZONTAL TRACK */}
         <motion.div style={{ x }} className="flex gap-12 px-6 md:px-12 lg:px-24 items-center">
-          {projects.map((project) => (
-            <div 
+          {projects.map((project, idx) => (
+            <motion.div 
               key={project.id} 
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: idx * 0.1 }}
               className="relative flex-shrink-0 w-[85vw] md:w-[70vw] lg:w-[60vw] aspect-[16/9] group overflow-hidden rounded-[40px] border border-white/5"
             >
-              {/* Project Image */}
-              <img 
+              {/* Project Image with Internal Parallax & Smooth Zoom */}
+              <motion.img 
                 src={project.image} 
                 alt={project.title}
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
               />
               
               {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
 
               {/* Glass Info Card */}
               <div className="absolute bottom-10 left-10 right-10 p-8 md:p-12 rounded-[30px] bg-white/[0.03] backdrop-blur-2xl border border-white/10 flex flex-col md:flex-row items-end justify-between gap-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700">

@@ -57,10 +57,10 @@ export default function AboutSection() {
           </motion.h2>
         </div>
 
-        {/* ── STORY BLOCK 1: THE ORIGIN (Image Slide Left, Text Reveal Right) ── */}
+        {/* ── STORY BLOCK 1: THE ORIGIN (Image Slide Left, Text Slide Right) ── */}
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24 mb-48 lg:mb-64">
           <motion.div 
-            initial={{ opacity: 0, x: -60 }}
+            initial={{ opacity: 0, x: -100 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
@@ -74,36 +74,24 @@ export default function AboutSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60" />
           </motion.div>
 
-          <div className="w-full lg:w-1/2">
-            <motion.h3 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-white text-3xl md:text-4xl font-bold mb-8 tracking-tight"
-            >
+          <motion.div 
+            initial={{ opacity: 0, x: 100 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full lg:w-1/2"
+          >
+            <h3 className="text-white text-3xl md:text-4xl font-bold mb-8 tracking-tight">
               The Architectural Blueprint
-            </motion.h3>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="text-white/50 text-lg md:text-xl leading-relaxed font-light mb-10"
-            >
+            </h3>
+            <p className="text-white/50 text-lg md:text-xl leading-relaxed font-light mb-10">
               Commerce Agents was founded on the intersection of structural precision and digital innovation. We view every project as a unique ecosystem, requiring a perfect balance of aesthetic form and technical functionality.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex items-center gap-6"
-            >
+            </p>
+            <div className="flex items-center gap-6">
               <div className="h-[1px] w-12 bg-white/20" />
               <span className="text-white/40 text-[10px] uppercase tracking-[0.3em]">Established 2024</span>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* ── STORY BLOCK 2: THE VISION (Staggered Cards with Fade + Up) ── */}
@@ -132,38 +120,10 @@ export default function AboutSection() {
               <h4 className="text-white text-2xl md:text-3xl font-bold mb-6">{item.title}</h4>
               <p className="text-white/40 text-lg leading-relaxed font-light">{item.desc}</p>
               
-              {/* Subtle Corner Accents */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </motion.div>
           ))}
         </div>
-
-        {/* ── FOOTER STATS (Reveal + Up) ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="mt-48 pt-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-12"
-        >
-          <div className="flex flex-col gap-2">
-            <p className="text-white/20 text-xs tracking-[0.5em] uppercase">Global Recognition</p>
-            <p className="text-white/60 text-lg font-light">"Redefining the digital horizon."</p>
-          </div>
-          
-          <div className="flex gap-16 md:gap-24">
-            {[
-              { label: "Projects", val: "120+" },
-              { label: "Markets", val: "15+" },
-              { label: "Accuracy", val: "99.9%" }
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-white text-3xl font-bold mb-2">{stat.val}</div>
-                <div className="text-white/20 text-[10px] uppercase tracking-widest">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
 
       </div>
     </section>
