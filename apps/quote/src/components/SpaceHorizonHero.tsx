@@ -49,7 +49,7 @@ export default function SpaceHorizonHero() {
       </div>
 
       {/* UI LAYER */}
-      <div className="relative z-20 h-full w-full flex items-center justify-center p-[2vw]">
+      <div className="relative z-20 h-full w-full flex items-end justify-center p-[4vw] pb-[6vh]">
         
         {/* STEP 2: GLASS CARD REVEAL (Starts 1.5s AFTER video starts) */}
         <motion.div
