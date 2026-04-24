@@ -32,7 +32,6 @@ export default function SpaceHorizonHero() {
             src="/video-7.mp4"
             autoPlay
             muted
-            loop
             playsInline
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           />
