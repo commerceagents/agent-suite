@@ -34,7 +34,7 @@ export default function ContactSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="text-6xl md:text-8xl font-bold leading-[1] mb-12 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40"
+              className="text-6xl md:text-8xl font-bold leading-[1] mb-12 tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-neutral-300 to-neutral-500"
             >
               Get in <br />
               Touch
