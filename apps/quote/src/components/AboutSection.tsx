@@ -18,7 +18,7 @@ const aboutData = [
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative min-h-screen w-full bg-[#050508] overflow-hidden py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-24">
+    <section id="about" className="relative min-h-screen w-full bg-[#050508] overflow-hidden py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-24 scroll-mt-24">
       
       {/* BACKGROUND DECORATION */}
       <div className="absolute top-0 left-1/4 w-[50%] h-[50%] bg-violet-600/10 blur-[120px] rounded-full pointer-events-none" />
