@@ -135,6 +135,7 @@ export default function ContactSection() {
               <motion.button
                 whileHover={{ scale: 1.02, backgroundColor: '#FFFFFF', color: '#000000' }}
                 whileTap={{ scale: 0.98 }}
+                suppressHydrationWarning
                 className="w-full h-16 rounded-2xl border border-white/20 flex items-center justify-center text-white text-sm font-bold uppercase tracking-[0.4em] transition-all duration-500 overflow-hidden relative group mt-8"
               >
                 <span className="relative z-10">Initiate Transmission</span>

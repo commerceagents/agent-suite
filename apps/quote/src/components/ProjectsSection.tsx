@@ -10,7 +10,7 @@ const projects = [
     sector: 'Architecture',
     year: '2024',
     impact: 'Net-Zero Emissions',
-    image: '/project_alpha_futuristic_hq_1777020684582.png',
+    image: '/project-1.png',
   },
   {
     id: '02',
@@ -18,7 +18,7 @@ const projects = [
     sector: 'Interior Design',
     year: '2023',
     impact: '240% Growth',
-    image: '/project_beta_luxury_retail_1777020707727.png',
+    image: '/project-2.png',
   },
 ];
 

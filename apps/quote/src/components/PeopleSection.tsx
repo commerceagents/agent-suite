@@ -8,25 +8,25 @@ const team = [
     name: 'Elena Vance',
     role: 'Chief Architect',
     bio: 'Pioneering the intersection of structural form and digital identity.',
-    image: '/leadership_portrait_minimalist_1_1777020952682.png',
+    image: '/people-1.png',
   },
   {
     name: 'Marcus Thorne',
     role: 'Technical Director',
     bio: 'Orchestrating the future of commerce through advanced AI systems.',
-    image: '/leadership_portrait_minimalist_2_1777020977347.png',
+    image: '/people-2.png',
   },
   {
     name: 'Sarah Chen',
     role: 'Design Principal',
     bio: 'Crafting premium brand experiences with high-end minimalism.',
-    image: '/leadership_portrait_minimalist_1_1777020952682.png',
+    image: '/people-3.png',
   },
   {
     name: 'Julian Voss',
     role: 'Creative Lead',
     bio: 'Translating complex structural goals into iconic brand identities.',
-    image: '/leadership_portrait_minimalist_4_1777021188240.png',
+    image: '/people-4.png',
   },
 ];
 
