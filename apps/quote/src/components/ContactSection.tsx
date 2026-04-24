@@ -41,7 +41,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="text-white/20 text-[10px] uppercase tracking-widest mb-1">Direct Line</p>
-                  <p className="text-white text-lg">+1 (555) 000-AGENT</p>
+                  <p className="text-white text-lg">+91 9941292729</p>
                 </div>
               </div>
               <div className="flex items-center gap-6 group cursor-pointer">
@@ -50,7 +50,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="text-white/20 text-[10px] uppercase tracking-widest mb-1">Satellite Transmission</p>
-                  <p className="text-white text-lg">hello@commerceagents.ai</p>
+                  <p className="text-white text-lg">admin@commerce-agent.design</p>
                 </div>
               </div>
             </div>
