@@ -27,7 +27,7 @@ export default function ContactSection() {
                 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
               >
-                Contact.
+                Get in Touch.
               </h2>
             </div>
             <p className="text-white/40 text-xl font-light leading-relaxed max-w-xl mb-16">
