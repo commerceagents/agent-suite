@@ -53,6 +53,7 @@ export default function ProjectsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+            style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}
           >
             Projects
           </motion.h2>
@@ -67,9 +68,9 @@ export default function ProjectsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1, delay: idx * 0.1 }}
-              className="relative flex-shrink-0 w-[85vw] md:w-[70vw] lg:w-[60vw] aspect-[16/9] group overflow-hidden rounded-[40px] border border-white/5"
+              className="relative flex-shrink-0 w-[85vw] md:w-[70vw] lg:w-[60vw] aspect-[16/9] group overflow-hidden rounded-[40px] border border-white/5 bg-white/[0.02]"
             >
-              {/* Project Image with Internal Parallax & Smooth Zoom */}
+              {/* Project Image with Smooth Zoom */}
               <motion.img 
                 src={project.image} 
                 alt={project.title}
@@ -89,7 +90,9 @@ export default function ProjectsSection() {
                     <div className="h-[1px] w-8 bg-white/20" />
                     <span className="text-white/40 text-[10px] uppercase tracking-widest">{project.sector}</span>
                   </div>
-                  <h3 className="text-white text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
+                  <h3 className="text-white text-3xl md:text-4xl font-bold mb-4" style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}>
+                    {project.title}
+                  </h3>
                   <p className="text-white/40 text-sm font-light">
                     Redefining the standard of {project.sector.toLowerCase()} through technical excellence and visionary form.
                   </p>
@@ -114,10 +117,10 @@ export default function ProjectsSection() {
                   <polyline points="7 7 17 7 17 17"></polyline>
                 </svg>
               </div>
-            </div>
+            </motion.div>
           ))}
           
-          {/* ENDING PLACEHOLDER / NEXT SECTION PREVIEW */}
+          {/* ENDING PLACEHOLDER */}
           <div className="flex-shrink-0 w-[40vw] flex items-center justify-center">
             <div className="h-[1px] w-32 bg-white/10" />
             <span className="text-white/20 text-[10px] uppercase tracking-[0.4em] mx-8">End of Portfolio</span>
