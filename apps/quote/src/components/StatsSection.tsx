@@ -6,7 +6,7 @@ import { motion, useInView, animate } from 'framer-motion';
 function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const [displayValue, setDisplayValue] = useState(0);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.5 });
+  const isInView = useInView(ref, { once: false, amount: 0.5 });
 
   useEffect(() => {
     if (isInView) {
@@ -47,7 +47,7 @@ export default function StatsSection() {
               key={stat.label}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 1, delay: idx * 0.15 }}
               className="text-center md:text-left group"
             >
@@ -65,7 +65,7 @@ export default function StatsSection() {
                 <motion.div
                   initial={{ x: "-100%" }}
                   whileInView={{ x: "0%" }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 1.5, delay: idx * 0.2 + 0.5, ease: "easeOut" }}
                   className="absolute inset-0 bg-white/10"
                 />

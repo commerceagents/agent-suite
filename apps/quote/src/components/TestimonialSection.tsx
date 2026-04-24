@@ -50,7 +50,7 @@ export default function TestimonialSection() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
           >
             Voice of the Network
@@ -59,7 +59,7 @@ export default function TestimonialSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}

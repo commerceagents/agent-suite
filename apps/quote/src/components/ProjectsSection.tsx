@@ -43,7 +43,7 @@ export default function ProjectsSection() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="inline-block text-white/40 text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
           >
             Portfolio
@@ -51,7 +51,7 @@ export default function ProjectsSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}
           >
@@ -66,7 +66,7 @@ export default function ProjectsSection() {
               key={project.id} 
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 1, delay: idx * 0.1 }}
               className="relative flex-shrink-0 w-[85vw] md:w-[70vw] lg:w-[60vw] aspect-[16/9] group overflow-hidden rounded-[40px] border border-white/5 bg-white/[0.02]"
             >

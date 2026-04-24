@@ -38,7 +38,7 @@ export default function AboutSection() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 0.8 }}
             className="inline-block text-white/40 text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
           >
@@ -48,7 +48,7 @@ export default function AboutSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] max-w-5xl text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
@@ -62,7 +62,7 @@ export default function AboutSection() {
           <motion.div 
             initial={{ opacity: 0, x: -100 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="w-full lg:w-1/2 aspect-[4/3] rounded-[40px] overflow-hidden border border-white/5 relative group"
           >
@@ -77,7 +77,7 @@ export default function AboutSection() {
           <motion.div 
             initial={{ opacity: 0, x: 100 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="w-full lg:w-1/2"
           >
@@ -112,7 +112,7 @@ export default function AboutSection() {
               key={item.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.8, delay: 0.2 + (idx * 0.2) }}
               className="p-12 md:p-16 rounded-[40px] border border-white/5 bg-white/[0.02] backdrop-blur-md relative overflow-hidden group hover:bg-white/[0.04] transition-all duration-500"
             >

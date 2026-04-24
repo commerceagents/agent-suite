@@ -59,7 +59,7 @@ export default function ServicesSection() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
           >
             Capabilities
@@ -68,7 +68,7 @@ export default function ServicesSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
@@ -84,7 +84,7 @@ export default function ServicesSection() {
               key={service.title}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.15 }}
               whileHover={{ y: -12 }}
               className="group p-10 md:p-12 rounded-[40px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 backdrop-blur-xl flex flex-col justify-between aspect-square"

@@ -47,7 +47,7 @@ export default function PeopleSection() {
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             className="inline-block text-white/40 text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
           >
             Our Visionaries
@@ -56,7 +56,7 @@ export default function PeopleSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: false }}
             transition={{ duration: 1, delay: 0.2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
           >
@@ -71,7 +71,7 @@ export default function PeopleSection() {
               key={member.name}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.1 }}
               whileHover={{ y: -10 }}
               className="relative group cursor-pointer"
@@ -81,7 +81,7 @@ export default function PeopleSection() {
                 <motion.img 
                   initial={{ scale: 0.95 }}
                   whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false }}
                   transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                   src={member.image} 
                   alt={member.name}
