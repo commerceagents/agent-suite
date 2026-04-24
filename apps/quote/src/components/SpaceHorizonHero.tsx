@@ -51,7 +51,7 @@ export default function SpaceHorizonHero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
-            duration: 2.5, 
+            duration: 3.5, 
             delay: 9.5, 
             ease: [0.16, 1, 0.3, 1] as any 
           }}
@@ -77,8 +77,8 @@ export default function SpaceHorizonHero() {
             initial={{ opacity: 0, scale: 1.5, letterSpacing: "0.8em" }}
             animate={{ opacity: 1, scale: 1, letterSpacing: "0.5em" }}
             transition={{ 
-              duration: 2.0, 
-              delay: 10.5, 
+              duration: 3.0, 
+              delay: 11.0, 
               ease: [0.16, 1, 0.3, 1] as any 
             }}
             className="relative z-10 text-white font-bold leading-tight uppercase select-none text-center max-w-full break-words"
