@@ -23,6 +23,26 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none p-8 md:p-12">
       
+      {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
+      <div className="absolute inset-0 z-0 bg-black">
+        <motion.video 
+          ref={videoRef}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ 
+            duration: 1.5, 
+            delay: 8.0, 
+            ease: "easeOut" 
+          }}
+          src="/video-7.mp4"
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80 z-5" />
+      </div>
+
       {/* UI LAYER - STACKED ARCHITECTURE (Header + Card) */}
       <div className="relative z-20 h-full w-full flex items-end justify-center p-[4vw] pb-[6vh]">
         <div className="w-[92vw] max-w-[1700px] flex flex-col gap-6">
