@@ -1,109 +1,106 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const testimonials = [
   {
     content: "Commerce Agents transformed our global distribution network with an AI orchestration that feels more like an architectural masterpiece than a piece of software.",
     author: "Alexander Wright",
     role: "CEO, Nexa Logistics",
-    company: "London, UK"
+    company: "London, UK",
+    gridClass: "col-span-12 lg:col-span-8 h-[400px] lg:h-[500px]",
+    gradient: "from-white/10 via-transparent to-transparent"
   },
   {
-    content: "The level of technical precision and aesthetic form they bring to digital brand identity is unmatched. They don't just build websites; they build digital legacies.",
+    content: "The level of technical precision and aesthetic form is unmatched. They build digital legacies.",
     author: "Sophia Moretti",
     role: "Design Director, Veloce Luxury",
-    company: "Milan, Italy"
+    company: "Milan, Italy",
+    gridClass: "col-span-12 lg:col-span-4 h-[400px] lg:h-[500px]",
+    gradient: "from-indigo-500/10 via-transparent to-transparent"
   },
   {
     content: "Navigating the complexities of modern commerce required a visionary partner. The neural strategy provided by the team became our most valuable asset.",
     author: "David Chen",
     role: "COO, Prime Solutions",
-    company: "Singapore"
+    company: "Singapore",
+    gridClass: "col-span-12 h-[350px] lg:h-[400px]",
+    gradient: "from-purple-500/10 via-transparent to-transparent"
   }
 ];
 
 export default function TestimonialSection() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section 
       id="testimonial" 
-      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#050508] py-24 md:py-32 lg:py-48 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
     >
       
-      {/* CENTRAL ATMOSPHERIC GLOW */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-white/[0.02] blur-[160px] rounded-full pointer-events-none" />
+      {/* ATMOSPHERIC DECORATION */}
+      <div className="absolute top-1/4 left-0 w-[40%] h-[40%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-0 w-[40%] h-[40%] bg-white/[0.01] blur-[140px] rounded-full pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10 text-center">
+      <div className="max-w-[1400px] mx-auto relative z-10">
         
-        {/* SECTION IDENTITY */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          className="mb-16 md:mb-24"
-        >
-          <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4">Voice of the Network</span>
+        {/* SECTION HEADER */}
+        <div className="mb-16 md:mb-20">
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
+          >
+            Trust Nexus
+          </motion.span>
           <h2 
-            className="text-4xl md:text-5xl font-bold text-white/20"
+            className="text-5xl md:text-7xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
-            Testimonials.
+            Voice.
           </h2>
-        </motion.div>
+        </div>
 
-        {/* THE CONTENT STAGE */}
-        <div className="relative min-h-[450px] md:min-h-[350px] flex items-center justify-center">
-          <AnimatePresence mode="wait">
+        {/* ARCHITECTURAL MOSAIC GRID */}
+        <div className="grid grid-cols-12 gap-6 md:gap-8">
+          {testimonials.map((item, idx) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 1.05, y: -20 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full flex flex-col items-center"
+              key={item.author}
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: false }}
+              transition={{ duration: 1, delay: idx * 0.15, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -10, transition: { duration: 0.4 } }}
+              className={`group relative overflow-hidden rounded-[40px] border border-white/5 bg-white/[0.02] backdrop-blur-3xl p-10 md:p-16 flex flex-col justify-between ${item.gridClass}`}
             >
-              {/* QUOTE ICON */}
-              <div className="text-white/10 text-7xl md:text-8xl mb-12 font-serif select-none">
-                &ldquo;
+              {/* Geometric Background Accents */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-20 group-hover:opacity-40 transition-opacity duration-700`} />
+              <div className="absolute top-0 right-0 w-64 h-64 border-t border-r border-white/[0.03] rounded-tr-[40px] -mr-16 -mt-16 pointer-events-none" />
+              
+              <div className="relative z-10">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-10 mb-8 md:mb-12">
+                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5M13 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5" />
+                </svg>
+                <p className="text-white text-xl md:text-2xl lg:text-3xl font-light leading-tight tracking-tight max-w-2xl">
+                  {item.content}
+                </p>
               </div>
 
-              <p className="text-white text-2xl md:text-4xl lg:text-5xl font-light leading-tight tracking-tight max-w-5xl mb-16">
-                {testimonials[index].content}
-              </p>
-              
-              <div className="flex flex-col items-center gap-6">
-                <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                <div className="text-center">
-                  <h4 className="text-white text-xl md:text-2xl font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
-                    {testimonials[index].author}
+              <div className="relative z-10 flex items-center gap-6 mt-12">
+                <div className="h-[1px] w-12 bg-white/20 group-hover:w-20 transition-all duration-700" />
+                <div>
+                  <h4 className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
+                    {item.author}
                   </h4>
-                  <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] mt-3">
-                    {testimonials[index].role} — {testimonials[index].company}
+                  <p className="text-white/30 text-[10px] uppercase tracking-[0.4em] mt-2">
+                    {item.role} — {item.company}
                   </p>
                 </div>
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
-        {/* CENTRIC INDICATORS */}
-        <div className="flex justify-center gap-6 mt-24">
-          {testimonials.map((_, idx) => (
-            <button 
-              key={idx}
-              onClick={() => setIndex(idx)}
-              className={`h-[1px] transition-all duration-700 ${idx === index ? 'w-16 bg-white' : 'w-8 bg-white/10'}`}
-            />
+              {/* Unique Card Shimmer Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1500 ease-in-out pointer-events-none" />
+            </motion.div>
           ))}
         </div>
 
