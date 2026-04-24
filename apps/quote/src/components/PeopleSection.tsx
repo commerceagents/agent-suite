@@ -20,7 +20,13 @@ const team = [
     name: 'Sarah Chen',
     role: 'Design Principal',
     bio: 'Crafting premium brand experiences with high-end minimalism.',
-    image: '/leadership_portrait_minimalist_1_1777020952682.png', // Reusing for consistency in this demo
+    image: '/leadership_portrait_minimalist_1_1777020952682.png',
+  },
+  {
+    name: 'Julian Voss',
+    role: 'Creative Lead',
+    bio: 'Translating complex structural goals into iconic brand identities.',
+    image: '/leadership_portrait_minimalist_4_1777021188240.png',
   },
 ];
 
