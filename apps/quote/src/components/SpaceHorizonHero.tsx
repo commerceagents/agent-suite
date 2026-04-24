@@ -32,10 +32,19 @@ export default function SpaceHorizonHero() {
             transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
             className="absolute top-8 left-0 pointer-events-auto"
           >
-            <img 
-              src="/image/ca-logo.png" 
-              alt="CA Logo" 
-              className="w-12 h-12 object-contain mix-blend-screen brightness-[2] contrast-[1.5]" 
+            {/* Logo rendered as an Alpha Mask to ensure perfect transparency */}
+            <div 
+              className="w-12 h-12 bg-white"
+              style={{
+                maskImage: 'url(/image/ca-logo.png)',
+                WebkitMaskImage: 'url(/image/ca-logo.png)',
+                maskSize: 'contain',
+                WebkitMaskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                WebkitMaskPosition: 'center'
+              }}
             />
           </motion.div>
         </div>
