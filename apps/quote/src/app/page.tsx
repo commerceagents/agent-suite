@@ -7,7 +7,7 @@ import ContactSection from "@/components/ContactSection";
 
 export default function Home() {
   return (
-    <main className="bg-black min-h-screen">
+    <main className="relative bg-black min-h-screen" suppressHydrationWarning>
       <SpaceHorizonHero />
       <AboutSection />
       <ProjectsSection />

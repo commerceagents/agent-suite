@@ -12,11 +12,13 @@ const navLinks = [
 ];
  
 export default function Navigation({ show = true, delay = 0 }) {
+  const [mounted, setMounted] = React.useState(false);
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('Projects');
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const lenis = useLenis();
- 
+
   React.useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       const scrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -30,7 +32,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       } else if (scrollPos > windowHeight * 0.6) {
         setActiveSection('About us');
       } else {
-        setActiveSection('Projects');
+        setActiveSection(null);
       }
     };
  
