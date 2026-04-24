@@ -29,7 +29,7 @@ export default function SpaceHorizonHero() {
             onEnded={() => setIsEnded(true)}
             transition={{ 
               duration: isEnded ? 2.0 : 2.5, 
-              delay: isEnded ? 0 : 8.0, 
+              delay: isEnded ? 0 : 0, 
               ease: "easeOut" 
             }}
             src="/video-7.mp4"
