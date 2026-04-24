@@ -55,12 +55,12 @@ export default function ServicesSection() {
       <div className="max-w-[1400px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-24 md:mb-32">
+        <div className="mb-16 md:mb-20">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-6"
+            className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
           >
             Capabilities
           </motion.span>

@@ -21,13 +21,15 @@ export default function ContactSection() {
           
           {/* LEFT: CONTENT */}
           <div className="w-full lg:w-1/2">
-            <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-6">Connect</span>
-            <h2 
-              className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700 mb-12"
-              style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-            >
-              Contact.
-            </h2>
+            <div className="mb-16 md:mb-20">
+              <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4">Connect</span>
+              <h2 
+                className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+              >
+                Contact.
+              </h2>
+            </div>
             <p className="text-white/40 text-xl font-light leading-relaxed max-w-xl mb-16">
               Initiate a strategic partnership. Our team of visionary architects is ready to command your next technical horizon.
             </p>
