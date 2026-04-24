@@ -19,12 +19,16 @@ export default function SpaceHorizonHero() {
       {/* MAIN CONTENT AREA - BACKGROUND ONLY */}
       <div className="relative h-full w-full">
         
-        {/* STEP 2: BACKGROUND VIDEO (0.5s - 1.5s) */}
+        {/* STEP 2: BACKGROUND VIDEO (Sync with LoadingScreen BARS_OPEN_DELAY) */}
         <div className="absolute inset-0 z-0 bg-black">
           <motion.video 
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.4 }}
-            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+            transition={{ 
+              duration: 2.5, 
+              delay: 8.0, 
+              ease: "easeOut" 
+            }}
             src="/video-7.mp4"
             autoPlay
             muted
