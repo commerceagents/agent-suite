@@ -30,7 +30,11 @@ export default function SpaceHorizonHero() {
         transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
         className="absolute top-5 left-8 z-[100]"
       >
-        <img src="/image/ca-logo.png" alt="CA Logo" className="w-12 h-12 object-contain" />
+        <img 
+          src="/image/ca-logo.png" 
+          alt="CA Logo" 
+          className="w-12 h-12 object-contain mix-blend-screen brightness-125" 
+        />
       </motion.div>
 
       {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
