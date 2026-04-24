@@ -1,6 +1,7 @@
 import SpaceHorizonHero from "@/components/SpaceHorizonHero";
 import AboutSection from "@/components/AboutSection";
 import ServicesSection from "@/components/ServicesSection";
+import ProjectsSection from "@/components/ProjectsSection";
 import StatsSection from "@/components/StatsSection";
 import PeopleSection from "@/components/PeopleSection";
 import TestimonialSection from "@/components/TestimonialSection";
