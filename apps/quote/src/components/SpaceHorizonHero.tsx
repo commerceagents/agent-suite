@@ -8,29 +8,33 @@ export default function SpaceHorizonHero() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(err => {
-        console.warn("Video playback failed:", err);
-      });
-    }
+    // Start video playback only AFTER the glass card reveal (1.2s)
+    const playTimeout = setTimeout(() => {
+      if (videoRef.current) {
+        videoRef.current.play().catch(err => {
+          console.warn("Video playback failed:", err);
+        });
+      }
+    }, 1200);
+
+    return () => clearTimeout(playTimeout);
   }, []);
 
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* STEP 1: BACKGROUND VIDEO FADE-IN (0s - 1s) */}
+      {/* STEP 2: BACKGROUND VIDEO REVEAL (Starts after Card) */}
       <div className="absolute inset-0 z-0 bg-black">
         <motion.video 
           ref={videoRef}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ 
-            duration: 1.0, 
-            delay: 0, 
+            duration: 1.5, 
+            delay: 1.2, 
             ease: "easeOut" 
           }}
           src="/video-7.mp4"
-          autoPlay
           muted
           loop
           playsInline
@@ -42,11 +46,11 @@ export default function SpaceHorizonHero() {
       {/* UI LAYER */}
       <div className="relative z-20 h-full w-full flex items-center justify-center p-[2vw]">
         
-        {/* STEP 3: GLASS CARD REVEAL (Starts at 3s) */}
+        {/* STEP 1: GLASS CARD REVEAL (0s - 1.2s) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 3.0, ease: "easeOut" }}
+          transition={{ duration: 1.2, delay: 0, ease: [0.16, 1, 0.3, 1] as any }}
           className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
           style={{ 
             isolation: 'isolate',
@@ -68,7 +72,7 @@ export default function SpaceHorizonHero() {
           <motion.h1
             initial={{ opacity: 0, scale: 1.2 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 3.5, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
             className="relative z-10 text-white font-bold tracking-[0.4em] md:tracking-[0.5em] leading-tight uppercase select-none text-center max-w-full break-words"
             style={{ 
               fontFamily: "'Inter', 'SF Pro Display', sans-serif",
