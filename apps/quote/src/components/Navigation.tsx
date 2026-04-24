@@ -61,22 +61,6 @@ export default function Navigation({ show = true, delay = 0 }) {
             className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain group-hover:scale-105 transition-transform"
           />
           
-          <AnimatePresence>
-            {hoveredSection === 'logo' && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute top-full left-0 pt-2"
-              >
-                <div className="w-48 py-2 bg-[#0A0A0F]/80 backdrop-blur-[12px] border border-white/10 rounded-xl shadow-2xl">
-                  <a href="#" className="block px-5 py-2.5 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all">Home</a>
-                  <a href="#" className="block px-5 py-2.5 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all">Brand Story</a>
-                  <a href="#" className="block px-5 py-2.5 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all">Our Mission</a>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
  
