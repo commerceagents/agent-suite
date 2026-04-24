@@ -1,32 +1,26 @@
 'use client';
  
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
  
 const navLinks = [
-  { name: 'About us', href: '#about', active: false },
-  { 
-    name: 'Projects', 
-    href: '#projects', 
-    active: true,
-  },
-  { name: 'People', href: '#people', active: false },
-  { name: 'Testimonial', href: '#testimonial', active: false },
+  { name: 'About us', href: '#about' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'People', href: '#people' },
+  { name: 'Testimonial', href: '#testimonial' },
 ];
  
 export default function Navigation({ show = true, delay = 0 }) {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('Projects');
   const lenis = useLenis();
-
-  // HANDLE SCROLL FOR ACTIVE STATE
+ 
   React.useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // CALIBRATED SCROLL LAYERS
       if (scrollPos > windowHeight * 5.4) {
         setActiveSection('Testimonial');
       } else if (scrollPos > windowHeight * 4.4) {
@@ -39,11 +33,11 @@ export default function Navigation({ show = true, delay = 0 }) {
         setActiveSection('Projects');
       }
     };
-
+ 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+ 
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -72,10 +66,8 @@ export default function Navigation({ show = true, delay = 0 }) {
       <motion.div 
         variants={item} 
         className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full group"
-        onMouseEnter={() => setHoveredSection('logo')}
-        onMouseLeave={() => setHoveredSection(null)}
       >
-        <div className="relative cursor-pointer py-4">
+        <div className="relative cursor-pointer py-4" onClick={() => lenis?.scrollTo(0)}>
           <img
             src="/image/CA_logo-PNG.png"
             alt="Commerce Agents Logo"
@@ -96,6 +88,7 @@ export default function Navigation({ show = true, delay = 0 }) {
           >
             <a 
               href={link.href}
+              suppressHydrationWarning
               onClick={(e) => {
                 if (link.href.startsWith('#')) {
                   e.preventDefault();
@@ -106,12 +99,11 @@ export default function Navigation({ show = true, delay = 0 }) {
               className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
                 activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
               }`}
-              style={{ fontFamily: "'Inter', sans-serif" }}
+              style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
             >
               {link.name}
             </a>
             
-            {/* Dynamic Active Highlight (Magnetic Underline) */}
             {activeSection === link.name && (
               <motion.div 
                 layoutId="activeNav"
@@ -120,11 +112,9 @@ export default function Navigation({ show = true, delay = 0 }) {
               />
             )}
  
-            {/* Hover Underline (Hidden when active) */}
             {activeSection !== link.name && (
               <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
             )}
-
           </motion.div>
         ))}
       </div>
@@ -133,8 +123,6 @@ export default function Navigation({ show = true, delay = 0 }) {
       <motion.div 
         variants={item} 
         className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full group"
-        onMouseEnter={() => setHoveredSection('contact')}
-        onMouseLeave={() => setHoveredSection(null)}
       >
         <div className="relative py-4">
           <button 

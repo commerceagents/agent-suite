@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -57,10 +57,10 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${montserrat.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
         data-app="quote"
         style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
+          fontFamily: "var(--font-montserrat), system-ui, sans-serif",
           backgroundColor: "#000000",
           color: "#FFFFFF",
           minHeight: "100vh"
