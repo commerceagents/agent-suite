@@ -31,7 +31,7 @@ export default function SpaceHorizonHero() {
         className="absolute top-8 left-8 z-[100]"
       >
         <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center p-2">
-          <img src="/image/ca-logo.png" alt="CA Logo" className="w-full h-full object-contain brightness-0 invert" />
+          <img src="/image/ca-logo.png" alt="CA Logo" className="w-full h-full object-contain" />
         </div>
       </motion.div>
 
