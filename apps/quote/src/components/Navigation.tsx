@@ -2,6 +2,7 @@
  
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLenis } from 'lenis/react';
  
 const navLinks = [
   { name: 'About us', href: '#about', active: false },
@@ -23,6 +24,7 @@ const navLinks = [
 export default function Navigation({ show = true, delay = 0 }) {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('Projects');
+  const lenis = useLenis();
 
   // HANDLE SCROLL FOR ACTIVE STATE
   React.useEffect(() => {
@@ -94,7 +96,13 @@ export default function Navigation({ show = true, delay = 0 }) {
           >
             <a 
               href={link.href}
-              onClick={() => setActiveSection(link.name)}
+              onClick={(e) => {
+                if (link.href.startsWith('#')) {
+                  e.preventDefault();
+                  lenis?.scrollTo(link.href);
+                }
+                setActiveSection(link.name);
+              }}
               className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
                 activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
               }`}
