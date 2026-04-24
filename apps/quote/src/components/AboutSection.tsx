@@ -46,7 +46,7 @@ export default function AboutSection() {
             className="text-white text-4xl md:text-6xl lg:text-7xl font-bold leading-tight max-w-4xl"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            We Architect the <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40">Future of Commerce</span>
+            About <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40">us</span>
           </motion.h2>
         </div>
 
