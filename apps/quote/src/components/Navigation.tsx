@@ -77,7 +77,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       </motion.div>
  
       {/* 2. HEADER LINKS */}
-      <div className="flex items-center gap-1 px-4 py-5">
+      <div className="relative flex items-center gap-1 px-4 py-5">
         {navLinks.map((link) => (
           <motion.div 
             variants={item} 
