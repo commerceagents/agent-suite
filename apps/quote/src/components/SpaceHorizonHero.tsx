@@ -8,14 +8,14 @@ export default function SpaceHorizonHero() {
   const videoRef = React.useRef<HTMLVideoElement>(null);
 
   React.useEffect(() => {
-    // Start video playback only AFTER the LoadingScreen clears and Card reveals (8s + 1.2s)
+    // Start video playback exactly when the LoadingScreen (8s) clears
     const playTimeout = setTimeout(() => {
       if (videoRef.current) {
         videoRef.current.play().catch(err => {
-          console.warn("Video playback failed:", err);
+          console.warn("Video playback delayed start failed:", err);
         });
       }
-    }, 9200);
+    }, 8000);
 
     return () => clearTimeout(playTimeout);
   }, []);
@@ -23,7 +23,7 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* STEP 2: BACKGROUND VIDEO REVEAL (Starts after Card) */}
+      {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
       <div className="absolute inset-0 z-0 bg-black">
         <motion.video 
           ref={videoRef}
@@ -31,7 +31,7 @@ export default function SpaceHorizonHero() {
           animate={{ opacity: 1 }}
           transition={{ 
             duration: 1.5, 
-            delay: 9.2, 
+            delay: 8.0, 
             ease: "easeOut" 
           }}
           src="/video-7.mp4"
@@ -46,11 +46,11 @@ export default function SpaceHorizonHero() {
       {/* UI LAYER */}
       <div className="relative z-20 h-full w-full flex items-center justify-center p-[2vw]">
         
-        {/* STEP 1: GLASS CARD REVEAL (Starts when Loader clears at 8s) */}
+        {/* STEP 2: GLASS CARD REVEAL (Starts 1.5s AFTER video starts) */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, delay: 8.0, ease: [0.16, 1, 0.3, 1] as any }}
+          transition={{ duration: 1.5, delay: 9.5, ease: [0.16, 1, 0.3, 1] as any }}
           className="relative w-[92vw] max-w-[1700px] min-h-[40vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 bg-[#0A0A0F]/20 backdrop-blur-[6px] shadow-[0_40px_100px_rgba(0,0,0,0.5)] ring-1 ring-white/10 flex items-center justify-center transform-gpu"
           style={{ 
             isolation: 'isolate',
