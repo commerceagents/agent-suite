@@ -8,14 +8,8 @@ const navLinks = [
   { name: 'About us', href: '#about', active: false },
   { 
     name: 'Projects', 
-    href: '#', 
+    href: '#projects', 
     active: true,
-    dropdown: [
-      { name: 'Architecture', href: '#' },
-      { name: 'Interior Design', href: '#' },
-      { name: 'Urban Planning', href: '#' },
-      { name: 'Digital Art', href: '#' },
-    ]
   },
   { name: 'People', href: '#', active: false },
   { name: 'Testimonial', href: '#', active: false },
@@ -32,8 +26,10 @@ export default function Navigation({ show = true, delay = 0 }) {
       const scrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // If we've scrolled roughly half-way into the about section
-      if (scrollPos > windowHeight * 0.6) {
+      // HERO = 0 to 0.6H -> Projects (Default)
+      // ABOUT = 0.6H to 1.6H -> About us
+      // PROJECTS = > 1.6H -> Projects
+      if (scrollPos > windowHeight * 0.6 && scrollPos < windowHeight * 1.6) {
         setActiveSection('About us');
       } else {
         setActiveSection('Projects');
