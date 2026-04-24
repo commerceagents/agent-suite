@@ -38,11 +38,12 @@ export default function ProjectsSection() {
     >
       <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
         
-        {/* SECTION TITLE (STATIONARY) */}
-        <div className="absolute top-24 left-6 md:left-12 lg:left-24 z-20">
+        {/* SECTION TITLE (ABOVE THE BOX) */}
+        <div className="px-6 md:px-12 lg:px-24 mb-12 md:mb-20">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="inline-block text-white/40 text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
           >
             Portfolio
@@ -50,6 +51,7 @@ export default function ProjectsSection() {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
           >
             Projects
@@ -57,7 +59,7 @@ export default function ProjectsSection() {
         </div>
 
         {/* HORIZONTAL TRACK */}
-        <motion.div style={{ x }} className="flex gap-12 px-6 md:px-12 lg:px-24">
+        <motion.div style={{ x }} className="flex gap-12 px-6 md:px-12 lg:px-24 items-center">
           {projects.map((project) => (
             <div 
               key={project.id} 
