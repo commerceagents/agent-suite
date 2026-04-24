@@ -98,31 +98,6 @@ export default function Navigation({ show = true, delay = 0 }) {
               <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
             )}
 
-            <AnimatePresence>
-              {link.dropdown && hoveredSection === link.name && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute top-full left-0 pt-4"
-                >
-                  <div className="w-48 py-2 bg-[#0A0A0F]/80 backdrop-blur-[12px] border border-white/10 rounded-xl shadow-2xl overflow-hidden">
-                    {link.dropdown.map((subItem, idx) => (
-                      <motion.a
-                        key={subItem.name}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        href={subItem.href}
-                        className="block px-5 py-2.5 text-[12px] text-white/60 hover:text-white hover:bg-white/5 transition-all"
-                      >
-                        {subItem.name}
-                      </motion.a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
         ))}
       </div>
