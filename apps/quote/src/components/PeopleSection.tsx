@@ -90,7 +90,7 @@ export default function PeopleSection() {
                 <div className="absolute bottom-6 left-6 right-6 p-6 rounded-[24px] bg-white/[0.05] backdrop-blur-xl border border-white/10 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                   <h3 className="text-white text-xl font-bold mb-1">{member.name}</h3>
                   <p className="text-white/40 text-[10px] uppercase tracking-widest mb-3">{member.role}</p>
-                  <p className="text-white/60 text-xs font-light leading-relaxed italic">
+                  <p className="text-white/60 text-xs font-light leading-relaxed">
                     "{member.bio}"
                   </p>
                 </div>
@@ -117,7 +117,7 @@ export default function PeopleSection() {
           className="mt-48 pt-16 border-t border-white/5 text-center"
         >
           <p className="text-white/20 text-xs tracking-[0.6em] uppercase mb-8">Guided by Human Intelligence</p>
-          <p className="text-white/60 text-2xl md:text-3xl font-light italic max-w-3xl mx-auto leading-relaxed">
+          <p className="text-white/60 text-2xl md:text-3xl font-light max-w-3xl mx-auto leading-relaxed">
             "Innovation is not built by machines, but by the visionary architects who command them."
           </p>
         </motion.div>

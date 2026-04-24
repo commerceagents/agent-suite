@@ -148,7 +148,7 @@ export default function AboutSection() {
         >
           <div className="flex flex-col gap-2">
             <p className="text-white/20 text-xs tracking-[0.5em] uppercase">Global Recognition</p>
-            <p className="text-white/60 text-lg font-light italic">"Redefining the digital horizon."</p>
+            <p className="text-white/60 text-lg font-light">"Redefining the digital horizon."</p>
           </div>
           
           <div className="flex gap-16 md:gap-24">

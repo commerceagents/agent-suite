@@ -73,7 +73,7 @@ export default function TestimonialSection() {
               <div className="text-white/10 text-8xl font-serif absolute top-8 left-8 pointer-events-none group-hover:text-white/20 transition-colors">“</div>
               
               <div className="relative z-10">
-                <p className="text-white text-xl md:text-2xl leading-relaxed font-light italic mb-12">
+                <p className="text-white text-xl md:text-2xl leading-relaxed font-light mb-12">
                   {item.quote}
                 </p>
               </div>

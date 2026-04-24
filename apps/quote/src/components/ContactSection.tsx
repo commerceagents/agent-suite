@@ -37,7 +37,7 @@ export default function ContactSection() {
               className="text-white text-6xl md:text-8xl font-bold leading-[1] mb-12 tracking-tighter"
             >
               Get in <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/30 italic">Touch</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/30">Touch</span>
             </motion.h2>
 
             <motion.p
