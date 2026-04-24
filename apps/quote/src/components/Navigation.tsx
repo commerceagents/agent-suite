@@ -22,6 +22,25 @@ const navLinks = [
  
 export default function Navigation({ show = true, delay = 0 }) {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState('Projects');
+
+  // HANDLE SCROLL FOR ACTIVE STATE
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY;
+      const windowHeight = window.innerHeight;
+      
+      // If we've scrolled roughly half-way into the about section
+      if (scrollPos > windowHeight * 0.6) {
+        setActiveSection('About us');
+      } else {
+        setActiveSection('Projects');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const container = {
     hidden: { opacity: 0 },
@@ -47,7 +66,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       className="relative flex justify-center items-center w-full mb-8 z-50"
     >
       
-      {/* 1. LOGO SECTION with Dropdown */}
+      {/* 1. LOGO SECTION */}
       <motion.div 
         variants={item} 
         className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full group"
@@ -60,11 +79,10 @@ export default function Navigation({ show = true, delay = 0 }) {
             alt="Commerce Agents Logo"
             className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain group-hover:scale-105 transition-transform"
           />
-          
         </div>
       </motion.div>
  
-      {/* 2. HEADER LINKS with Dropdowns */}
+      {/* 2. HEADER LINKS */}
       <div className="flex items-center gap-1 px-4 py-5">
         {navLinks.map((link) => (
           <motion.div 
@@ -76,16 +94,17 @@ export default function Navigation({ show = true, delay = 0 }) {
           >
             <a 
               href={link.href}
+              onClick={() => setActiveSection(link.name)}
               className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
-                link.active ? 'text-white' : 'text-white/50 hover:text-white'
+                activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
               }`}
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
               {link.name}
             </a>
             
-            {/* Active Highlight */}
-            {link.active && (
+            {/* Dynamic Active Highlight (Magnetic Underline) */}
+            {activeSection === link.name && (
               <motion.div 
                 layoutId="activeNav"
                 className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
@@ -93,8 +112,8 @@ export default function Navigation({ show = true, delay = 0 }) {
               />
             )}
  
-            {/* Hover Underline */}
-            {!link.active && (
+            {/* Hover Underline (Hidden when active) */}
+            {activeSection !== link.name && (
               <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
             )}
 
@@ -102,7 +121,7 @@ export default function Navigation({ show = true, delay = 0 }) {
         ))}
       </div>
  
-      {/* 3. CONTACT US SECTION with Dropdown */}
+      {/* 3. CONTACT US SECTION */}
       <motion.div 
         variants={item} 
         className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full group"
@@ -116,7 +135,6 @@ export default function Navigation({ show = true, delay = 0 }) {
           >
             Contact us
           </button>
-          
         </div>
       </motion.div>
     </motion.nav>
