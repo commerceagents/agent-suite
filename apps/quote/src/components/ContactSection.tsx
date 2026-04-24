@@ -108,6 +108,7 @@ export default function ContactSection() {
                       type={field.id === 'email' ? 'email' : 'text'}
                       id={field.id}
                       placeholder={field.placeholder}
+                      suppressHydrationWarning
                       className="w-full bg-white/[0.02] border-none rounded-xl text-white text-xl font-light placeholder:text-white/40 focus:outline-none px-4 py-4 transition-all focus:bg-white/[0.05]"
                     />
                     <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-white/10 group-focus-within:bg-white group-focus-within:h-[2px] transition-all duration-500" />
@@ -124,6 +125,7 @@ export default function ContactSection() {
                     id="message"
                     rows={4}
                     placeholder="How can we help you?"
+                    suppressHydrationWarning
                     className="w-full bg-white/[0.02] border-none rounded-xl text-white text-xl font-light placeholder:text-white/40 focus:outline-none px-4 py-4 resize-none transition-all focus:bg-white/[0.05]"
                   />
                   <div className="absolute bottom-0 left-4 right-4 h-[1px] bg-white/10 group-focus-within:bg-white group-focus-within:h-[2px] transition-all duration-500" />
