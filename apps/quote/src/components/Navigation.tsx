@@ -56,9 +56,9 @@ export default function Navigation({ show = true, delay = 0 }) {
       >
         <div className="relative cursor-pointer py-4">
           <img
-            src="/ca-logo.png"
+            src="/image/ca-logo.png"
             alt="Commerce Agents Logo"
-            className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain mix-blend-screen contrast-125 brightness-110 group-hover:scale-105 transition-transform"
+            className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain mix-blend-screen brightness-[2] contrast-[1.5] group-hover:scale-105 transition-transform"
           />
           
           <AnimatePresence>
