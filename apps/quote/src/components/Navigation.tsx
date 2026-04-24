@@ -12,7 +12,7 @@ const navLinks = [
     active: true,
   },
   { name: 'People', href: '#people', active: false },
-  { name: 'Testimonial', href: '#', active: false },
+  { name: 'Testimonial', href: '#testimonial', active: false },
 ];
  
 export default function Navigation({ show = true, delay = 0 }) {
@@ -26,11 +26,10 @@ export default function Navigation({ show = true, delay = 0 }) {
       const scrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // HERO = 0 to 0.6H -> Projects (Default)
-      // ABOUT = 0.6H to 1.6H -> About us
-      // PROJECTS = 1.6H to 4.4H -> Projects
-      // PEOPLE = > 4.4H -> People
-      if (scrollPos > windowHeight * 4.4) {
+      // CALIBRATED SCROLL LAYERS
+      if (scrollPos > windowHeight * 5.4) {
+        setActiveSection('Testimonial');
+      } else if (scrollPos > windowHeight * 4.4) {
         setActiveSection('People');
       } else if (scrollPos > windowHeight * 1.6) {
         setActiveSection('Projects');
