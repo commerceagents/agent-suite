@@ -23,19 +23,23 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
-      {/* GLOBAL IDENTITY - TOP LEFT LOGO (Starts at 12s) */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
-        className="absolute top-5 left-8 z-[100]"
-      >
-        <img 
-          src="/image/ca-logo.png" 
-          alt="CA Logo" 
-          className="w-12 h-12 object-contain mix-blend-screen brightness-125" 
-        />
-      </motion.div>
+      {/* GLOBAL IDENTITY - ALIGNED TO CARD LEFT (Starts at 12s) */}
+      <div className="absolute inset-x-0 top-0 z-[100] flex justify-center pointer-events-none">
+        <div className="w-[92vw] max-w-[1700px] relative">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
+            className="absolute top-8 left-0 pointer-events-auto"
+          >
+            <img 
+              src="/image/ca-logo.png" 
+              alt="CA Logo" 
+              className="w-12 h-12 object-contain mix-blend-screen brightness-125" 
+            />
+          </motion.div>
+        </div>
+      </div>
 
       {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
       <div className="absolute inset-0 z-0 bg-black">
