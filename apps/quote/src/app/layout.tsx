@@ -3,6 +3,7 @@ import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen";
 import ConsoleFix from "@/components/ConsoleFix";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -71,7 +72,9 @@ export default function RootLayout({
               "url('/noise.svg')",
           }}
         />
-        {children}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
