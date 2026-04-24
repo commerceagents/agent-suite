@@ -6,6 +6,15 @@ import Navigation from './Navigation';
  
 export default function SpaceHorizonHero() {
   const [isEnded, setIsEnded] = React.useState(false);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.warn("Video autoplay failed, waiting for user interaction:", err);
+      });
+    }
+  }, []);
 
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
@@ -21,15 +30,16 @@ export default function SpaceHorizonHero() {
       {/* MAIN CONTENT AREA - BACKGROUND ONLY */}
       <div className="relative h-full w-full">
         
-        {/* STEP 2: BACKGROUND VIDEO (Sync with LoadingScreen BARS_OPEN_DELAY) */}
+        {/* STEP 2: BACKGROUND VIDEO (Sync with LoadingScreen at 4.0s) */}
         <div className="absolute inset-0 z-0 bg-black">
           <motion.video 
+            ref={videoRef}
             initial={{ opacity: 0 }}
-            animate={{ opacity: isEnded ? 0 : 0.4 }}
+            animate={{ opacity: isEnded ? 0 : 0.8 }}
             onEnded={() => setIsEnded(true)}
             transition={{ 
-              duration: isEnded ? 2.0 : 2.5, 
-              delay: isEnded ? 0 : 0, 
+              duration: isEnded ? 1.5 : 1.5, 
+              delay: isEnded ? 0 : 4.0, 
               ease: "easeOut" 
             }}
             src="/video-7.mp4"
