@@ -64,16 +64,16 @@ export default function PeopleSection() {
           </motion.h2>
         </div>
 
-        {/* TEAM GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+        {/* TEAM GRID - 4 IN ONE LINE ON DESKTOP */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {team.map((member, idx) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: idx * 0.15 }}
-              className={`relative group ${idx % 2 === 1 ? 'md:translate-y-12' : ''}`}
+              transition={{ duration: 0.8, delay: idx * 0.1 }}
+              className={`relative group ${idx % 2 === 1 ? 'lg:translate-y-16' : ''}`}
             >
               {/* Portrait Image Container */}
               <div className="relative aspect-[4/5] rounded-[40px] overflow-hidden border border-white/5 bg-white/[0.02]">
