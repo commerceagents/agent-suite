@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import Navigation from './Navigation';
  
 export default function SpaceHorizonHero() {
+  const [isEnded, setIsEnded] = React.useState(false);
+
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
@@ -23,16 +25,16 @@ export default function SpaceHorizonHero() {
         <div className="absolute inset-0 z-0 bg-black">
           <motion.video 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: isEnded ? 0 : 0.4 }}
+            onEnded={() => setIsEnded(true)}
             transition={{ 
-              duration: 2.5, 
-              delay: 8.0, 
+              duration: isEnded ? 2.0 : 2.5, 
+              delay: isEnded ? 0 : 8.0, 
               ease: "easeOut" 
             }}
             src="/video-7.mp4"
             autoPlay
             muted
-            loop
             playsInline
             className="absolute inset-0 w-full h-full object-cover pointer-events-none"
           />
