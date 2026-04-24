@@ -23,6 +23,18 @@ export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none">
       
+      {/* GLOBAL IDENTITY - TOP LEFT LOGO (Starts at 12s) */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1.5, delay: 12.0, ease: "easeOut" }}
+        className="absolute top-8 left-8 z-[100]"
+      >
+        <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-md flex items-center justify-center p-2">
+          <img src="/images/ca-logo.png" alt="CA Logo" className="w-full h-full object-contain brightness-0 invert" />
+        </div>
+      </motion.div>
+
       {/* STEP 1: BACKGROUND VIDEO REVEAL (Starts immediately after Loader) */}
       <div className="absolute inset-0 z-0 bg-black">
         <motion.video 
