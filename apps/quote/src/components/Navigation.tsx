@@ -138,6 +138,10 @@ export default function Navigation({ show = true, delay = 0 }) {
       >
         <div className="relative py-4">
           <button 
+            onClick={(e) => {
+              e.preventDefault();
+              lenis?.scrollTo('#contact');
+            }}
             className="bg-white text-black px-4 py-1.5 text-[12px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
