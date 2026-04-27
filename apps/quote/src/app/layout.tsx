@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, JetBrains_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import LoadingScreen from "@/components/LoadingScreen";
 import ConsoleFix from "@/components/ConsoleFix";
 import SmoothScroll from "@/components/SmoothScroll";
 import BackToTop from "@/components/BackToTop";
+import ChatWidget from "@/components/ChatWidget";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -20,6 +21,13 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
 export const metadata: Metadata = {
   title: "COMMERCE AGENTS | V.2.0",
   description:
@@ -32,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -50,10 +58,10 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${montserrat.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
         data-app="quote"
         style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
+          fontFamily: "var(--font-montserrat), system-ui, sans-serif",
           backgroundColor: "#000000",
           color: "#FFFFFF",
           minHeight: "100vh"
@@ -77,6 +85,7 @@ export default function RootLayout({
           {children}
         </SmoothScroll>
         <BackToTop />
+        <ChatWidget />
       </body>
     </html>
   );

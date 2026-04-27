@@ -44,8 +44,8 @@
 
 /* ── Tailwind v4 Theme ── */
 @theme {
-  --font-display: 'Cabinet Grotesk', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-display: var(--font-montserrat), 'Cabinet Grotesk', system-ui, sans-serif;
+  --font-body: var(--font-montserrat), 'DM Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
   /* Chrome Color Scale */

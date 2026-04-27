@@ -1,49 +1,48 @@
 'use client';
  
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useLenis } from 'lenis/react';
  
 const navLinks = [
-  { name: 'About us', href: '#about', active: false },
-  { 
-    name: 'Projects', 
-    href: '#', 
-    active: true,
-    dropdown: [
-      { name: 'Architecture', href: '#' },
-      { name: 'Interior Design', href: '#' },
-      { name: 'Urban Planning', href: '#' },
-      { name: 'Digital Art', href: '#' },
-    ]
-  },
-  { name: 'People', href: '#', active: false },
-  { name: 'Testimonial', href: '#', active: false },
+  { name: 'About us', href: '#about' },
+  { name: 'Services', href: '#services' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'People', href: '#people' },
+  { name: 'Testimonial', href: '#testimonial' },
 ];
  
 export default function Navigation({ show = true, delay = 0 }) {
+  const [mounted, setMounted] = React.useState(false);
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('Projects');
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const lenis = useLenis();
 
-  // HANDLE SCROLL FOR ACTIVE STATE
   React.useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       const scrollPos = window.scrollY;
       const windowHeight = window.innerHeight;
       
-      // If we've scrolled roughly half-way into the about section
-      if (scrollPos > windowHeight * 0.6) {
+      if (scrollPos > windowHeight * 5.4) {
+        setActiveSection('Testimonial');
+      } else if (scrollPos > windowHeight * 4.4) {
+        setActiveSection('People');
+      } else if (scrollPos > windowHeight * 2.6) {
+        setActiveSection('Projects');
+      } else if (scrollPos > windowHeight * 1.6) {
+        setActiveSection('Services');
+      } else if (scrollPos > windowHeight * 0.6) {
         setActiveSection('About us');
       } else {
-        setActiveSection('Projects');
+        setActiveSection(null);
       }
     };
-
+ 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+ 
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -72,10 +71,8 @@ export default function Navigation({ show = true, delay = 0 }) {
       <motion.div 
         variants={item} 
         className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full group"
-        onMouseEnter={() => setHoveredSection('logo')}
-        onMouseLeave={() => setHoveredSection(null)}
       >
-        <div className="relative cursor-pointer py-4">
+        <div className="relative cursor-pointer py-4" onClick={() => lenis?.scrollTo(0)}>
           <img
             src="/image/CA_logo-PNG.png"
             alt="Commerce Agents Logo"
@@ -85,7 +82,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       </motion.div>
  
       {/* 2. HEADER LINKS */}
-      <div className="flex items-center gap-1 px-4 py-5">
+      <div className="relative flex items-center gap-1 px-4 py-5">
         {navLinks.map((link) => (
           <motion.div 
             variants={item} 
@@ -96,6 +93,7 @@ export default function Navigation({ show = true, delay = 0 }) {
           >
             <a 
               href={link.href}
+              suppressHydrationWarning
               onClick={(e) => {
                 if (link.href.startsWith('#')) {
                   e.preventDefault();
@@ -106,12 +104,11 @@ export default function Navigation({ show = true, delay = 0 }) {
               className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
                 activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
               }`}
-              style={{ fontFamily: "'Inter', sans-serif" }}
+              style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
             >
               {link.name}
             </a>
             
-            {/* Dynamic Active Highlight (Magnetic Underline) */}
             {activeSection === link.name && (
               <motion.div 
                 layoutId="activeNav"
@@ -120,11 +117,9 @@ export default function Navigation({ show = true, delay = 0 }) {
               />
             )}
  
-            {/* Hover Underline (Hidden when active) */}
             {activeSection !== link.name && (
               <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
             )}
-
           </motion.div>
         ))}
       </div>
@@ -133,13 +128,16 @@ export default function Navigation({ show = true, delay = 0 }) {
       <motion.div 
         variants={item} 
         className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full group"
-        onMouseEnter={() => setHoveredSection('contact')}
-        onMouseLeave={() => setHoveredSection(null)}
       >
         <div className="relative py-4">
           <button 
+            onClick={(e) => {
+              e.preventDefault();
+              lenis?.scrollTo('#contact');
+            }}
+            suppressHydrationWarning
             className="bg-white text-black px-4 py-1.5 text-[12px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
-            style={{ fontFamily: "'Inter', sans-serif" }}
+            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
             Contact us
           </button>
