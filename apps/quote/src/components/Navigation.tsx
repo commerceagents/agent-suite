@@ -6,6 +6,7 @@ import { useLenis } from 'lenis/react';
  
 const navLinks = [
   { name: 'About us', href: '#about' },
+  { name: 'Services', href: '#services' },
   { name: 'Projects', href: '#projects' },
   { name: 'People', href: '#people' },
   { name: 'Testimonial', href: '#testimonial' },
@@ -27,8 +28,10 @@ export default function Navigation({ show = true, delay = 0 }) {
         setActiveSection('Testimonial');
       } else if (scrollPos > windowHeight * 4.4) {
         setActiveSection('People');
-      } else if (scrollPos > windowHeight * 1.6) {
+      } else if (scrollPos > windowHeight * 2.6) {
         setActiveSection('Projects');
+      } else if (scrollPos > windowHeight * 1.6) {
+        setActiveSection('Services');
       } else if (scrollPos > windowHeight * 0.6) {
         setActiveSection('About us');
       } else {

@@ -46,15 +46,15 @@ export default function TestimonialSection() {
             Trust Nexus
           </motion.span>
           <h2 
-            className="text-5xl md:text-7xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+            className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
-            Voices.
+            Testimonial.
           </h2>
         </div>
 
-        {/* LINEAR GALLERY TRACK */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* GLOWING TESTIMONIAL GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
           {testimonials.map((item, idx) => (
             <motion.div
               key={item.author}
@@ -63,9 +63,17 @@ export default function TestimonialSection() {
               viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.15 }}
               whileHover={{ y: -10 }}
-              className="group p-10 md:p-12 rounded-[40px] border border-white/5 bg-white/[0.02] backdrop-blur-2xl hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 flex flex-col justify-between"
+              className="relative group p-10 md:p-12 rounded-[40px] border border-white/10 bg-white/[0.03] backdrop-blur-3xl transition-all duration-500 flex flex-col justify-between min-h-[420px] h-full overflow-hidden"
             >
-              <div>
+              {/* STABLE INTERNAL GLOWS */}
+              <div className={`absolute -bottom-20 -right-20 w-64 h-64 blur-[90px] rounded-full ${
+                idx === 0 ? 'bg-purple-600/10' : idx === 1 ? 'bg-indigo-600/10' : 'bg-blue-600/10'
+              }`} />
+              <div className={`absolute -top-10 -left-10 w-32 h-32 blur-[60px] rounded-full opacity-40 ${
+                idx === 0 ? 'bg-indigo-500/5' : idx === 1 ? 'bg-blue-500/5' : 'bg-cyan-500/5'
+              }`} />
+
+              <div className="relative z-10">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-10 mb-10 group-hover:opacity-30 transition-opacity">
                   <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5M13 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5" />
                 </svg>
@@ -74,7 +82,7 @@ export default function TestimonialSection() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-6">
+              <div className="relative z-10 flex items-center gap-6 mt-auto">
                 <div className="h-[1px] w-8 bg-white/20 group-hover:w-16 transition-all duration-700" />
                 <div>
                   <h4 className="text-white text-base font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
@@ -85,9 +93,6 @@ export default function TestimonialSection() {
                   </p>
                 </div>
               </div>
-
-              {/* Internal Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             </motion.div>
           ))}
         </div>

@@ -12,6 +12,7 @@ export default function ContactSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false }}
         transition={{ duration: 1 }}
+        suppressHydrationWarning
         className="max-w-[1400px] mx-auto relative z-10"
       >
         <div className="flex flex-col lg:flex-row gap-24 lg:gap-32">
@@ -19,9 +20,14 @@ export default function ContactSection() {
           {/* LEFT: CONTENT */}
           <div className="w-full lg:w-1/2">
             <div className="mb-16 md:mb-20">
-              <span className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4">Connect</span>
+              <span 
+                style={{ color: 'rgba(255, 255, 255, 0.4)' }}
+                className="inline-block text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
+              >
+                Connect
+              </span>
               <h2 
-                className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+                className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
               >
                 Get in Touch.
@@ -65,13 +71,14 @@ export default function ContactSection() {
 
           {/* RIGHT: FORM */}
           <div className="w-full lg:w-1/2">
-            <form className="space-y-6">
+            <form className="space-y-6" suppressHydrationWarning>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-white/20 text-[10px] uppercase tracking-[0.3em] ml-2">Identity</label>
                   <input 
                     type="text" 
                     placeholder="Full Name"
+                    suppressHydrationWarning
                     className="w-full bg-white/[0.02] border border-white/5 rounded-2xl h-16 px-6 text-white text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all"
                   />
                 </div>
@@ -80,6 +87,7 @@ export default function ContactSection() {
                   <input 
                     type="email" 
                     placeholder="Email Address"
+                    suppressHydrationWarning
                     className="w-full bg-white/[0.02] border border-white/5 rounded-2xl h-16 px-6 text-white text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all"
                   />
                 </div>
@@ -87,7 +95,10 @@ export default function ContactSection() {
 
               <div className="space-y-2">
                 <label className="text-white/20 text-[10px] uppercase tracking-[0.3em] ml-2">Objective</label>
-                <select className="w-full bg-white/[0.02] border border-white/5 rounded-2xl h-16 px-6 text-white/40 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all appearance-none">
+                <select 
+                  suppressHydrationWarning
+                  className="w-full bg-white/[0.02] border border-white/5 rounded-2xl h-16 px-6 text-white/40 text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all appearance-none"
+                >
                   <option>Architecture Project</option>
                   <option>AI Orchestration</option>
                   <option>Strategic Consulting</option>
@@ -99,6 +110,7 @@ export default function ContactSection() {
                 <label className="text-white/20 text-[10px] uppercase tracking-[0.3em] ml-2">Narrative</label>
                 <textarea 
                   placeholder="How can we command your horizon?"
+                  suppressHydrationWarning
                   className="w-full bg-white/[0.02] border border-white/5 rounded-[32px] h-48 p-6 text-white text-sm focus:outline-none focus:border-white/20 focus:bg-white/[0.05] transition-all resize-none"
                 />
               </div>

@@ -46,7 +46,8 @@ export default function ServicesSection() {
   return (
     <section 
       id="services" 
-      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
+      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-y border-white/5"
+      style={{ position: 'relative' }}
     >
       
 
@@ -54,12 +55,13 @@ export default function ServicesSection() {
       <div className="max-w-[1400px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-16 md:mb-20">
+        <div className="mb-16 md:mb-24">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
+            style={{ color: 'rgba(255, 255, 255, 0.4)' }}
+            className="inline-block text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
           >
             Capabilities
           </motion.span>
@@ -69,15 +71,15 @@ export default function ServicesSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+            className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
             Services.
           </motion.h2>
         </div>
 
-        {/* STAGGERED SERVICES GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        {/* GLOWING SERVICES GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 items-stretch">
           {services.map((service, idx) => (
             <motion.div
               key={service.title}
@@ -86,9 +88,17 @@ export default function ServicesSection() {
               viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.15 }}
               whileHover={{ y: -12 }}
-              className="group p-10 md:p-12 rounded-[40px] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 transition-all duration-500 backdrop-blur-xl flex flex-col justify-between aspect-square"
+              className="relative group p-8 md:p-10 rounded-[40px] bg-white/[0.03] border border-white/5 hover:border-white/20 transition-all duration-500 backdrop-blur-3xl flex flex-col justify-start min-h-[320px] h-full overflow-hidden"
             >
-              <div>
+              {/* INTERNAL GLOWS (Matching About Us style) */}
+              <div className={`absolute -bottom-10 -right-10 w-48 h-48 blur-[80px] rounded-full transition-opacity duration-1000 ${
+                idx % 3 === 0 ? 'bg-blue-500/20' : idx % 3 === 1 ? 'bg-cyan-500/20' : 'bg-purple-500/20'
+              }`} />
+              <div className={`absolute -top-10 -left-10 w-32 h-32 blur-[60px] rounded-full opacity-60 transition-opacity duration-1000 ${
+                idx % 3 === 0 ? 'bg-indigo-500/10' : idx % 3 === 1 ? 'bg-blue-500/10' : 'bg-cyan-500/10'
+              }`} />
+
+              <div className="relative z-10 space-y-6">
                 <motion.div 
                   whileHover={{ 
                     scale: 1.1, 
@@ -97,13 +107,14 @@ export default function ServicesSection() {
                     boxShadow: "0 0 30px rgba(255,255,255,0.3)" 
                   }}
                   whileTap={{ scale: 0.95 }}
-                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white/40 transition-all duration-500 mb-12"
+                  className="w-14 h-14 rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-white transition-all duration-500 cursor-pointer group/icon shadow-inner"
                 >
-                  {service.icon}
+                  <div className="group-hover/icon:text-black transition-colors">
+                    {service.icon}
+                  </div>
                 </motion.div>
                 
-                <h3 className="text-white text-2xl font-bold mb-6" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
+                <h3 className="text-white text-xl md:text-2xl font-bold leading-tight" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
                   {service.title}
                 </h3>
                 
@@ -111,12 +122,6 @@ export default function ServicesSection() {
                   {service.desc}
                 </p>
               </div>
-
-              <div className="mt-8 flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <span className="text-white text-[10px] font-bold uppercase tracking-widest">Protocol 0{idx + 1}</span>
-                <div className="h-[1px] flex-grow bg-white/20" />
-              </div>
-
             </motion.div>
           ))}
         </div>

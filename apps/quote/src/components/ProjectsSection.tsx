@@ -35,16 +35,18 @@ export default function ProjectsSection() {
       id="projects" 
       ref={containerRef} 
       className="relative h-[300vh] bg-[#050508] scroll-mt-24"
+      style={{ position: 'relative' }}
     >
       <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
         
         {/* SECTION TITLE (ABOVE THE BOX) */}
-        <div className="px-6 md:px-12 lg:px-24 mb-16 md:mb-20">
+        <div className="px-6 md:px-12 lg:px-24 mb-16 md:mb-24">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            className="inline-block text-white/40 text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
+            style={{ color: 'rgba(255, 255, 255, 0.4)' }}
+            className="inline-block text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
           >
             Portfolio
           </motion.span>
@@ -52,7 +54,7 @@ export default function ProjectsSection() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+            className="text-4xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}
           >
             Projects
