@@ -28,33 +28,34 @@ export default function TestimonialSection() {
   return (
     <section 
       id="testimonial" 
-      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#050508] py-[8vw] px-[5vw] overflow-hidden border-t border-white/5"
     >
-      
-
-
-      <div className="max-w-[1400px] mx-auto relative z-10">
+      <div className="w-full max-w-[1700px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-16 md:mb-20">
+        <div className="mb-[6vw]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            className="inline-block text-white/40 text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
+            className="inline-block text-white/40 font-bold tracking-[0.6em] uppercase mb-[1vw]"
+            style={{ fontSize: 'clamp(8px, 0.7vw, 12px)' }}
           >
             Trust Nexus
           </motion.span>
           <h2 
-            className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+            className="font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
+            style={{ 
+              fontFamily: "var(--font-montserrat), sans-serif",
+              fontSize: "clamp(24px, 5.5vw, 100px)"
+            }}
           >
             Testimonial.
           </h2>
         </div>
 
-        {/* GLOWING TESTIMONIAL GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
+        {/* GLOWING TESTIMONIAL GRID - Always 3 columns */}
+        <div className="grid grid-cols-3 gap-[3vw] items-stretch">
           {testimonials.map((item, idx) => (
             <motion.div
               key={item.author}
@@ -62,33 +63,31 @@ export default function TestimonialSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.15 }}
-              whileHover={{ y: -10 }}
-              className="relative group p-10 md:p-12 rounded-[40px] border border-white/10 bg-white/[0.03] backdrop-blur-3xl transition-all duration-500 flex flex-col justify-between min-h-[420px] h-full overflow-hidden"
+              whileHover={{ y: "-1vw" }}
+              className="relative group p-[3vw] rounded-[4vw] border border-white/10 bg-white/[0.03] backdrop-blur-3xl transition-all duration-500 flex flex-col justify-between h-full overflow-hidden"
+              style={{ minHeight: "30vw" }}
             >
               {/* STABLE INTERNAL GLOWS */}
-              <div className={`absolute -bottom-20 -right-20 w-64 h-64 blur-[90px] rounded-full ${
+              <div className={`absolute -bottom-[10vw] -right-[10vw] w-[20vw] h-[20vw] blur-[8vw] rounded-full ${
                 idx === 0 ? 'bg-purple-600/10' : idx === 1 ? 'bg-indigo-600/10' : 'bg-blue-600/10'
               }`} />
-              <div className={`absolute -top-10 -left-10 w-32 h-32 blur-[60px] rounded-full opacity-40 ${
-                idx === 0 ? 'bg-indigo-500/5' : idx === 1 ? 'bg-blue-500/5' : 'bg-cyan-500/5'
-              }`} />
-
+              
               <div className="relative z-10">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-10 mb-10 group-hover:opacity-30 transition-opacity">
+                <svg width="2vw" height="2vw" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-10 mb-[2.5vw] group-hover:opacity-30 transition-opacity">
                   <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5M13 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5" />
                 </svg>
-                <p className="text-white text-lg md:text-xl font-light leading-relaxed mb-12">
+                <p className="text-white font-light leading-relaxed mb-[3vw]" style={{ fontSize: "clamp(10px, 1.4vw, 24px)" }}>
                   "{item.content}"
                 </p>
               </div>
 
-              <div className="relative z-10 flex items-center gap-6 mt-auto">
-                <div className="h-[1px] w-8 bg-white/20 group-hover:w-16 transition-all duration-700" />
+              <div className="relative z-10 flex items-center gap-[1.5vw] mt-auto">
+                <div className="h-[1px] w-[2vw] bg-white/20 group-hover:w-[4vw] transition-all duration-700" />
                 <div>
-                  <h4 className="text-white text-base font-bold" style={{ fontFamily: "var(--font-montserrat), sans-serif" }}>
+                  <h4 className="text-white font-bold" style={{ fontSize: "clamp(9px, 1.1vw, 18px)", fontFamily: "var(--font-montserrat), sans-serif" }}>
                     {item.author}
                   </h4>
-                  <p className="text-white/30 text-[9px] uppercase tracking-[0.4em] mt-2">
+                  <p className="text-white/30 uppercase tracking-[0.4em] mt-[0.5vw]" style={{ fontSize: "clamp(6px, 0.6vw, 10px)" }}>
                     {item.role}
                   </p>
                 </div>
@@ -96,7 +95,6 @@ export default function TestimonialSection() {
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );
