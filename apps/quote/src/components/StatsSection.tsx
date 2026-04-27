@@ -36,9 +36,9 @@ const stats = [
 
 export default function StatsSection() {
   return (
-    <section className="relative w-full bg-[#050508] py-16 md:py-24 border-y border-white/5">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16">
+    <section className="relative w-full bg-[#050508] py-[10vw] border-y border-white/5">
+      <div className="w-full max-w-[1700px] mx-auto px-[5vw]">
+        <div className="grid grid-cols-4 gap-[4vw]">
           {stats.map((stat, idx) => (
             <motion.div
               key={idx}
@@ -48,24 +48,25 @@ export default function StatsSection() {
               transition={{ duration: 0.8, delay: idx * 0.1 }}
               className="flex flex-col group relative"
             >
-              <div className="flex flex-col gap-4 relative z-10">
-                {/* LABEL: CLEAN & MINIMAL */}
+              <div className="flex flex-col gap-[1.5vw] relative z-10">
+                {/* LABEL */}
                 <p 
-                  style={{ color: 'rgba(255, 255, 255, 0.2)' }}
-                  className="text-[10px] font-bold tracking-[0.4em] uppercase leading-relaxed max-w-[100px] group-hover:text-white/40 transition-colors"
+                  style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: 'clamp(6px, 0.7vw, 12px)' }}
+                  className="font-bold tracking-[0.4em] uppercase leading-relaxed max-w-[8vw] group-hover:text-white/40 transition-colors"
                 >
                   {stat.label}
                 </p>
                 
-                {/* NUMBER: SOPHISTICATED SCALE WITH MASK REVEAL */}
+                {/* NUMBER */}
                 <div className="overflow-hidden">
                   <motion.h3 
                     initial={{ y: "100%" }}
                     whileInView={{ y: "0%" }}
                     viewport={{ once: false }}
                     transition={{ duration: 1.2, delay: idx * 0.1 + 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-white text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none"
+                    className="text-white font-bold tracking-tighter leading-none"
                     style={{ 
+                      fontSize: "clamp(18px, 4.5vw, 90px)",
                       fontFamily: "var(--font-montserrat), sans-serif", 
                       fontVariantNumeric: "tabular-nums",
                       textShadow: "0 0 30px rgba(255,255,255,0.1)"
@@ -76,8 +77,8 @@ export default function StatsSection() {
                 </div>
               </div>
               
-              {/* ACCENT LINE WITH HOVER SHINE */}
-              <div className="mt-8 h-[1px] w-full bg-white/10 relative overflow-hidden">
+              {/* ACCENT LINE */}
+              <div className="mt-[2vw] h-[1px] w-full bg-white/10 relative overflow-hidden">
                 <motion.div 
                   initial={{ x: "-100%" }}
                   whileInView={{ x: "0%" }}
@@ -87,8 +88,8 @@ export default function StatsSection() {
                 />
               </div>
 
-              {/* SUBTLE CARD GLOW */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-3xl pointer-events-none" />
+              {/* GLOW */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-[5vw] pointer-events-none" />
             </motion.div>
           ))}
         </div>
