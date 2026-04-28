@@ -102,6 +102,7 @@ export default function CinematicReveal({
         WebkitTextFillColor: "transparent",
         whiteSpace: "nowrap",
         willChange: "transform, filter, letter-spacing, opacity",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any}
     >
       {text.split("").map((char, i) => (

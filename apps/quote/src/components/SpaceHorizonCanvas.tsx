@@ -81,7 +81,6 @@ export default function SpaceHorizonCanvas({ linesOnly = false }: SpaceHorizonCa
       // Origin point for the Lunar Arc (Deep below center)
       const originX = canvas.width / 2;
       const originY = canvas.height * 1.6;
-      const baseRadius = canvas.height * 0.8;
 
       beams.current.forEach((beam) => {
         // ENERGY FLOW: Rise Upwards (Radius decreases as it moves towards center, wait...)

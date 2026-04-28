@@ -81,7 +81,11 @@ export default function PeopleSection() {
                   initial={{ scale: 1.05 }}
                   whileInView={{ scale: 1 }}
                   viewport={{ once: false }}
-                  transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{
+                    duration: 1.2,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    ease: [0.16, 1, 0.3, 1] as any,
+                  }}
                   src={member.image} 
                   alt={member.name}
                   className="w-full h-full object-cover filter grayscale contrast-[1.2] brightness-[0.9] transition-transform duration-1000 group-hover:scale-105"
@@ -116,7 +120,7 @@ export default function PeopleSection() {
 
                 {/* Internal Designation Overlay */}
                 <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 z-20">
-                  <p className="text-white/80 text-[11px] font-light leading-relaxed">"{member.bio}"</p>
+                  <p className="text-white/80 text-[11px] font-light leading-relaxed">&quot;{member.bio}&quot;</p>
                 </div>
               </div>
 

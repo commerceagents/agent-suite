@@ -151,6 +151,7 @@ export default function SpaceHorizonHero() {
             transition={{ 
               duration: 3.5, 
               delay: 7.5, 
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
             className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden border border-white/5 backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
@@ -221,6 +222,7 @@ export default function SpaceHorizonHero() {
               animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
               transition={{ 
                 opacity: { duration: 2, delay: 13 },
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 scale: { duration: 4, delay: 13, ease: [0.16, 1, 0.3, 1] as any },
                 letterSpacing: { duration: 5, delay: 13.5, ease: "easeOut" },
                 filter: { duration: 2, delay: 13 }

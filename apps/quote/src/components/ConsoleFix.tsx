@@ -26,7 +26,7 @@ export default function ConsoleFix() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         let hasServiceWorker = false;
-        for(let registration of registrations) {
+        for(const registration of registrations) {
           registration.unregister();
           hasServiceWorker = true;
           console.log("🧹 Unregistered Rogue Service Worker.");
@@ -35,7 +35,7 @@ export default function ConsoleFix() {
         // Clear caches that might be interfering
         if (hasServiceWorker && 'caches' in window) {
           caches.keys().then((names) => {
-            for (let name of names) {
+            for (const name of names) {
               caches.delete(name);
             }
             console.log("🧹 Cleared Stale Localhost Caches.");

@@ -77,7 +77,7 @@ export default function TestimonialSection() {
                   <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5M13 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v3c0 1.25.75 2 2 2h3c0 4-2 5-2 5" />
                 </svg>
                 <p className="text-white font-light leading-relaxed mb-[3vw]" style={{ fontSize: "clamp(10px, 1.4vw, 24px)" }}>
-                  "{item.content}"
+                  &quot;{item.content}&quot;
                 </p>
               </div>
 

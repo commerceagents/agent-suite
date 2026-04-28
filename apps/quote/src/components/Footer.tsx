@@ -15,7 +15,7 @@ export default function Footer() {
           {/* LEFT CTA */}
           <div className="max-w-xl">
             <h2 className="text-white text-5xl md:text-6xl lg:text-[5rem] font-bold tracking-tight leading-[1.05] mb-8" style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}>
-              Have a Cool Idea?<br />Let's Collaborate<span className="text-white">.</span>
+              Have a Cool Idea?<br />Let&apos;s Collaborate<span className="text-white">.</span>
             </h2>
           </div>
 
