@@ -1,78 +1,145 @@
 'use client';
  
-import React, { useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
+import * as THREE from 'three';
 import Navigation from './Navigation';
  
-export default function SpaceHorizonHero() {
-  const [isMounted, setIsMounted] = React.useState(false);
-  
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springX = useSpring(mouseX, { damping: 50, stiffness: 400 });
-  const springY = useSpring(mouseY, { damping: 50, stiffness: 400 });
-
-  const backgroundGradient = useMotionTemplate`radial-gradient(circle 400px at ${springX}px ${springY}px, rgba(255,0,128,0.15), transparent 70%)`;
-
-  useEffect(() => {
-    setIsMounted(true);
-    // Set initial position to center safely after hydration
-    mouseX.set(window.innerWidth / 2);
-    mouseY.set(window.innerHeight / 2);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
+function PixelBlocks() {
+  const blocks = [
+    // Top Left Cluster
+    { t: '15%', l: '20%', w: 40, h: 40 },
+    { t: '15%', l: '24%', w: 40, h: 40 },
+    { t: '19%', l: '20%', w: 40, h: 40 },
+    
+    // Right Vertical Column
+    { t: '10%', r: '15%', w: 20, h: 80 },
+    { t: '22%', r: '15%', w: 20, h: 40 },
+    
+    // Bottom Structured Group (L-Shape)
+    { b: '20%', l: '30%', w: 60, h: 20 },
+    { b: '24%', l: '30%', w: 20, h: 40 },
+    
+    // Center Floating
+    { t: '45%', r: '25%', w: 30, h: 30 },
+    { t: '60%', l: '40%', w: 80, h: 20 },
+  ];
   return (
-    <section className="relative h-[100dvh] w-full bg-[#050816] overflow-hidden font-sans select-none p-4 md:p-6">
-      
-      {/* 🖱️ INTERACTIVE MOUSE GLOW */}
-      {isMounted && (
-        <motion.div 
-          className="pointer-events-none absolute inset-0 z-10 mix-blend-screen"
-          style={{
-            background: backgroundGradient,
-            filter: 'blur(40px)',
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      {blocks.map((b, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.15, 0.05] }}
+          transition={{ duration: 4, delay: 9 + i * 0.5, repeat: Infinity, repeatType: "reverse" }}
+          className="absolute border border-white/20 bg-white/5"
+          style={{ 
+            top: b.t, left: b.l, right: b.r, bottom: b.b,
+            width: b.w, height: b.h,
+            boxShadow: '0 0 10px rgba(255,255,255,0.05)'
           }}
         />
-      )}
+      ))}
+    </div>
+  );
+}
 
-      {/* STEP 1: SAAS GLOW GRADIENT BACKGROUND */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-[#050816]">
-        {/* Central Ambient Purple Glow */}
-        <motion.div 
-          animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-[10%] left-[20%] w-[60vw] h-[60vw] max-w-[1000px] max-h-[1000px] rounded-full mix-blend-screen pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(128,0,255,0.15) 0%, transparent 70%)' }}
-        />
-        
-        {/* Bottom Right Magenta Glow */}
-        <motion.div 
-          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute -bottom-[20%] right-[10%] w-[50vw] h-[50vw] max-w-[800px] max-h-[800px] rounded-full mix-blend-screen pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(255,0,128,0.15) 0%, transparent 70%)' }}
-        />
+function GridBackground() {
+  return (
+    <div 
+      className="absolute inset-0 opacity-[0.12] pointer-events-none z-0" 
+      style={{ 
+        backgroundImage: `
+          linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px',
+        maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
+        WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)'
+      }} 
+    />
+  );
+}
 
-        {/* Bottom Left Pink Glow */}
-        <motion.div 
-          animate={{ scale: [1, 1.08, 1], opacity: [0.15, 0.3, 0.15] }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-          className="absolute -bottom-[15%] left-[10%] w-[40vw] h-[40vw] max-w-[700px] max-h-[700px] rounded-full mix-blend-screen pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(255,105,180,0.15) 0%, transparent 70%)' }}
-        />
-      </div>
+function DrawingStroke({ delay }: { delay: number }) {
+  return (
+    <svg 
+      className="absolute inset-0 w-full h-full pointer-events-none z-50 overflow-visible"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+    >
+      {/* Side 1: Top-Center -> Right -> Bottom-Center */}
+      <motion.path
+        d="M 50 0 L 98 0 C 99 0 100 1 100 2 L 100 98 C 100 99 99 100 98 100 L 50 100"
+        fill="none"
+        stroke="white"
+        strokeWidth="0.2"
+        vectorEffect="non-scaling-stroke"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ 
+          pathLength: [0, 1, 1], 
+          opacity: [0, 1, 1, 0] 
+        }}
+        transition={{ 
+          duration: 9, 
+          times: [0, 0.4, 0.9, 1],
+          delay: delay, 
+          ease: "easeInOut" 
+        }}
+      />
+      {/* Side 2: Top-Center -> Left -> Bottom-Center */}
+      <motion.path
+        d="M 50 0 L 2 0 C 1 0 0 1 0 2 L 0 98 C 0 99 1 100 2 100 L 50 100"
+        fill="none"
+        stroke="white"
+        strokeWidth="0.2"
+        vectorEffect="non-scaling-stroke"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ 
+          pathLength: [0, 1, 1], 
+          opacity: [0, 1, 1, 0] 
+        }}
+        transition={{ 
+          duration: 9, 
+          times: [0, 0.4, 0.9, 1],
+          delay: delay, 
+          ease: "easeInOut" 
+        }}
+      />
+    </svg>
+  );
+}
 
-      {/* NAVIGATION LAYER (Starts 10.5s - Sync with text) */}
+function AtmosphericBloom() {
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 mix-blend-screen">
+      {/* Soft volumetric blobs that replicate the 'fog' feel without WebGL */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 9, duration: 4 }}
+        className="absolute inset-0"
+      >
+        <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[20%] left-[30%] w-[40%] h-[40%] bg-purple-900/5 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
+      </motion.div>
+    </div>
+  );
+}
+
+export default function SpaceHorizonHero() {
+  return (
+    <section className="relative h-[100dvh] w-full bg-[#050508] overflow-hidden font-sans select-none flex items-center justify-center">
+      {/* STEP 1: DEEP NAVY TO BLACK ATMOSPHERE */}
+      <div 
+        className="absolute inset-0 z-0" 
+        style={{ background: 'radial-gradient(circle at center, #0a0a25 0%, #000000 100%)' }}
+      />
+
+      {/* NAVIGATION LAYER (Starts 14s - Sync with text expansion) */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={10.5} />
+        <Navigation show={true} delay={14} />
       </div>
 
       {/* UI LAYER - GLASS CARD (Bottom Aligned) */}
@@ -84,10 +151,10 @@ export default function SpaceHorizonHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 9.5, 
+              delay: 7.5, 
               ease: [0.16, 1, 0.3, 1] as any 
             }}
-            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[24px] overflow-hidden border border-white/5 bg-black/40 backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6),inset_0_0_80px_rgba(255,255,255,0.02)] flex flex-col items-center justify-center transform-gpu"
+            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden border border-white/5 backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, opacity',
@@ -97,91 +164,72 @@ export default function SpaceHorizonHero() {
           >
             {/* 1. SAAS GRADIENT WAVE & PLASMA FLAME */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              
-              {/* Layer 1: Soft Diffused Base Glow */}
-              <div className="absolute bottom-0 left-0 right-0 h-[40%] bg-gradient-to-t from-[#ff007f]/30 to-transparent blur-[40px]" />
-              
-              {/* Layer 2: Main Gradient Wave (Base) */}
-              <motion.div 
-                animate={{ opacity: [0.7, 1, 0.7], scaleY: [1, 1.05, 1] }}
-                transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute bottom-0 w-full h-[50%] origin-bottom"
-                style={{ 
-                  background: 'linear-gradient(to top, rgba(255,0,128,0.4) 0%, rgba(128,0,255,0.15) 60%, transparent 100%)',
-                }}
-              />
 
-              {/* Layer 3: Soft Vapor / Mist Effect (Full Width Distribution) */}
-              
-              {/* Vapor A: Soft Mist Left */}
-              <motion.div 
-                animate={{ y: [0, -150], opacity: [0, 0.8, 0], scale: [1, 1.3] }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-[-40%] left-[-20%] w-[80%] h-[60%]"
-                style={{ 
-                  background: 'radial-gradient(circle, rgba(255,150,220,0.6) 0%, transparent 60%)',
-                  filter: 'blur(20px)' 
-                }}
-              />
-              
-              {/* Vapor B: Soft Mist Right */}
-              <motion.div 
-                animate={{ y: [20, -180], opacity: [0, 0.8, 0], scale: [0.9, 1.4] }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear", delay: 5 }}
-                className="absolute bottom-[-35%] right-[-20%] w-[80%] h-[70%]"
-                style={{ 
-                  background: 'radial-gradient(circle, rgba(220,100,255,0.5) 0%, transparent 60%)',
-                  filter: 'blur(30px)' 
-                }}
-              />
-              
-              {/* Vapor C: Background Wide Mist */}
-              <motion.div 
-                animate={{ y: [10, -200], opacity: [0, 0.6, 0], scale: [1, 1.5] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear", delay: 10 }}
-                className="absolute bottom-[-45%] left-[0%] w-[100%] h-[80%]"
-                style={{ 
-                  background: 'radial-gradient(circle, rgba(255,100,200,0.4) 0%, transparent 60%)',
-                  filter: 'blur(40px)' 
-                }}
-              />
-              
-              {/* Layer 4: Clean Base Horizon Light */}
-              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ff007f] to-transparent opacity-50" />
+              {/* PHASE 1 & 5: DRAWING STROKE REVEAL & EXIT */}
+              <DrawingStroke delay={8.5} />
+
+              {/* HIGH-FIDELITY GRADIENT STACK (Rising Horizon + Razor Sharp Side Glows) */}
+              <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
+                {/* 1. The Deep Black Atmosphere (Top down) */}
+                <div className="absolute inset-0 bg-black/60" />
+                
+                {/* 2. The Vibrant Purple Bloom (Bottom-Up) - Tall & Immersive */}
+                <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-purple-600/50 via-purple-900/10 to-transparent blur-[30px]" />
+                
+                {/* 3. Left Side Bloom - Razor Thin & Razor Sharp (Full Height) */}
+                <div className="absolute inset-y-0 left-0 w-[1%] bg-gradient-to-r from-purple-600/50 to-transparent blur-[3px]" />
+                
+                {/* 4. Right Side Bloom - Razor Thin & Razor Sharp (Full Height) */}
+                <div className="absolute inset-y-0 right-0 w-[1%] bg-gradient-to-l from-purple-600/50 to-transparent blur-[3px]" />
+
+                {/* 5. The Dense White Horizon (Absolute Bottom) */}
+                <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-white/30 via-white/5 to-transparent blur-[5px]" />
+                
+                {/* 6. Sharp White Bottom Edge Line */}
+                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/60 shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+              </div>
+
+              {/* PHASE 2: STATIC ATMOSPHERIC BLOOM (Stable & Performant Alternative to WebGL) */}
+              <AtmosphericBloom />
             </div>
 
-            {/* 2. SUBTLE WHITE PERSPECTIVE GRID */}
-            <div 
-              className="absolute inset-0 opacity-[0.08] pointer-events-none z-0" 
-              style={{ 
-                backgroundImage: `
-                  linear-gradient(to right, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
-                  linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 1px, transparent 1px)
-                `,
-                backgroundSize: '40px 40px',
-                maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)',
-                WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)'
-              }} 
-            />
+            {/* 2. SUBTLE GRID & PIXEL BLOCKS */}
+            <GridBackground />
+            <PixelBlocks />
 
             {/* BRAND TEXT */}
             <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap');
+              @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
+              
+              @keyframes shimmer {
+                0% { background-position: -200% center; }
+                100% { background-position: 200% center; }
+              }
+              .shimmer-text {
+                background: linear-gradient(90deg, 
+                  rgba(255,255,255,0.7) 0%, 
+                  rgba(255,255,255,1) 50%, 
+                  rgba(255,255,255,0.7) 100%
+                );
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                animation: shimmer 5s linear infinite;
+              }
             `}</style>
             <motion.h1
-              initial={{ opacity: 0, scale: 2, filter: 'blur(20px)' }}
-              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
+              animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
               transition={{ 
-                duration: 2.5, 
-                delay: 10.5, 
-                ease: [0.16, 1, 0.3, 1] as any 
+                opacity: { duration: 2, delay: 13 },
+                scale: { duration: 4, delay: 13, ease: [0.16, 1, 0.3, 1] as any },
+                letterSpacing: { duration: 5, delay: 13.5, ease: "easeOut" },
+                filter: { duration: 2, delay: 13 }
               }}
-              className="relative z-10 text-white/90 font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
+              className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
               style={{ 
-                fontFamily: "'Cinzel', serif",
-                fontSize: "clamp(16px, 3vw, 36px)",
-                textShadow: "0 0 20px rgba(0,170,255,0.3)",
-                letterSpacing: "0.3em"
+                fontFamily: "'Alexandria', sans-serif",
+                fontSize: "clamp(32px, 6vw, 72px)",
               }}
             >
               COMMERCE AGENTS

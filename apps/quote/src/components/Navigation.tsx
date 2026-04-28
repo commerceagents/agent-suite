@@ -56,7 +56,16 @@ export default function Navigation({ show = true, delay = 0 }) {
  
   const item = {
     hidden: { opacity: 0, y: -30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any } }
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+        mass: 1
+      } 
+    }
   };
  
   return (
