@@ -5,7 +5,6 @@ import LoadingScreen from "@/components/LoadingScreen";
 import ConsoleFix from "@/components/ConsoleFix";
 import SmoothScroll from "@/components/SmoothScroll";
 import BackToTop from "@/components/BackToTop";
-import ChatWidget from "@/components/ChatWidget";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -85,7 +84,6 @@ export default function RootLayout({
           {children}
         </SmoothScroll>
         <BackToTop />
-        <ChatWidget />
       </body>
     </html>
   );

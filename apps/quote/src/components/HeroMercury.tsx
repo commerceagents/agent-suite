@@ -31,6 +31,7 @@ export default function HeroMercury() {
     animate: {
       y: 0,
       opacity: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any },
     },
   };

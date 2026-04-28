@@ -1,7 +1,7 @@
 'use client';
  
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { useLenis } from 'lenis/react';
  
 const navLinks = [
@@ -43,7 +43,7 @@ export default function Navigation({ show = true, delay = 0 }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
  
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -54,9 +54,18 @@ export default function Navigation({ show = true, delay = 0 }) {
     }
   };
  
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: -30 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any } }
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+        mass: 1
+      } 
+    }
   };
  
   return (
@@ -64,7 +73,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       variants={container}
       initial="hidden"
       animate={show ? "show" : "hidden"}
-      className="relative flex justify-center items-center w-full mb-8 z-50"
+      className="relative flex justify-center items-center w-full z-50"
     >
       
       {/* 1. LOGO SECTION */}
@@ -72,17 +81,17 @@ export default function Navigation({ show = true, delay = 0 }) {
         variants={item} 
         className="absolute left-0 md:left-4 lg:left-8 flex items-center h-full group"
       >
-        <div className="relative cursor-pointer py-4" onClick={() => lenis?.scrollTo(0)}>
-          <img
-            src="/image/CA_logo-PNG.png"
-            alt="Commerce Agents Logo"
-            className="w-[40px] md:w-[50px] lg:w-[55px] h-auto object-contain group-hover:scale-105 transition-transform"
-          />
+        <div className="relative cursor-pointer py-2" onClick={() => lenis?.scrollTo(0)}>
+            <img
+              src="/image/CA_logo-PNG.png"
+              alt="Commerce Agents Logo"
+              className="w-[50px] md:w-[65px] lg:w-[75px] h-auto object-contain group-hover:scale-105 transition-transform"
+            />
         </div>
       </motion.div>
  
       {/* 2. HEADER LINKS */}
-      <div className="relative flex items-center gap-1 px-4 py-5">
+      <div className="relative flex items-center gap-4 px-4 py-2">
         {navLinks.map((link) => (
           <motion.div 
             variants={item} 
@@ -101,7 +110,7 @@ export default function Navigation({ show = true, delay = 0 }) {
                 }
                 setActiveSection(link.name);
               }}
-              className={`text-[13px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
+              className={`text-[16px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
                 activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
               }`}
               style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
@@ -129,14 +138,14 @@ export default function Navigation({ show = true, delay = 0 }) {
         variants={item} 
         className="absolute right-0 md:right-4 lg:right-8 flex items-center h-full group"
       >
-        <div className="relative py-4">
+        <div className="relative py-2">
           <button 
             onClick={(e) => {
               e.preventDefault();
               lenis?.scrollTo('#contact');
             }}
             suppressHydrationWarning
-            className="bg-white text-black px-4 py-1.5 text-[12px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
+            className="bg-white text-black px-7 py-3 text-[14px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
             style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
           >
             Contact us

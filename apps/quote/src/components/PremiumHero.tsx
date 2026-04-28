@@ -25,6 +25,7 @@ export default function PremiumHero() {
       opacity: 1,
       transition: {
         duration: 1.2,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ease: [0.16, 1, 0.3, 1] as any,
       },
     },
