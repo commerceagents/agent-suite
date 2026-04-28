@@ -43,7 +43,7 @@ export default function Navigation({ show = true, delay = 0 }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
  
-  const container = {
+  const container: any = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -54,7 +54,7 @@ export default function Navigation({ show = true, delay = 0 }) {
     }
   };
  
-  const item = {
+  const item: any = {
     hidden: { opacity: 0, y: -30 },
     show: { 
       opacity: 1, 

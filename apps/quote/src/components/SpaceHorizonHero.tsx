@@ -2,7 +2,6 @@
  
 import React from 'react';
 import { motion } from 'framer-motion';
-import * as THREE from 'three';
 import Navigation from './Navigation';
  
 function PixelBlocks() {
