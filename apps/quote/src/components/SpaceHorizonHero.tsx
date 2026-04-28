@@ -31,7 +31,7 @@ function PixelBlocks() {
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 0.15, 0.05] }}
           transition={{ duration: 4, delay: 9 + i * 0.5, repeat: Infinity, repeatType: "reverse" }}
-          className="absolute border border-white/20 bg-white/5"
+          className="absolute bg-white/5"
           style={{ 
             top: b.t, left: b.l, right: b.r, bottom: b.b,
             width: b.w, height: b.h,
@@ -154,7 +154,7 @@ export default function SpaceHorizonHero() {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
-            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden border border-white/5 backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
+            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
             style={{ 
               isolation: 'isolate',
               willChange: 'transform, opacity',
@@ -185,8 +185,7 @@ export default function SpaceHorizonHero() {
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
                 <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-white/30 via-white/5 to-transparent blur-[5px]" />
                 
-                {/* 6. Sharp White Bottom Edge Line */}
-                <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/60 shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+
               </div>
 
               {/* PHASE 2: STATIC ATMOSPHERIC BLOOM (Stable & Performant Alternative to WebGL) */}
