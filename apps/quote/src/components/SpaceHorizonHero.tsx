@@ -9,15 +9,15 @@ function TetrisSimulation() {
   const cellSize = 40; // Perfect match for GridBackground
   const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string, isClearing?: boolean}[]>([]);
   
-  // Sophisticated Purple Palette (Monochromatic Glass Style)
+  // Minimalist White Glass Palette (Unified Style)
   const TETRIMINOS = React.useMemo(() => [
-    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: '#a855f7' }, // Purple-500
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: '#d946ef' }, // Fuchsia-500
-    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: '#c084fc' }, // Purple-400
-    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: '#8b5cf6' }, // Violet-500
-    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: '#a78bfa' }, // Violet-400
-    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: '#7c3aed' }, // Violet-600
-    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: '#6366f1' }, // Indigo-500
+    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
+    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
   ], []);
 
   const [activeShapes, setActiveShapes] = React.useState<{
@@ -147,9 +147,9 @@ function TetrisSimulation() {
                 height: cellSize,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                backgroundColor: `${shape.color}33`,
-                border: `1px solid rgba(255,255,255,0.3)`,
-                boxShadow: `inset 0 0 20px ${shape.color}44`
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.05)'
               }}
             />
           ))}
@@ -177,8 +177,8 @@ function TetrisSimulation() {
             height: cellSize,
             left: `${(block.x / gridDim.cols) * 100}%`,
             top: `${(block.y / gridDim.rows) * 100}%`,
-            backgroundColor: `${block.color}22`,
-            border: `1px solid rgba(255,255,255,0.2)`,
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
             zIndex: block.isClearing ? 10 : 1
           }}
         />
