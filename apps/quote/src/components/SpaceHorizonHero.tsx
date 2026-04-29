@@ -126,63 +126,71 @@ function TetrisSimulation() {
   }, [spawnShape, gridDim]);
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
-      {/* Falling Pieces */}
-      {activeShapes.map(shape => (
-        <div 
-          key={shape.id} 
-          className="absolute"
-          style={{ 
-            left: `${(shape.x / gridDim.cols) * 100}%`,
-            top: `${(shape.y / gridDim.rows) * 100}%`,
-            transition: shape.y <= 0 ? 'none' : 'top 0.4s linear'
-          }}
-        >
-          {shape.cells.map(([cx, cy], i) => (
-            <div 
-              key={i}
-              className="absolute"
-              style={{ 
-                width: cellSize, 
-                height: cellSize,
-                left: cx * cellSize,
-                top: cy * cellSize,
-                backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.05)'
-              }}
-            />
-          ))}
-        </div>
-      ))}
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40 flex justify-center">
+      <div 
+        className="relative" 
+        style={{ 
+          width: gridDim.cols * cellSize, 
+          height: gridDim.rows * cellSize 
+        }}
+      >
+        {/* Falling Pieces */}
+        {activeShapes.map(shape => (
+          <div 
+            key={shape.id} 
+            className="absolute"
+            style={{ 
+              left: shape.x * cellSize,
+              top: shape.y * cellSize,
+              transition: shape.y <= 0 ? 'none' : 'top 0.4s linear'
+            }}
+          >
+            {shape.cells.map(([cx, cy], i) => (
+              <div 
+                key={i}
+                className="absolute"
+                style={{ 
+                  width: cellSize, 
+                  height: cellSize,
+                  left: cx * cellSize,
+                  top: cy * cellSize,
+                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.05)'
+                }}
+              />
+            ))}
+          </div>
+        ))}
 
-      {/* Stacked Pieces */}
-      {stackedBlocks.map((block, i) => (
-        <motion.div 
-          key={`stacked-${i}-${block.x}-${block.y}`}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={block.isClearing ? { 
-            scale: 1.8, 
-            opacity: 0,
-            backgroundColor: '#ffffff',
-            boxShadow: '0 0 60px #ffffff'
-          } : { 
-            scale: 1, 
-            opacity: 1 
-          }}
-          transition={{ duration: block.isClearing ? 0.4 : 0.2 }}
-          className="absolute"
-          style={{ 
-            width: cellSize, 
-            height: cellSize,
-            left: `${(block.x / gridDim.cols) * 100}%`,
-            top: `${(block.y / gridDim.rows) * 100}%`,
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            zIndex: block.isClearing ? 10 : 1
-          }}
-        />
-      ))}
+        {/* Stacked Pieces */}
+        {stackedBlocks.map((block, i) => (
+          <motion.div 
+            key={`stacked-${i}-${block.x}-${block.y}`}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={block.isClearing ? { 
+              scale: 1.8, 
+              opacity: 0,
+              backgroundColor: '#ffffff',
+              boxShadow: '0 0 60px #ffffff'
+            } : { 
+              scale: 1, 
+              opacity: 1 
+            }}
+            transition={{ duration: block.isClearing ? 0.4 : 0.2 }}
+            className="absolute"
+            style={{ 
+              width: cellSize, 
+              height: cellSize,
+              left: block.x * cellSize,
+              top: block.y * cellSize,
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              zIndex: block.isClearing ? 10 : 1
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
