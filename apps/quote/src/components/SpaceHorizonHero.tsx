@@ -330,8 +330,8 @@ export default function SpaceHorizonHero() {
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 left-0 z-10"
                 >
-                  <div className="absolute inset-y-0 left-0 w-[2px] bg-white/40 shadow-[0_0_25px_rgba(168,85,247,1),0_0_50px_rgba(168,85,247,0.5)]" />
-                  <div className="absolute inset-y-0 left-0 w-[60px] bg-gradient-to-r from-purple-600/60 to-transparent blur-[25px]" />
+                  <div className="absolute inset-y-0 left-0 w-[40px] bg-gradient-to-r from-purple-600/40 to-transparent blur-[20px]" />
+                  <div className="absolute inset-y-0 left-0 w-[1px] bg-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.8)]" />
                 </motion.div>
                 
                 {/* 4. Right Side Bloom - Powerful Glowing Beam (Pulsing) */}
@@ -340,8 +340,8 @@ export default function SpaceHorizonHero() {
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 right-0 z-10"
                 >
-                  <div className="absolute inset-y-0 right-0 w-[2px] bg-white/40 shadow-[0_0_25px_rgba(168,85,247,1),0_0_50_rgba(168,85,247,0.5)]" />
-                  <div className="absolute inset-y-0 right-0 w-[60px] bg-gradient-to-l from-purple-600/60 to-transparent blur-[25px]" />
+                  <div className="absolute inset-y-0 right-0 w-[40px] bg-gradient-to-l from-purple-600/40 to-transparent blur-[20px]" />
+                  <div className="absolute inset-y-0 right-0 w-[1px] bg-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.8)]" />
                 </motion.div>
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
