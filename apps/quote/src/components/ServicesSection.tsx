@@ -46,14 +46,14 @@ export default function ServicesSection() {
   return (
     <section 
       id="services" 
-      className="relative w-full bg-[#050508] py-[8vw] px-[5vw] overflow-hidden border-y border-white/5"
+      className="relative w-full bg-[#050508] pt-0 pb-[12vh] px-[5vw] overflow-hidden"
       style={{ position: 'relative' }}
     >
       
       <div className="w-full max-w-[1700px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-[6vw]">
+        <div className="mb-[12vh]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -104,7 +104,8 @@ export default function ServicesSection() {
                 <motion.div 
                   whileHover={{ scale: 1.1, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-[4.5vw] h-[4.5vw] rounded-full bg-black/40 border border-white/10 flex items-center justify-center text-white transition-all duration-500 cursor-pointer group/icon shadow-inner"
+                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+                  className="w-[4.5vw] h-[4.5vw] rounded-full border border-white/10 flex items-center justify-center text-white transition-all duration-500 cursor-pointer group/icon shadow-inner"
                 >
                   <div className="group-hover/icon:text-black transition-colors scale-[0.6] md:scale-100">
                     {service.icon}

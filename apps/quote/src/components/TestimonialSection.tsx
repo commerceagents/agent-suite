@@ -28,12 +28,12 @@ export default function TestimonialSection() {
   return (
     <section 
       id="testimonial" 
-      className="relative w-full bg-[#050508] py-[8vw] px-[5vw] overflow-hidden border-t border-white/5"
+      className="relative w-full bg-[#050508] pt-0 pb-[12vh] px-[5vw] overflow-hidden"
     >
       <div className="w-full max-w-[1700px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-[6vw]">
+        <div className="mb-[12vh]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

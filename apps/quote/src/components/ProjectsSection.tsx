@@ -34,13 +34,13 @@ export default function ProjectsSection() {
     <section 
       id="projects" 
       ref={containerRef} 
-      className="relative h-[300vh] bg-[#050508] scroll-mt-24"
+      className="relative h-[300vh] bg-[#050508] pb-[12vh] scroll-mt-24"
       style={{ position: 'relative' }}
     >
       <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
         
         {/* SECTION TITLE (ABOVE THE BOX) */}
-        <div className="px-6 md:px-12 lg:px-24 mb-16 md:mb-24">
+        <div className="px-6 md:px-12 lg:px-24 mb-[12vh]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -34,14 +34,14 @@ export default function PeopleSection() {
   return (
     <section 
       id="people" 
-      className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
+      className="relative w-full bg-[#050508] pt-0 pb-[12vh] px-6 md:px-12 lg:px-24 scroll-mt-24 overflow-hidden"
       style={{ position: 'relative' }}
     >
       
       <div className="max-w-[1400px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-16 md:mb-24">
+        <div className="mb-[12vh]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
