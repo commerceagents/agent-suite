@@ -316,10 +316,6 @@ export default function SpaceHorizonHero() {
           >
             {/* 1. SAAS GRADIENT WAVE & PLASMA FLAME */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-
-              {/* PHASE 1 & 5: DRAWING STROKE REVEAL & EXIT */}
-              <DrawingStroke delay={10.2} />
-
               {/* HIGH-FIDELITY GRADIENT STACK (Rising Horizon + Razor Sharp Side Glows) */}
               <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
                 {/* 1. The Deep Black Atmosphere (Top down) */}
