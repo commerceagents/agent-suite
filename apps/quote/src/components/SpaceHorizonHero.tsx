@@ -189,11 +189,11 @@ function TetrisSimulation() {
 function GridBackground() {
   return (
     <div 
-      className="absolute inset-0 opacity-[0.15] pointer-events-none z-0" 
+      className="absolute inset-0 opacity-[0.25] pointer-events-none z-0" 
       style={{ 
         backgroundImage: `
-          linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 1px, transparent 1px)
+          linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
         `,
         backgroundSize: '40px 40px',
         maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
