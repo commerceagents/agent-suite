@@ -498,11 +498,7 @@ function AtmosphericBloom() {
 
 export default function SpaceHorizonHero() {
   return (
-    <section className="relative h-[100dvh] w-full bg-[#050508] overflow-hidden font-sans select-none flex items-center justify-center">
-      <div 
-        className="absolute inset-0 z-0" 
-        style={{ background: 'radial-gradient(circle at center, #0a0a25 0%, #000000 100%)' }}
-      />
+    <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none flex items-center justify-center">
 
       {/* NAVIGATION LAYER */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
@@ -559,11 +555,7 @@ export default function SpaceHorizonHero() {
                 </motion.div>
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
-                <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-white/30 via-white/5 to-transparent blur-[5px]" />
               </div>
-
-              {/* PHASE 2: STATIC ATMOSPHERIC BLOOM (Stable & Performant Alternative to WebGL) */}
-              <AtmosphericBloom />
             </div>
 
             {/* 2. SUBTLE GRID */}
