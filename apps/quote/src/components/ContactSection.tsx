@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="relative w-full bg-[#050508] py-8 md:py-12 lg:py-16 px-6 md:px-12 lg:px-24 overflow-hidden border-t border-white/5">
+    <section id="contact" className="relative w-full bg-[#050508] pt-0 pb-[12vh] px-6 md:px-12 lg:px-24 overflow-hidden">
       
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
@@ -19,7 +19,7 @@ export default function ContactSection() {
           
           {/* LEFT: CONTENT */}
           <div className="w-full lg:w-1/2">
-            <div className="mb-16 md:mb-20">
+            <div className="mb-[12vh]">
               <span 
                 style={{ color: 'rgba(255, 255, 255, 0.4)' }}
                 className="inline-block text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
@@ -118,6 +118,7 @@ export default function ContactSection() {
               <motion.button
                 whileHover={{ scale: 1.05, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
                 whileTap={{ scale: 0.98 }}
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
                 suppressHydrationWarning
                 className="w-full h-16 rounded-2xl border border-white/20 flex items-center justify-center text-white text-sm font-bold uppercase tracking-[0.4em] transition-all duration-500 overflow-hidden relative group mt-8"
               >

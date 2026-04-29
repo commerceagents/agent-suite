@@ -63,7 +63,8 @@ export default function RootLayout({
           fontFamily: "var(--font-montserrat), system-ui, sans-serif",
           backgroundColor: "#000000",
           color: "#FFFFFF",
-          minHeight: "100vh"
+          minHeight: "100vh",
+          position: "relative"
         }}
       >
         <ConsoleFix />

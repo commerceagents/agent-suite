@@ -14,13 +14,13 @@ export default function AboutSection() {
     <section 
       ref={containerRef}
       id="about" 
-      className="relative w-full bg-[#050508] py-[10vw] px-[5vw] overflow-hidden border-y border-white/5"
+      className="relative w-full bg-[#050508] pt-[12vh] pb-[12vh] px-[5vw] overflow-hidden"
       style={{ position: 'relative' }}
     >
       <div className="w-full max-w-[1700px] mx-auto relative z-10">
         
         {/* SECTION HEADER */}
-        <div className="mb-[6vw]">
+        <div className="mb-[8vh]">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

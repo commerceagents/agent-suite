@@ -6,7 +6,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-black pt-24 overflow-hidden font-sans border-t border-white/5">
+    <footer className="relative bg-black pt-24 overflow-hidden font-sans">
       <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24 relative z-10">
         
         {/* TOP SECTION */}
@@ -94,7 +94,7 @@ export default function Footer() {
       </div>
 
       {/* GIANT THEME TEXT AT BOTTOM */}
-      <div className="relative w-full h-[35vh] lg:h-[50vh] bg-[#0a0a0a] overflow-hidden flex items-center justify-center mt-12 border-t border-white/5">
+      <div className="relative w-full h-[35vh] lg:h-[50vh] bg-[#0a0a0a] overflow-hidden flex items-center justify-center mt-12">
         
         {/* Giant Text */}
         <h1 

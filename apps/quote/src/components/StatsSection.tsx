@@ -36,7 +36,7 @@ const stats = [
 
 export default function StatsSection() {
   return (
-    <section className="relative w-full bg-[#050508] py-[10vw] border-y border-white/5">
+    <section className="relative w-full bg-[#050508] pt-0 pb-[12vh]">
       <div className="w-full max-w-[1700px] mx-auto px-[5vw]">
         <div className="grid grid-cols-4 gap-[4vw]">
           {stats.map((stat, idx) => (

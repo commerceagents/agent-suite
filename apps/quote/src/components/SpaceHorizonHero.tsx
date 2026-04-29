@@ -5,39 +5,71 @@ import { motion } from 'framer-motion';
 import Navigation from './Navigation';
  
 function PixelBlocks() {
-  const blocks = [
-    // Top Left Cluster
-    { t: '15%', l: '20%', w: 40, h: 40 },
-    { t: '15%', l: '24%', w: 40, h: 40 },
-    { t: '19%', l: '20%', w: 40, h: 40 },
-    
-    // Right Vertical Column
-    { t: '10%', r: '15%', w: 20, h: 80 },
-    { t: '22%', r: '15%', w: 20, h: 40 },
-    
-    // Bottom Structured Group (L-Shape)
-    { b: '20%', l: '30%', w: 60, h: 20 },
-    { b: '24%', l: '30%', w: 20, h: 40 },
-    
-    // Center Floating
-    { t: '45%', r: '25%', w: 30, h: 30 },
-    { t: '60%', l: '40%', w: 80, h: 20 },
-  ];
+  const cellSize = 25;
+  
+  // Define classic Tetrimino shapes
+  const shapes = React.useMemo(() => [
+    { name: 'I', cells: [[0,0], [0,1], [0,2], [0,3]], l: '10%', duration: 12, delay: 0 },
+    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], l: '25%', duration: 15, delay: -2 },
+    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], l: '40%', duration: 10, delay: -5 },
+    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], l: '55%', duration: 18, delay: -8 },
+    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], l: '70%', duration: 14, delay: -3 },
+    { name: 'J', cells: [[1,0], [1,1], [1,2], [0,2]], l: '85%', duration: 16, delay: -10 },
+    { name: 'L', cells: [[0,0], [0,1], [0,2], [1,2]], l: '15%', duration: 13, delay: -4 },
+    { name: 'I', cells: [[0,0], [1,0], [2,0], [3,0]], l: '45%', duration: 17, delay: -7 },
+    { name: 'T', cells: [[0,0], [1,0], [2,0], [1,1]], l: '65%', duration: 11, delay: -1 },
+    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], l: '80%', duration: 19, delay: -6 },
+  ], []);
+
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      {blocks.map((b, i) => (
+      <style>{`
+        @keyframes fall {
+          from { transform: translateY(-150px); }
+          to { transform: translateY(100vh); }
+        }
+        .falling-shape {
+          animation: fall linear infinite;
+        }
+        .falling-shape:hover {
+          animation-play-state: paused;
+        }
+        .falling-shape:hover .piece-block {
+          background-color: rgba(255, 255, 255, 0.3);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+          border-color: rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
+      {shapes.map((shape, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.15, 0.05] }}
-          transition={{ duration: 4, delay: 9 + i * 0.5, repeat: Infinity, repeatType: "reverse" }}
-          className="absolute bg-white/5"
+          animate={{ opacity: 1 }}
+          transition={{ delay: 10.2 + i * 0.1, duration: 1 }}
+          className="falling-shape absolute pointer-events-auto cursor-crosshair group"
           style={{ 
-            top: b.t, left: b.l, right: b.r, bottom: b.b,
-            width: b.w, height: b.h,
-            boxShadow: '0 0 10px rgba(255,255,255,0.05)'
+            left: shape.l,
+            width: cellSize * 4, 
+            height: cellSize * 4,
+            animationDuration: `${shape.duration}s`,
+            animationDelay: `${shape.delay}s`,
+            top: 0
           }}
-        />
+        >
+          {shape.cells.map(([cx, cy], ci) => (
+            <div 
+              key={ci}
+              className="piece-block absolute bg-white/10 border border-white/5 transition-all duration-300"
+              style={{
+                width: cellSize - 1,
+                height: cellSize - 1,
+                left: cx * cellSize,
+                top: cy * cellSize,
+                boxShadow: '0 0 10px rgba(255,255,255,0.05)',
+              }}
+            />
+          ))}
+        </motion.div>
       ))}
     </div>
   );
@@ -116,7 +148,7 @@ function AtmosphericBloom() {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 9, duration: 4 }}
+        transition={{ delay: 10.5, duration: 4 }}
         className="absolute inset-0"
       >
         <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
@@ -138,7 +170,7 @@ export default function SpaceHorizonHero() {
 
       {/* NAVIGATION LAYER (Starts 14s - Sync with text expansion) */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={14} />
+        <Navigation show={true} delay={11.5} />
       </div>
 
       {/* UI LAYER - GLASS CARD (Bottom Aligned) */}
@@ -150,7 +182,7 @@ export default function SpaceHorizonHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 7.5, 
+              delay: 10.0, 
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
@@ -166,7 +198,7 @@ export default function SpaceHorizonHero() {
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
 
               {/* PHASE 1 & 5: DRAWING STROKE REVEAL & EXIT */}
-              <DrawingStroke delay={8.5} />
+              <DrawingStroke delay={10.2} />
 
               {/* HIGH-FIDELITY GRADIENT STACK (Rising Horizon + Razor Sharp Side Glows) */}
               <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
@@ -184,8 +216,6 @@ export default function SpaceHorizonHero() {
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
                 <div className="absolute bottom-0 left-0 right-0 h-[15%] bg-gradient-to-t from-white/30 via-white/5 to-transparent blur-[5px]" />
-                
-
               </div>
 
               {/* PHASE 2: STATIC ATMOSPHERIC BLOOM (Stable & Performant Alternative to WebGL) */}
@@ -220,11 +250,11 @@ export default function SpaceHorizonHero() {
               initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
               animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
               transition={{ 
-                opacity: { duration: 2, delay: 13 },
+                opacity: { duration: 2, delay: 11 },
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                scale: { duration: 4, delay: 13, ease: [0.16, 1, 0.3, 1] as any },
-                letterSpacing: { duration: 5, delay: 13.5, ease: "easeOut" },
-                filter: { duration: 2, delay: 13 }
+                scale: { duration: 4, delay: 11, ease: [0.16, 1, 0.3, 1] as any },
+                letterSpacing: { duration: 5, delay: 11.5, ease: "easeOut" },
+                filter: { duration: 2, delay: 11 }
               }}
               className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
               style={{ 
