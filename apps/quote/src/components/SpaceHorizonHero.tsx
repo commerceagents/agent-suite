@@ -131,10 +131,12 @@ function TetrisSimulation() {
       {activeShapes.map(shape => (
         <div 
           key={shape.id} 
-          className="absolute transition-all duration-300 ease-out"
+          className="absolute"
           style={{ 
             left: `${(shape.x / gridDim.cols) * 100}%`,
             top: `${(shape.y / gridDim.rows) * 100}%`,
+            // Disable transition when respawning (jumping from bottom back to top)
+            transition: shape.y <= 0 ? 'none' : 'top 0.4s linear'
           }}
         >
           {shape.cells.map(([cx, cy], i) => (
