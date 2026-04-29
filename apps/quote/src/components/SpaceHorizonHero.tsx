@@ -6,18 +6,19 @@ import Navigation from './Navigation';
  
 function TetrisSimulation() {
   const GRID_COLS = 20;
-  const GRID_ROWS = 22;
+  const GRID_ROWS = 24;
   const [cellSize, setCellSize] = React.useState(25);
-  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, isClearing?: boolean}[]>([]);
+  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string, isClearing?: boolean}[]>([]);
   
+  // Classic Neon Tetrimino Palette
   const TETRIMINOS = React.useMemo(() => [
-    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]] },
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]] },
-    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]] },
-    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]] },
-    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]] },
-    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]] },
-    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]] },
+    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: '#00f0f0' }, // Cyan
+    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: '#f0f000' }, // Yellow
+    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: '#a000f0' }, // Purple
+    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: '#00f000' }, // Green
+    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: '#f00000' }, // Red
+    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: '#0000f0' }, // Blue
+    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: '#f0a000' }, // Orange
   ], []);
 
   const [activeShapes, setActiveShapes] = React.useState<{
@@ -25,6 +26,7 @@ function TetrisSimulation() {
     cells: [number, number][];
     x: number;
     y: number;
+    color: string;
   }[]>([]);
 
   const spawnShape = React.useCallback((id: number) => {
@@ -39,7 +41,8 @@ function TetrisSimulation() {
       id,
       cells,
       x: Math.floor(Math.random() * (GRID_COLS - 4)) + 2,
-      y: -4 - Math.floor(Math.random() * 10)
+      y: -4 - Math.floor(Math.random() * 10),
+      color: type.color
     };
   }, [TETRIMINOS]);
 
@@ -68,22 +71,21 @@ function TetrisSimulation() {
                 const lx = shape.x + cx;
                 const ly = shape.y + cy;
                 if (ly >= 0) {
-                  newStacked.push({ x: lx, y: ly });
+                  newStacked.push({ x: lx, y: ly, color: shape.color });
                 }
               });
 
-              // Check for line clears (Increased to 75% for "completed" look)
+              // Line clear check (80% full for that "ShapePlacer" dense look)
               let linesToClear: number[] = [];
               for (let r = GRID_ROWS - 1; r >= 0; r--) {
                 const rowBlocks = newStacked.filter(b => b.y === r);
-                if (rowBlocks.length >= GRID_COLS * 0.75) {
+                if (rowBlocks.length >= GRID_COLS * 0.8) {
                   linesToClear.push(r);
                 }
               }
 
               if (linesToClear.length > 0) {
                 newStacked = newStacked.map(b => linesToClear.includes(b.y) ? { ...b, isClearing: true } : b);
-                
                 setTimeout(() => {
                   setStackedBlocks(current => {
                     let next = current.filter(b => !linesToClear.includes(b.y));
@@ -92,7 +94,7 @@ function TetrisSimulation() {
                     });
                     return next;
                   });
-                }, 300);
+                }, 400);
               }
 
               return spawnShape(shape.id);
@@ -104,14 +106,13 @@ function TetrisSimulation() {
           });
         });
 
-        // Anti-overflow: Increased limit to 300 to allow taller structures
-        if (newStacked.length > 300) {
-           newStacked = newStacked.filter(b => b.y > GRID_ROWS / 3);
+        if (newStacked.length > 400) {
+           newStacked = newStacked.filter(b => b.y > GRID_ROWS / 4);
         }
 
         return newStacked;
       });
-    }, 450); // Slightly slower for better legibility
+    }, 450);
 
     return () => clearInterval(tick);
   }, [spawnShape]);
@@ -124,7 +125,7 @@ function TetrisSimulation() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
       {/* Falling Pieces */}
       {activeShapes.map(shape => (
         <div 
@@ -138,14 +139,15 @@ function TetrisSimulation() {
           {shape.cells.map(([cx, cy], i) => (
             <div 
               key={i}
-              className="absolute border border-white/20"
+              className="absolute"
               style={{ 
-                width: cellSize - 2, 
-                height: cellSize - 2,
+                width: cellSize - 1, 
+                height: cellSize - 1,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                boxShadow: 'inset 0 0 10px rgba(255,255,255,0.1)'
+                backgroundColor: `${shape.color}22`,
+                border: `1px solid ${shape.color}`,
+                boxShadow: `0 0 10px ${shape.color}44, inset 0 0 5px ${shape.color}44`
               }}
             />
           ))}
@@ -158,21 +160,23 @@ function TetrisSimulation() {
           key={`stacked-${i}-${block.x}-${block.y}`}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={block.isClearing ? { 
-            scale: 1.5, 
+            scale: 1.8, 
             opacity: 0,
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            boxShadow: '0 0 30px rgba(255,255,255,0.5)'
+            backgroundColor: '#ffffff',
+            boxShadow: '0 0 40px #ffffff'
           } : { 
             scale: 1, 
             opacity: 1 
           }}
-          transition={{ duration: block.isClearing ? 0.3 : 0.2 }}
-          className="absolute bg-white/10 border border-white/10"
+          transition={{ duration: block.isClearing ? 0.4 : 0.2 }}
+          className="absolute"
           style={{ 
-            width: cellSize - 2, 
-            height: cellSize - 2,
+            width: cellSize - 1, 
+            height: cellSize - 1,
             left: `${(block.x / GRID_COLS) * 100}%`,
             top: `${(block.y / GRID_ROWS) * 100}%`,
+            backgroundColor: `${block.color}11`,
+            border: `1px solid ${block.color}88`,
             zIndex: block.isClearing ? 10 : 1
           }}
         />
