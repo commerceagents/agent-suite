@@ -135,7 +135,6 @@ function TetrisSimulation() {
           style={{ 
             left: `${(shape.x / gridDim.cols) * 100}%`,
             top: `${(shape.y / gridDim.rows) * 100}%`,
-            // Disable transition when respawning (jumping from bottom back to top)
             transition: shape.y <= 0 ? 'none' : 'top 0.4s linear'
           }}
         >
@@ -144,13 +143,13 @@ function TetrisSimulation() {
               key={i}
               className="absolute"
               style={{ 
-                width: cellSize - 1, 
-                height: cellSize - 1,
+                width: cellSize, 
+                height: cellSize,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                backgroundColor: `${shape.color}11`,
-                border: `0.5px solid rgba(255,255,255,0.2)`,
-                boxShadow: `inset 0 0 15px ${shape.color}33`
+                backgroundColor: `${shape.color}33`,
+                border: `1px solid rgba(255,255,255,0.3)`,
+                boxShadow: `inset 0 0 20px ${shape.color}44`
               }}
             />
           ))}
@@ -166,7 +165,7 @@ function TetrisSimulation() {
             scale: 1.8, 
             opacity: 0,
             backgroundColor: '#ffffff',
-            boxShadow: '0 0 50px #ffffff'
+            boxShadow: '0 0 60px #ffffff'
           } : { 
             scale: 1, 
             opacity: 1 
@@ -174,12 +173,12 @@ function TetrisSimulation() {
           transition={{ duration: block.isClearing ? 0.4 : 0.2 }}
           className="absolute"
           style={{ 
-            width: cellSize - 1, 
-            height: cellSize - 1,
+            width: cellSize, 
+            height: cellSize,
             left: `${(block.x / gridDim.cols) * 100}%`,
             top: `${(block.y / gridDim.rows) * 100}%`,
-            backgroundColor: `${block.color}08`,
-            border: `0.5px solid rgba(255,255,255,0.1)`,
+            backgroundColor: `${block.color}22`,
+            border: `1px solid rgba(255,255,255,0.2)`,
             zIndex: block.isClearing ? 10 : 1
           }}
         />
