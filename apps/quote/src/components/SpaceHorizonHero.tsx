@@ -426,75 +426,7 @@ function GridBackground() {
   );
 }
 
-function DrawingStroke({ delay }: { delay: number }) {
-  return (
-    <svg 
-      className="absolute inset-0 w-full h-full pointer-events-none z-50 overflow-visible"
-      preserveAspectRatio="none"
-      viewBox="0 0 100 100"
-    >
-      {/* Path 1: Bottom-Center -> Left -> Top-Center */}
-      <motion.path
-        d="M 50 100 L 5 100 C 2 100 0 98 0 95 L 0 5 C 0 2 2 0 5 0 L 50 0"
-        fill="none"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ 
-          pathLength: 1, 
-          opacity: 1 
-        }}
-        transition={{ 
-          duration: 2.5, 
-          delay: delay, 
-          ease: "linear" 
-        }}
-        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
-      />
-      {/* Path 2: Bottom-Center -> Right -> Top-Center */}
-      <motion.path
-        d="M 50 100 L 95 100 C 98 100 100 98 100 95 L 100 5 C 100 2 98 0 95 0 L 50 0"
-        fill="none"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ 
-          pathLength: 1, 
-          opacity: 1 
-        }}
-        transition={{ 
-          duration: 2.5, 
-          delay: delay, 
-          ease: "linear" 
-        }}
-        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
-      />
-    </svg>
-  );
-}
 
-function AtmosphericBloom() {
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 mix-blend-screen">
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 10.0, duration: 4 }}
-        className="absolute inset-0"
-      >
-        <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[20%] left-[30%] w-[40%] h-[40%] bg-purple-900/5 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
-      </motion.div>
-    </div>
-  );
-}
 
 export default function SpaceHorizonHero() {
   return (
@@ -502,22 +434,19 @@ export default function SpaceHorizonHero() {
 
       {/* NAVIGATION LAYER */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={11.5} />
+        <Navigation show={true} delay={11.0} />
       </div>
 
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
         <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
-          {/* STAGE 1: THE DRAWING STROKE REVEAL (Starts exactly when bars open) */}
-          <div className="absolute inset-0 p-6 md:p-12 lg:p-20 pointer-events-none">
-             <DrawingStroke delay={8.0} />
-          </div>
+
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 10.0, // Reveal after Drawing frame is established
+              delay: 8.0, 
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
@@ -592,11 +521,11 @@ export default function SpaceHorizonHero() {
                 initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
                 animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
                 transition={{ 
-                  opacity: { duration: 2, delay: 10.5 },
+                  opacity: { duration: 2, delay: 8.5 },
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  scale: { duration: 4, delay: 10.5, ease: [0.16, 1, 0.3, 1] as any },
-                  letterSpacing: { duration: 5, delay: 11.0, ease: "easeOut" },
-                  filter: { duration: 2, delay: 10.5 }
+                  scale: { duration: 4, delay: 8.5, ease: [0.16, 1, 0.3, 1] as any },
+                  letterSpacing: { duration: 5, delay: 9.0, ease: "easeOut" },
+                  filter: { duration: 2, delay: 8.5 }
                 }}
                 className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
                 style={{ 
