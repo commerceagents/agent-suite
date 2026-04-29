@@ -368,19 +368,6 @@ function RippleGrid() {
 function GridBackground() {
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      <div 
-        className="absolute inset-0 opacity-[0.25]" 
-        style={{ 
-          backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-          backgroundPosition: '1px 1px',
-          maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
-          WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)'
-        }} 
-      />
       <RippleGrid />
     </div>
   );
