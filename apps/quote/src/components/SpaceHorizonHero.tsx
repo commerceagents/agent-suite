@@ -286,7 +286,7 @@ export default function SpaceHorizonHero() {
 
       {/* UI LAYER - GLASS CARD (Bottom Aligned) */}
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
-        <div className="w-full max-w-[1400px] px-6">
+        <div className="w-full max-w-[1800px] px-4 md:px-8">
           {/* STEP 2: GLASS CARD REVEAL (Starts 9.5s) */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
