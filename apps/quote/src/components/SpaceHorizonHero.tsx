@@ -610,23 +610,10 @@ export default function SpaceHorizonHero() {
                 COMMERCE AGENTS
               </motion.h1>
 
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 2.5, delay: 11.5, ease: [0.16, 1, 0.3, 1] }}
-                className="mb-10"
-              >
-                <img 
-                  src="/logo.png" 
-                  alt="Commerce Agents" 
-                  className="h-10 md:h-12 w-auto object-contain brightness-0 invert opacity-90"
-                />
-              </motion.div>
-
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.5, delay: 12.0 }}
+                transition={{ duration: 1.5, delay: 11.5 }}
                 className="flex flex-col items-center gap-8"
               >
                 <p className="text-white/40 text-sm md:text-base font-medium tracking-[0.2em] uppercase text-center max-w-xl leading-relaxed">
