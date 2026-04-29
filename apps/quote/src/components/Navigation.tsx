@@ -74,7 +74,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       opacity: 0,
       y: "-100%",
       transition: {
-        type: "spring" as any,
+        type: "spring" as const,
         stiffness: 300,
         damping: 30
       }
@@ -83,7 +83,7 @@ export default function Navigation({ show = true, delay = 0 }) {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring" as any,
+        type: "spring" as const,
         stiffness: 300,
         damping: 30,
         staggerChildren: 0.1,
