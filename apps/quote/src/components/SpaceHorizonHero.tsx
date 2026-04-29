@@ -9,15 +9,15 @@ function TetrisSimulation() {
   const cellSize = 40; // Perfect match for GridBackground
   const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string, isClearing?: boolean}[]>([]);
   
-  // Classic Neon Tetrimino Palette
+  // Sophisticated Purple Palette (Monochromatic Glass Style)
   const TETRIMINOS = React.useMemo(() => [
-    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: '#00f0f0' }, // Cyan
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: '#f0f000' }, // Yellow
-    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: '#a000f0' }, // Purple
-    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: '#00f000' }, // Green
-    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: '#f00000' }, // Red
-    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: '#0000f0' }, // Blue
-    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: '#f0a000' }, // Orange
+    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: '#a855f7' }, // Purple-500
+    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: '#d946ef' }, // Fuchsia-500
+    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: '#c084fc' }, // Purple-400
+    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: '#8b5cf6' }, // Violet-500
+    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: '#a78bfa' }, // Violet-400
+    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: '#7c3aed' }, // Violet-600
+    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: '#6366f1' }, // Indigo-500
   ], []);
 
   const [activeShapes, setActiveShapes] = React.useState<{
@@ -148,9 +148,9 @@ function TetrisSimulation() {
                 height: cellSize - 1,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                backgroundColor: `${shape.color}22`,
-                border: `1px solid ${shape.color}`,
-                boxShadow: `0 0 10px ${shape.color}44, inset 0 0 5px ${shape.color}44`
+                backgroundColor: `${shape.color}11`,
+                border: `0.5px solid rgba(255,255,255,0.2)`,
+                boxShadow: `inset 0 0 15px ${shape.color}33`
               }}
             />
           ))}
@@ -166,7 +166,7 @@ function TetrisSimulation() {
             scale: 1.8, 
             opacity: 0,
             backgroundColor: '#ffffff',
-            boxShadow: '0 0 40px #ffffff'
+            boxShadow: '0 0 50px #ffffff'
           } : { 
             scale: 1, 
             opacity: 1 
@@ -178,8 +178,8 @@ function TetrisSimulation() {
             height: cellSize - 1,
             left: `${(block.x / gridDim.cols) * 100}%`,
             top: `${(block.y / gridDim.rows) * 100}%`,
-            backgroundColor: `${block.color}11`,
-            border: `1px solid ${block.color}88`,
+            backgroundColor: `${block.color}08`,
+            border: `0.5px solid rgba(255,255,255,0.1)`,
             zIndex: block.isClearing ? 10 : 1
           }}
         />
