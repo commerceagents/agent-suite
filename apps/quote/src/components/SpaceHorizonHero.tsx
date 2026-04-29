@@ -8,7 +8,7 @@ function TetrisSimulation() {
   const GRID_COLS = 20;
   const GRID_ROWS = 22;
   const [cellSize, setCellSize] = React.useState(25);
-  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string}[]>([]);
+  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, isClearing?: boolean}[]>([]);
   
   const TETRIMINOS = React.useMemo(() => [
     { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]] },
@@ -47,17 +47,16 @@ function TetrisSimulation() {
     setActiveShapes(Array.from({ length: 5 }, (_, i) => spawnShape(i)));
   }, [spawnShape]);
 
-  // Use a slower, controlled grid-step interval
   React.useEffect(() => {
     const tick = setInterval(() => {
       setStackedBlocks(prevStacked => {
         let newStacked = [...prevStacked];
-        
+        newStacked = newStacked.filter(b => !b.isClearing);
+
         setActiveShapes(prevShapes => {
           return prevShapes.map(shape => {
-            const nextY = shape.y + 1; // Exactly 1 grid cell down
+            const nextY = shape.y + 1;
             
-            // Precise collision check
             const collision = shape.cells.some(([cx, cy]) => {
               const absX = shape.x + cx;
               const absY = nextY + cy;
@@ -65,26 +64,39 @@ function TetrisSimulation() {
             });
 
             if (collision && shape.y >= -2) {
-              // Lock shape
               shape.cells.forEach(([cx, cy]) => {
                 const lx = shape.x + cx;
                 const ly = shape.y + cy;
                 if (ly >= 0) {
-                  newStacked.push({ x: lx, y: ly, color: 'rgba(255,255,255,0.1)' });
+                  newStacked.push({ x: lx, y: ly });
                 }
               });
 
-              // Line clear check
+              // Check for line clears (Increased to 75% for "completed" look)
+              let linesToClear: number[] = [];
               for (let r = GRID_ROWS - 1; r >= 0; r--) {
                 const rowBlocks = newStacked.filter(b => b.y === r);
-                if (rowBlocks.length >= GRID_COLS * 0.5) {
-                  newStacked = newStacked.filter(b => b.y !== r).map(b => b.y < r ? { ...b, y: b.y + 1 } : b);
+                if (rowBlocks.length >= GRID_COLS * 0.75) {
+                  linesToClear.push(r);
                 }
+              }
+
+              if (linesToClear.length > 0) {
+                newStacked = newStacked.map(b => linesToClear.includes(b.y) ? { ...b, isClearing: true } : b);
+                
+                setTimeout(() => {
+                  setStackedBlocks(current => {
+                    let next = current.filter(b => !linesToClear.includes(b.y));
+                    linesToClear.sort((a, b) => a - b).forEach(r => {
+                      next = next.map(b => b.y < r ? { ...b, y: b.y + 1 } : b);
+                    });
+                    return next;
+                  });
+                }, 300);
               }
 
               return spawnShape(shape.id);
             } else if (collision && shape.y < -2) {
-              // If collision happens off-screen, just respawn elsewhere
               return spawnShape(shape.id);
             }
 
@@ -92,14 +104,14 @@ function TetrisSimulation() {
           });
         });
 
-        // Anti-overflow: If stack gets too high, reset some of it
-        if (newStacked.length > 100) {
-           newStacked = newStacked.filter(b => b.y > GRID_ROWS / 2);
+        // Anti-overflow: Increased limit to 300 to allow taller structures
+        if (newStacked.length > 300) {
+           newStacked = newStacked.filter(b => b.y > GRID_ROWS / 3);
         }
 
         return newStacked;
       });
-    }, 400); // 0.4s per step - very nice cinematic pace
+    }, 450); // Slightly slower for better legibility
 
     return () => clearInterval(tick);
   }, [spawnShape]);
@@ -112,7 +124,7 @@ function TetrisSimulation() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-25">
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
       {/* Falling Pieces */}
       {activeShapes.map(shape => (
         <div 
@@ -126,14 +138,14 @@ function TetrisSimulation() {
           {shape.cells.map(([cx, cy], i) => (
             <div 
               key={i}
-              className="absolute border border-white/10"
+              className="absolute border border-white/20"
               style={{ 
                 width: cellSize - 2, 
                 height: cellSize - 2,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                boxShadow: 'inset 0 0 8px rgba(255,255,255,0.05)'
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                boxShadow: 'inset 0 0 10px rgba(255,255,255,0.1)'
               }}
             />
           ))}
@@ -145,13 +157,23 @@ function TetrisSimulation() {
         <motion.div 
           key={`stacked-${i}-${block.x}-${block.y}`}
           initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="absolute bg-white/5 border border-white/5"
+          animate={block.isClearing ? { 
+            scale: 1.5, 
+            opacity: 0,
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            boxShadow: '0 0 30px rgba(255,255,255,0.5)'
+          } : { 
+            scale: 1, 
+            opacity: 1 
+          }}
+          transition={{ duration: block.isClearing ? 0.3 : 0.2 }}
+          className="absolute bg-white/10 border border-white/10"
           style={{ 
             width: cellSize - 2, 
             height: cellSize - 2,
             left: `${(block.x / GRID_COLS) * 100}%`,
             top: `${(block.y / GRID_ROWS) * 100}%`,
+            zIndex: block.isClearing ? 10 : 1
           }}
         />
       ))}
