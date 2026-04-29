@@ -612,7 +612,6 @@ export default function SpaceHorizonHero() {
 
             </div>
           </motion.div>
-          </motion.div>
         </div>
       </div>
     </section>
