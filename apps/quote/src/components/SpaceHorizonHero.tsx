@@ -202,21 +202,187 @@ function TetrisSimulation() {
   );
 }
 
+function RippleGrid() {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const CONFIG = {
+      spacing: 28,
+      dotRadius: 1.2,
+      color: { r: 168, g: 85, b: 247 }, // Matched to Purple-500
+      centerDeadzone: 80,
+      centerFade: 160,
+      autoWaveSpeed: 200,
+      autoWaveInterval: 2.0,
+      autoWaveDecay: 0.002,
+      autoWaveStrength: 18,
+      mouseWaveSpeed: 200,
+      mouseWaveDecay: 0.004,
+      mouseWaveStrength: 18,
+      maxMouseWaves: 8,
+      ambientStrength: 1.5,
+    };
+
+    let w = 0, h = 0, cx = 0, cy = 0;
+    let dots: any[] = [];
+    const autoWaves: any[] = [];
+    const mouseWaves: any[] = [];
+    let lastAutoWave = 0;
+    let mouse = { x: -1000, y: -1000, active: false };
+    let mouseMoveDist = 0;
+    const startTime = performance.now();
+
+    class GridDot {
+      ox: number; oy: number; x: number; y: number; centerDist: number;
+      baseAlpha: number; alpha: number; radius: number; baseRadius: number; phase: number;
+      constructor(ox: number, oy: number, centerDist: number) {
+        this.ox = ox; this.oy = oy; this.x = ox; this.y = oy; this.centerDist = centerDist;
+        if (centerDist < CONFIG.centerDeadzone) this.baseAlpha = 0;
+        else if (centerDist < CONFIG.centerDeadzone + CONFIG.centerFade) this.baseAlpha = ((centerDist - CONFIG.centerDeadzone) / CONFIG.centerFade) * 0.07;
+        else this.baseAlpha = 0.04 + Math.random() * 0.04;
+        this.alpha = this.baseAlpha;
+        this.radius = CONFIG.dotRadius;
+        this.baseRadius = CONFIG.dotRadius * (0.8 + Math.random() * 0.4);
+        this.phase = Math.random() * Math.PI * 2;
+      }
+    }
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      const dpr = window.devicePixelRatio || 1;
+      w = parent.clientWidth;
+      h = parent.clientHeight;
+      cx = w / 2;
+      cy = h / 2;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildGrid();
+    };
+
+    const buildGrid = () => {
+      dots = [];
+      const sp = CONFIG.spacing;
+      const cols = Math.ceil(w / sp) + 2;
+      const rows = Math.ceil(h / sp) + 2;
+      const offsetX = (w - (cols - 1) * sp) / 2;
+      const offsetY = (h - (rows - 1) * sp) / 2;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const ox = offsetX + c * sp;
+          const oy = offsetY + r * sp;
+          const dx = ox - cx;
+          const dy = oy - cy;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          dots.push(new GridDot(ox, oy, dist));
+        }
+      }
+    };
+
+    const computeWaveDisplacement = (dot: any, waves: any[], time: number) => {
+      let dispX = 0, dispY = 0, brightness = 0;
+      for (const wave of waves) {
+        const age = time - wave.birthTime;
+        const waveFront = age * wave.speed;
+        const dx = dot.ox - wave.cx;
+        const dy = dot.oy - wave.cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const distFromFront = Math.abs(dist - waveFront);
+        const waveWidth = 60;
+        if (distFromFront < waveWidth) {
+          const envelope = (1 - distFromFront / waveWidth);
+          const distFade = Math.exp(-dist * wave.decay);
+          const ageFade = Math.exp(-age * 0.4);
+          const intensity = envelope * distFade * ageFade * wave.strength;
+          if (dist > 1) {
+            dispX += (dx / dist) * intensity;
+            dispY += (dy / dist) * intensity;
+          }
+          brightness += envelope * distFade * ageFade * 1.8;
+        }
+      }
+      return { dispX, dispY, brightness };
+    };
+
+    const animate = () => {
+      const time = (performance.now() - startTime) / 1000;
+      const { r, g, b } = CONFIG.color;
+
+      if (time - lastAutoWave > CONFIG.autoWaveInterval) {
+        autoWaves.push({ cx, cy, birthTime: time, speed: CONFIG.autoWaveSpeed, decay: CONFIG.autoWaveDecay, strength: CONFIG.autoWaveStrength });
+        if (autoWaves.length > 6) autoWaves.shift();
+        lastAutoWave = time;
+      }
+
+      ctx.clearRect(0, 0, w, h);
+      for (const dot of dots) {
+        if (dot.baseAlpha === 0) continue;
+        const ambient = Math.sin(time * 0.8 + dot.phase) * CONFIG.ambientStrength;
+        const ambientX = Math.sin(dot.oy * 0.01 + time * 0.3) * ambient * 0.3;
+        const ambientY = Math.cos(dot.ox * 0.01 + time * 0.3) * ambient * 0.3;
+
+        const auto = computeWaveDisplacement(dot, autoWaves, time);
+        const totalDispX = auto.dispX + ambientX;
+        const totalDispY = auto.dispY + ambientY;
+        const totalBright = auto.brightness;
+
+        dot.x = dot.ox + totalDispX;
+        dot.y = dot.oy + totalDispY;
+        dot.alpha = dot.baseAlpha + totalBright * 0.5;
+        dot.radius = dot.baseRadius + totalBright * 1.2;
+        dot.alpha = Math.min(dot.alpha, 0.95);
+
+        if (dot.radius > CONFIG.dotRadius * 1.5) {
+          ctx.beginPath();
+          ctx.arc(dot.x, dot.y, dot.radius * 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.06})`;
+          ctx.fill();
+        }
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(animate);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    const animId = requestAnimationFrame(animate);
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      cancelAnimationFrame(animId);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-40" />;
+}
+
 function GridBackground() {
   return (
-    <div 
-      className="absolute inset-0 opacity-[0.25] pointer-events-none z-0" 
-      style={{ 
-        backgroundImage: `
-          linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
-        `,
-        backgroundSize: '40px 40px',
-        backgroundPosition: '1px 1px',
-        maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
-        WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)'
-      }} 
-    />
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div 
+        className="absolute inset-0 opacity-[0.25]" 
+        style={{ 
+          backgroundImage: `
+            linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+          backgroundPosition: '1px 1px',
+          maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)'
+        }} 
+      />
+      <RippleGrid />
+    </div>
   );
 }
 
