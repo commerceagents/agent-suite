@@ -362,9 +362,9 @@ export default function SpaceHorizonHero() {
               <AtmosphericBloom />
             </div>
 
-            {/* 2. SUBTLE GRID & PIXEL BLOCKS */}
+            {/* 2. SUBTLE GRID */}
             <GridBackground />
-            <TetrisSimulation />
+            {/* TetrisSimulation removed */}
 
             {/* BRAND TEXT */}
             <style>{`
