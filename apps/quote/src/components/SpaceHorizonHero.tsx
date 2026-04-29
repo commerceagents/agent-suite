@@ -479,13 +479,66 @@ function DrawingStroke({ delay }: { delay: number }) {
   );
 }
 
+function DrawingStroke({ delay }: { delay: number }) {
+  return (
+    <svg 
+      className="absolute inset-0 w-full h-full pointer-events-none z-50 overflow-visible"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+    >
+      {/* Path 1: Bottom-Center -> Left -> Top-Center */}
+      <motion.path
+        d="M 50 100 L 5 100 C 2 100 0 98 0 95 L 0 5 C 0 2 2 0 5 0 L 50 0"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ 
+          pathLength: 1, 
+          opacity: [0, 1, 1, 0] 
+        }}
+        transition={{ 
+          duration: 2.0, 
+          delay: delay, 
+          ease: "linear" 
+        }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.6))" }}
+      />
+      {/* Path 2: Bottom-Center -> Right -> Top-Center */}
+      <motion.path
+        d="M 50 100 L 95 100 C 98 100 100 98 100 95 L 100 5 C 100 2 98 0 95 0 L 50 0"
+        fill="none"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ 
+          pathLength: 1, 
+          opacity: [0, 1, 1, 0] 
+        }}
+        transition={{ 
+          duration: 2.0, 
+          delay: delay, 
+          ease: "linear" 
+        }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.6))" }}
+      />
+    </svg>
+  );
+}
+
 function AtmosphericBloom() {
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 mix-blend-screen">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 10.0, duration: 4 }}
+        transition={{ delay: 11.5, duration: 4 }}
         className="absolute inset-0"
       >
         <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
@@ -504,19 +557,24 @@ export default function SpaceHorizonHero() {
         style={{ background: 'radial-gradient(circle at center, #0a0a25 0%, #000000 100%)' }}
       />
 
-      {/* NAVIGATION LAYER */}
+      {/* NAVIGATION LAYER (Delayed until after Drawing) */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={11.5} />
+        <Navigation show={true} delay={13.0} />
       </div>
 
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
         <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
+          {/* STAGE 1: THE DRAWING STROKE REVEAL (Outside card to show first) */}
+          <div className="absolute inset-0 p-6 md:p-12 lg:p-20 pointer-events-none">
+             <DrawingStroke delay={10.0} />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 10.0, 
+              delay: 11.5, // Reveal after Drawing complete
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
@@ -570,7 +628,7 @@ export default function SpaceHorizonHero() {
             <GridBackground />
             {/* TetrisSimulation removed */}
 
-            {/* BRAND TEXT */}
+            {/* BRAND TEXT STYLES */}
             <style>{`
               @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
               
@@ -590,24 +648,66 @@ export default function SpaceHorizonHero() {
                 animation: shimmer 5s linear infinite;
               }
             `}</style>
-            <motion.h1
-              initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
-              animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
-              transition={{ 
-                opacity: { duration: 2, delay: 13 },
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                scale: { duration: 4, delay: 13, ease: [0.16, 1, 0.3, 1] as any },
-                letterSpacing: { duration: 5, delay: 13.5, ease: "easeOut" },
-                filter: { duration: 2, delay: 13 }
-              }}
-              className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
-              style={{ 
-                fontFamily: "'Alexandria', sans-serif",
-                fontSize: "clamp(32px, 6vw, 72px)",
-              }}
-            >
-              COMMERCE AGENTS
-            </motion.h1>
+
+            <div className="relative z-10 flex flex-col items-center">
+              {/* BRAND LOGO (Delayed Reveal) */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 2.5, delay: 12.5, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-10"
+              >
+                <img 
+                  src="/logo.png" 
+                  alt="Commerce Agents" 
+                  className="h-10 md:h-12 w-auto object-contain brightness-0 invert opacity-90"
+                />
+              </motion.div>
+              
+              {/* MAIN TITLE (Delayed Reveal) */}
+              <motion.h1
+                initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
+                animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
+                transition={{ 
+                  opacity: { duration: 2, delay: 12.5 },
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  scale: { duration: 4, delay: 12.5, ease: [0.16, 1, 0.3, 1] as any },
+                  letterSpacing: { duration: 5, delay: 13.0, ease: "easeOut" },
+                  filter: { duration: 2, delay: 12.5 }
+                }}
+                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
+                style={{ 
+                  fontFamily: "'Alexandria', sans-serif",
+                  fontSize: "clamp(32px, 6vw, 72px)",
+                }}
+              >
+                COMMERCE AGENTS
+              </motion.h1>
+
+              {/* SUBTITLE & CTA (Delayed Reveal) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.5, delay: 13.5 }}
+                className="flex flex-col items-center gap-8 mt-12"
+              >
+                <p className="text-white/40 text-sm md:text-base font-medium tracking-[0.2em] uppercase text-center max-w-xl leading-relaxed">
+                  Architecting the next generation of <br /> autonomous digital commerce
+                </p>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative px-10 py-4 bg-white text-black text-sm font-bold uppercase tracking-widest rounded-full overflow-hidden transition-transform"
+                >
+                  <span className="relative z-10">Contact Us</span>
+                  <div className="absolute inset-0 bg-purple-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
+                  <span className="absolute inset-0 flex items-center justify-center text-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-20">
+                    Contact Us
+                  </span>
+                </motion.button>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
