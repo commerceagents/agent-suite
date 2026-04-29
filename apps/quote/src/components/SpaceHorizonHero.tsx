@@ -485,7 +485,7 @@ function AtmosphericBloom() {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 12.0, duration: 4 }}
+        transition={{ delay: 10.0, duration: 4 }}
         className="absolute inset-0"
       >
         <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
@@ -499,30 +499,24 @@ function AtmosphericBloom() {
 export default function SpaceHorizonHero() {
   return (
     <section className="relative h-[100dvh] w-full bg-[#050508] overflow-hidden font-sans select-none flex items-center justify-center">
-      {/* STEP 1: DEEP NAVY TO BLACK ATMOSPHERE */}
       <div 
         className="absolute inset-0 z-0" 
         style={{ background: 'radial-gradient(circle at center, #0a0a25 0%, #000000 100%)' }}
       />
 
-      {/* NAVIGATION LAYER (Delayed until after Drawing) */}
+      {/* NAVIGATION LAYER */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={13.5} />
+        <Navigation show={true} delay={11.5} />
       </div>
 
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
         <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
-          {/* STAGE 1: THE DRAWING STROKE REVEAL (Outside card to show first) */}
-          <div className="absolute inset-0 p-6 md:p-12 lg:p-20 pointer-events-none">
-             <DrawingStroke delay={10.0} />
-          </div>
-
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 12.0, // Reveal after Drawing complete
+              delay: 10.0, 
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
