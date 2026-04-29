@@ -214,7 +214,7 @@ function RippleGrid() {
     const CONFIG = {
       spacing: 28,
       dotRadius: 1.2,
-      color: { r: 168, g: 85, b: 247 }, // Matched to Purple-500
+      color: { r: 0, g: 209, b: 255 }, // Exact 'Electric' Blue from Grassroot
       centerDeadzone: 80,
       centerFade: 160,
       autoWaveSpeed: 200,
@@ -285,6 +285,11 @@ function RippleGrid() {
       }
     };
 
+    const spawnMouseWave = (time: number) => {
+      mouseWaves.push({ cx: mouse.x, cy: mouse.y, birthTime: time, speed: CONFIG.mouseWaveSpeed, decay: CONFIG.mouseWaveDecay, strength: CONFIG.mouseWaveStrength });
+      if (mouseWaves.length > CONFIG.maxMouseWaves) mouseWaves.shift();
+    };
+
     const computeWaveDisplacement = (dot: any, waves: any[], time: number) => {
       let dispX = 0, dispY = 0, brightness = 0;
       for (const wave of waves) {
@@ -320,6 +325,11 @@ function RippleGrid() {
         lastAutoWave = time;
       }
 
+      if (mouse.active && mouseMoveDist > 40) {
+        spawnMouseWave(time);
+        mouseMoveDist = 0;
+      }
+
       ctx.clearRect(0, 0, w, h);
       for (const dot of dots) {
         if (dot.baseAlpha === 0) continue;
@@ -328,14 +338,29 @@ function RippleGrid() {
         const ambientY = Math.cos(dot.ox * 0.01 + time * 0.3) * ambient * 0.3;
 
         const auto = computeWaveDisplacement(dot, autoWaves, time);
-        const totalDispX = auto.dispX + ambientX;
-        const totalDispY = auto.dispY + ambientY;
-        const totalBright = auto.brightness;
+        const mouseD = computeWaveDisplacement(dot, mouseWaves, time);
+        const totalDispX = auto.dispX + mouseD.dispX + ambientX;
+        const totalDispY = auto.dispY + mouseD.dispY + ambientY;
+        const totalBright = auto.brightness + mouseD.brightness;
 
         dot.x = dot.ox + totalDispX;
         dot.y = dot.oy + totalDispY;
         dot.alpha = dot.baseAlpha + totalBright * 0.5;
         dot.radius = dot.baseRadius + totalBright * 1.2;
+
+        if (mouse.active) {
+          const mdx = dot.ox - mouse.x;
+          const mdy = dot.oy - mouse.y;
+          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mDist < 120) {
+            const proximity = (120 - mDist) / 120;
+            dot.alpha += proximity * 0.3;
+            dot.radius += proximity * 0.8;
+            dot.x -= (mdx / mDist) * proximity * 3;
+            dot.y -= (mdy / mDist) * proximity * 3;
+          }
+        }
+
         dot.alpha = Math.min(dot.alpha, 0.95);
 
         if (dot.radius > CONFIG.dotRadius * 1.5) {
@@ -352,22 +377,41 @@ function RippleGrid() {
       requestAnimationFrame(animate);
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const nx = e.clientX - rect.left;
+      const ny = e.clientY - rect.top;
+      const dx = nx - mouse.x;
+      const dy = ny - mouse.y;
+      mouseMoveDist += Math.sqrt(dx * dx + dy * dy);
+      mouse.x = nx;
+      mouse.y = ny;
+      mouse.active = true;
+    };
+
     resize();
     window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
     const animId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animId);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-40" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-60" />;
 }
 
 function GridBackground() {
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      {/* Grassroot Foundation Style Blobs */}
+      <div className="absolute inset-0 opacity-40">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#00D1FF]/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[100px]" />
+      </div>
       <RippleGrid />
     </div>
   );
