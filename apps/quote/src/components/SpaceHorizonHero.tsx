@@ -438,38 +438,42 @@ function DrawingStroke({ delay }: { delay: number }) {
         d="M 50 100 L 5 100 C 2 100 0 98 0 95 L 0 5 C 0 2 2 0 5 0 L 50 0"
         fill="none"
         stroke="white"
-        strokeWidth="1.5"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ 
-          pathLength: [0, 1, 1], 
-          opacity: [0, 1, 1, 0] 
+          pathLength: 1, 
+          opacity: 1 
         }}
         transition={{ 
           duration: 2.5, 
-          times: [0, 0.7, 0.9, 1],
           delay: delay, 
           ease: "linear" 
         }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
       />
       {/* Path 2: Bottom-Center -> Right -> Top-Center */}
       <motion.path
         d="M 50 100 L 95 100 C 98 100 100 98 100 95 L 100 5 C 100 2 98 0 95 0 L 50 0"
         fill="none"
         stroke="white"
-        strokeWidth="1.5"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ 
-          pathLength: [0, 1, 1], 
-          opacity: [0, 1, 1, 0] 
+          pathLength: 1, 
+          opacity: 1 
         }}
         transition={{ 
           duration: 2.5, 
-          times: [0, 0.7, 0.9, 1],
           delay: delay, 
           ease: "linear" 
         }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
       />
     </svg>
   );
