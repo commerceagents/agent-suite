@@ -205,6 +205,7 @@ function GridBackground() {
           linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px)
         `,
         backgroundSize: '40px 40px',
+        backgroundPosition: '1px 1px',
         maskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)',
         WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 90%)'
       }} 
@@ -324,24 +325,26 @@ export default function SpaceHorizonHero() {
                 {/* 2. The Vibrant Purple Bloom (Bottom-Up) - Tall & Immersive */}
                 <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-purple-600/50 via-purple-900/10 to-transparent blur-[30px]" />
                 
-                {/* 3. Left Side Bloom - Powerful Glowing Beam (Pulsing) */}
+                {/* 3. Left Side Bloom - Pure Atmospheric Beam (Pulsing) */}
                 <motion.div 
                   animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 left-0 z-10"
                 >
                   <div className="absolute inset-y-0 left-0 w-[80px] bg-gradient-to-r from-purple-500/60 to-transparent blur-[30px]" />
-                  <div className="absolute inset-y-0 left-0 w-[2px] bg-purple-400/50 shadow-[0_0_40px_rgba(168,85,247,0.9)]" />
+                  {/* Removed sharp core line */}
+                  <div className="absolute inset-y-0 left-0 w-[1px] shadow-[0_0_40px_rgba(168,85,247,0.8)]" />
                 </motion.div>
                 
-                {/* 4. Right Side Bloom - Powerful Glowing Beam (Pulsing) */}
+                {/* 4. Right Side Bloom - Pure Atmospheric Beam (Pulsing) */}
                 <motion.div 
                   animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 right-0 z-10"
                 >
                   <div className="absolute inset-y-0 right-0 w-[80px] bg-gradient-to-l from-purple-500/60 to-transparent blur-[30px]" />
-                  <div className="absolute inset-y-0 right-0 w-[2px] bg-purple-400/50 shadow-[0_0_40px_rgba(168,85,247,0.9)]" />
+                  {/* Removed sharp core line */}
+                  <div className="absolute inset-y-0 right-0 w-[1px] shadow-[0_0_40px_rgba(168,85,247,0.8)]" />
                 </motion.div>
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
