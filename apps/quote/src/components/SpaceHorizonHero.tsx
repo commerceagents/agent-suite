@@ -5,9 +5,8 @@ import { motion } from 'framer-motion';
 import Navigation from './Navigation';
  
 function TetrisSimulation() {
-  const GRID_COLS = 20;
-  const GRID_ROWS = 24;
-  const [cellSize, setCellSize] = React.useState(25);
+  const [gridDim, setGridDim] = React.useState({ cols: 20, rows: 20 });
+  const cellSize = 40; // Perfect match for GridBackground
   const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string, isClearing?: boolean}[]>([]);
   
   // Classic Neon Tetrimino Palette
@@ -29,7 +28,7 @@ function TetrisSimulation() {
     color: string;
   }[]>([]);
 
-  const spawnShape = React.useCallback((id: number) => {
+  const spawnShape = React.useCallback((id: number, cols: number) => {
     const type = TETRIMINOS[Math.floor(Math.random() * TETRIMINOS.length)];
     let cells = [...type.cells] as [number, number][];
     const rotations = Math.floor(Math.random() * 4);
@@ -40,14 +39,23 @@ function TetrisSimulation() {
     return {
       id,
       cells,
-      x: Math.floor(Math.random() * (GRID_COLS - 4)) + 2,
+      x: Math.floor(Math.random() * (cols - 4)) + 2,
       y: -4 - Math.floor(Math.random() * 10),
       color: type.color
     };
   }, [TETRIMINOS]);
 
+  // Initial calculation and spawn
   React.useEffect(() => {
-    setActiveShapes(Array.from({ length: 5 }, (_, i) => spawnShape(i)));
+    const updateGrid = () => {
+      const cols = Math.floor(window.innerWidth / cellSize);
+      const rows = Math.floor((window.innerHeight * 0.8) / cellSize);
+      setGridDim({ cols, rows });
+      setActiveShapes(Array.from({ length: 5 }, (_, i) => spawnShape(i, cols)));
+    };
+    updateGrid();
+    window.addEventListener('resize', updateGrid);
+    return () => window.removeEventListener('resize', updateGrid);
   }, [spawnShape]);
 
   React.useEffect(() => {
@@ -63,7 +71,7 @@ function TetrisSimulation() {
             const collision = shape.cells.some(([cx, cy]) => {
               const absX = shape.x + cx;
               const absY = nextY + cy;
-              return absY >= GRID_ROWS || newStacked.some(b => b.x === absX && b.y === absY);
+              return absY >= gridDim.rows || newStacked.some(b => b.x === absX && b.y === absY);
             });
 
             if (collision && shape.y >= -2) {
@@ -75,11 +83,11 @@ function TetrisSimulation() {
                 }
               });
 
-              // Line clear check (80% full for that "ShapePlacer" dense look)
+              // Line clear check (80% full)
               let linesToClear: number[] = [];
-              for (let r = GRID_ROWS - 1; r >= 0; r--) {
+              for (let r = gridDim.rows - 1; r >= 0; r--) {
                 const rowBlocks = newStacked.filter(b => b.y === r);
-                if (rowBlocks.length >= GRID_COLS * 0.8) {
+                if (rowBlocks.length >= gridDim.cols * 0.8) {
                   linesToClear.push(r);
                 }
               }
@@ -97,9 +105,9 @@ function TetrisSimulation() {
                 }, 400);
               }
 
-              return spawnShape(shape.id);
+              return spawnShape(shape.id, gridDim.cols);
             } else if (collision && shape.y < -2) {
-              return spawnShape(shape.id);
+              return spawnShape(shape.id, gridDim.cols);
             }
 
             return { ...shape, y: nextY };
@@ -107,7 +115,7 @@ function TetrisSimulation() {
         });
 
         if (newStacked.length > 400) {
-           newStacked = newStacked.filter(b => b.y > GRID_ROWS / 4);
+           newStacked = newStacked.filter(b => b.y > gridDim.rows / 4);
         }
 
         return newStacked;
@@ -115,14 +123,7 @@ function TetrisSimulation() {
     }, 450);
 
     return () => clearInterval(tick);
-  }, [spawnShape]);
-
-  React.useEffect(() => {
-    const updateSize = () => setCellSize(window.innerWidth < 768 ? 16 : 24);
-    updateSize();
-    window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
+  }, [spawnShape, gridDim]);
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
@@ -132,8 +133,8 @@ function TetrisSimulation() {
           key={shape.id} 
           className="absolute transition-all duration-300 ease-out"
           style={{ 
-            left: `${(shape.x / GRID_COLS) * 100}%`,
-            top: `${(shape.y / GRID_ROWS) * 100}%`,
+            left: `${(shape.x / gridDim.cols) * 100}%`,
+            top: `${(shape.y / gridDim.rows) * 100}%`,
           }}
         >
           {shape.cells.map(([cx, cy], i) => (
@@ -173,8 +174,8 @@ function TetrisSimulation() {
           style={{ 
             width: cellSize - 1, 
             height: cellSize - 1,
-            left: `${(block.x / GRID_COLS) * 100}%`,
-            top: `${(block.y / GRID_ROWS) * 100}%`,
+            left: `${(block.x / gridDim.cols) * 100}%`,
+            top: `${(block.y / gridDim.rows) * 100}%`,
             backgroundColor: `${block.color}11`,
             border: `1px solid ${block.color}88`,
             zIndex: block.isClearing ? 10 : 1
@@ -188,7 +189,7 @@ function TetrisSimulation() {
 function GridBackground() {
   return (
     <div 
-      className="absolute inset-0 opacity-[0.12] pointer-events-none z-0" 
+      className="absolute inset-0 opacity-[0.15] pointer-events-none z-0" 
       style={{ 
         backgroundImage: `
           linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
