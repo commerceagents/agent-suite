@@ -62,6 +62,8 @@ function TetrisSimulation() {
     const tick = setInterval(() => {
       setStackedBlocks(prevStacked => {
         let newStacked = [...prevStacked];
+        
+        // Only keep blocks that aren't marked for removal
         newStacked = newStacked.filter(b => !b.isClearing);
 
         setActiveShapes(prevShapes => {
@@ -75,25 +77,29 @@ function TetrisSimulation() {
             });
 
             if (collision && shape.y >= -2) {
+              // LOCK PIECE PERMANENTLY
               shape.cells.forEach(([cx, cy]) => {
                 const lx = shape.x + cx;
-                const ly = shape.y + cy;
+                const ly = Math.floor(shape.y + cy);
                 if (ly >= 0) {
                   newStacked.push({ x: lx, y: ly, color: shape.color });
                 }
               });
 
-              // Line clear check (80% full)
+              // LINE CLEAR - ONLY 100% FULL ROWS (Real Game Logic)
               let linesToClear: number[] = [];
               for (let r = gridDim.rows - 1; r >= 0; r--) {
                 const rowBlocks = newStacked.filter(b => b.y === r);
-                if (rowBlocks.length >= gridDim.cols * 0.8) {
+                // Must be exactly equal to columns to clear
+                if (rowBlocks.length >= gridDim.cols) {
                   linesToClear.push(r);
                 }
               }
 
               if (linesToClear.length > 0) {
+                // Trigger the "Pop" animation
                 newStacked = newStacked.map(b => linesToClear.includes(b.y) ? { ...b, isClearing: true } : b);
+                
                 setTimeout(() => {
                   setStackedBlocks(current => {
                     let next = current.filter(b => !linesToClear.includes(b.y));
@@ -114,8 +120,9 @@ function TetrisSimulation() {
           });
         });
 
-        if (newStacked.length > 400) {
-           newStacked = newStacked.filter(b => b.y > gridDim.rows / 4);
+        // MASSIVE STACK CAPACITY: Allow up to 2000 blocks for giant structures
+        if (newStacked.length > 2000) {
+           newStacked = newStacked.filter(b => b.y > gridDim.rows / 5);
         }
 
         return newStacked;
