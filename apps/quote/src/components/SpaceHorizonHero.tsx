@@ -610,25 +610,8 @@ export default function SpaceHorizonHero() {
                 COMMERCE AGENTS
               </motion.h1>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.5, delay: 11.5 }}
-                className="flex flex-col items-center gap-8"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group relative px-10 py-4 bg-white text-black text-sm font-bold uppercase tracking-widest rounded-full overflow-hidden transition-transform"
-                >
-                  <span className="relative z-10">Contact Us</span>
-                  <div className="absolute inset-0 bg-purple-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
-                  <span className="absolute inset-0 flex items-center justify-center text-white scale-x-0 group-hover:scale-x-100 origin-right transition-transform duration-500 z-20">
-                    Contact Us
-                  </span>
-                </motion.button>
-              </motion.div>
             </div>
+          </motion.div>
           </motion.div>
         </div>
       </div>
