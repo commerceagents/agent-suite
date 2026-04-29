@@ -326,22 +326,22 @@ export default function SpaceHorizonHero() {
                 
                 {/* 3. Left Side Bloom - Powerful Glowing Beam (Pulsing) */}
                 <motion.div 
-                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 left-0 z-10"
                 >
-                  <div className="absolute inset-y-0 left-0 w-[40px] bg-gradient-to-r from-purple-600/40 to-transparent blur-[20px]" />
-                  <div className="absolute inset-y-0 left-0 w-[1px] bg-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.8)]" />
+                  <div className="absolute inset-y-0 left-0 w-[80px] bg-gradient-to-r from-purple-500/60 to-transparent blur-[30px]" />
+                  <div className="absolute inset-y-0 left-0 w-[2px] bg-purple-400/50 shadow-[0_0_40px_rgba(168,85,247,0.9)]" />
                 </motion.div>
                 
                 {/* 4. Right Side Bloom - Powerful Glowing Beam (Pulsing) */}
                 <motion.div 
-                  animate={{ opacity: [0.4, 1, 0.4] }}
+                  animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 right-0 z-10"
                 >
-                  <div className="absolute inset-y-0 right-0 w-[40px] bg-gradient-to-l from-purple-600/40 to-transparent blur-[20px]" />
-                  <div className="absolute inset-y-0 right-0 w-[1px] bg-purple-500/30 shadow-[0_0_30px_rgba(168,85,247,0.8)]" />
+                  <div className="absolute inset-y-0 right-0 w-[80px] bg-gradient-to-l from-purple-500/60 to-transparent blur-[30px]" />
+                  <div className="absolute inset-y-0 right-0 w-[2px] bg-purple-400/50 shadow-[0_0_40px_rgba(168,85,247,0.9)]" />
                 </motion.div>
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
