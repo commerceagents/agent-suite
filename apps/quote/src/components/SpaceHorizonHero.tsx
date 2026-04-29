@@ -506,9 +506,13 @@ export default function SpaceHorizonHero() {
         <Navigation show={true} delay={13.5} />
       </div>
 
-      {/* UI LAYER - GLASS CARD (Bottom Aligned) */}
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
-        <div className="w-full max-w-[1800px] px-4 md:px-8">
+        <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
+          {/* STAGE 1: THE DRAWING STROKE REVEAL (Outside card to show first) */}
+          <div className="absolute inset-0 p-6 md:p-12 lg:p-20 pointer-events-none">
+             <DrawingStroke delay={10.0} />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -527,9 +531,6 @@ export default function SpaceHorizonHero() {
             }}
           >
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              {/* STAGE 1: THE DRAWING STROKE REVEAL */}
-              <DrawingStroke delay={10.0} />
-              {/* HIGH-FIDELITY GRADIENT STACK (Rising Horizon + Razor Sharp Side Glows) */}
               <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
                 {/* 1. The Deep Black Atmosphere (Top down) */}
                 <div className="absolute inset-0 bg-black/60" />
