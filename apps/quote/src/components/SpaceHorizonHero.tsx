@@ -214,7 +214,7 @@ function RippleGrid() {
     const CONFIG = {
       spacing: 28,
       dotRadius: 1.2,
-      color: { r: 168, g: 85, b: 247 }, // Neon Purple (Purple-500)
+      color: { r: 192, g: 132, b: 252 }, // Brighter Electric Purple (Purple-400)
       centerDeadzone: 80,
       centerFade: 160,
       autoWaveSpeed: 200,
@@ -363,24 +363,24 @@ function RippleGrid() {
 
         dot.alpha = Math.min(dot.alpha, 0.95);
 
-        // 1. Draw persistent soft glow/halo for every dot
+        // 1. Draw persistent soft glow/halo for every dot (Brighter)
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.radius * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.15})`;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.25})`;
         ctx.fill();
 
         // 2. Extra bloom for active/bright dots (waves)
         if (dot.radius > CONFIG.dotRadius * 1.2) {
           ctx.beginPath();
           ctx.arc(dot.x, dot.y, dot.radius * 5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.08})`;
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.15})`;
           ctx.fill();
         }
 
-        // 3. Core dot
+        // 3. Core dot (Solid Alpha)
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha})`;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(dot.alpha * 1.5, 1)})`;
         ctx.fill();
       }
       requestAnimationFrame(animate);
@@ -410,7 +410,7 @@ function RippleGrid() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-60" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />;
 }
 
 function GridBackground() {
