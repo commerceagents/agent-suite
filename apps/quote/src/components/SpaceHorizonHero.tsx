@@ -214,7 +214,7 @@ function RippleGrid() {
     const CONFIG = {
       spacing: 28,
       dotRadius: 1.2,
-      color: { r: 0, g: 209, b: 255 }, // Exact 'Electric' Blue from Grassroot
+      color: { r: 168, g: 85, b: 247 }, // Neon Purple (Purple-500)
       centerDeadzone: 80,
       centerFade: 160,
       autoWaveSpeed: 200,
@@ -407,10 +407,10 @@ function RippleGrid() {
 function GridBackground() {
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      {/* Grassroot Foundation Style Blobs */}
+      {/* Grassroot Foundation Physics with Purple Aesthetic */}
       <div className="absolute inset-0 opacity-40">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#00D1FF]/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-blue-600/10 rounded-full blur-[100px]" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#a855f7]/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-purple-900/10 rounded-full blur-[100px]" />
       </div>
       <RippleGrid />
     </div>
