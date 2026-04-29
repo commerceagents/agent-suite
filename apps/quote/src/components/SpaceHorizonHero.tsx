@@ -502,17 +502,22 @@ export default function SpaceHorizonHero() {
 
       {/* NAVIGATION LAYER */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={11.0} />
+        <Navigation show={true} delay={11.5} />
       </div>
 
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
         <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
+          {/* STAGE 1: THE DRAWING STROKE REVEAL (Starts exactly when bars open) */}
+          <div className="absolute inset-0 p-6 md:p-12 lg:p-20 pointer-events-none">
+             <DrawingStroke delay={8.0} />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 8.0, 
+              delay: 10.0, // Reveal after Drawing frame is established
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
@@ -587,11 +592,11 @@ export default function SpaceHorizonHero() {
                 initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
                 animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
                 transition={{ 
-                  opacity: { duration: 2, delay: 8.5 },
+                  opacity: { duration: 2, delay: 10.5 },
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  scale: { duration: 4, delay: 8.5, ease: [0.16, 1, 0.3, 1] as any },
-                  letterSpacing: { duration: 5, delay: 9.0, ease: "easeOut" },
-                  filter: { duration: 2, delay: 8.5 }
+                  scale: { duration: 4, delay: 10.5, ease: [0.16, 1, 0.3, 1] as any },
+                  letterSpacing: { duration: 5, delay: 11.0, ease: "easeOut" },
+                  filter: { duration: 2, delay: 10.5 }
                 }}
                 className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
                 style={{ 
