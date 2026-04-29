@@ -449,7 +449,7 @@ function DrawingStroke({ delay }: { delay: number }) {
           duration: 2.5, 
           times: [0, 0.7, 0.9, 1],
           delay: delay, 
-          ease: "easeInOut" 
+          ease: "linear" 
         }}
       />
       {/* Path 2: Bottom-Center -> Right -> Top-Center */}
@@ -468,7 +468,7 @@ function DrawingStroke({ delay }: { delay: number }) {
           duration: 2.5, 
           times: [0, 0.7, 0.9, 1],
           delay: delay, 
-          ease: "easeInOut" 
+          ease: "linear" 
         }}
       />
     </svg>
