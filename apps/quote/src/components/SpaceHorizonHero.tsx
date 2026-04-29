@@ -363,12 +363,21 @@ function RippleGrid() {
 
         dot.alpha = Math.min(dot.alpha, 0.95);
 
-        if (dot.radius > CONFIG.dotRadius * 1.5) {
+        // 1. Draw persistent soft glow/halo for every dot
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.radius * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.15})`;
+        ctx.fill();
+
+        // 2. Extra bloom for active/bright dots (waves)
+        if (dot.radius > CONFIG.dotRadius * 1.2) {
           ctx.beginPath();
-          ctx.arc(dot.x, dot.y, dot.radius * 3, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.06})`;
+          ctx.arc(dot.x, dot.y, dot.radius * 5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.08})`;
           ctx.fill();
         }
+
+        // 3. Core dot
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha})`;
