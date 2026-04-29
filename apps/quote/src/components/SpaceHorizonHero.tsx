@@ -616,10 +616,6 @@ export default function SpaceHorizonHero() {
                 transition={{ duration: 1.5, delay: 11.5 }}
                 className="flex flex-col items-center gap-8"
               >
-                <p className="text-white/40 text-sm md:text-base font-medium tracking-[0.2em] uppercase text-center max-w-xl leading-relaxed">
-                  Architecting the next generation of <br /> autonomous digital commerce
-                </p>
-
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
