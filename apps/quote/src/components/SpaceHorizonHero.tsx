@@ -433,12 +433,12 @@ function DrawingStroke({ delay }: { delay: number }) {
       preserveAspectRatio="none"
       viewBox="0 0 100 100"
     >
-      {/* Side 1: Top-Center -> Right -> Bottom-Center */}
+      {/* Path 1: Bottom-Center -> Left -> Top-Center */}
       <motion.path
-        d="M 50 0 L 98 0 C 99 0 100 1 100 2 L 100 98 C 100 99 99 100 98 100 L 50 100"
+        d="M 50 100 L 5 100 C 2 100 0 98 0 95 L 0 5 C 0 2 2 0 5 0 L 50 0"
         fill="none"
         stroke="white"
-        strokeWidth="0.2"
+        strokeWidth="1.5"
         vectorEffect="non-scaling-stroke"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ 
@@ -446,18 +446,18 @@ function DrawingStroke({ delay }: { delay: number }) {
           opacity: [0, 1, 1, 0] 
         }}
         transition={{ 
-          duration: 9, 
-          times: [0, 0.4, 0.9, 1],
+          duration: 2.5, 
+          times: [0, 0.7, 0.9, 1],
           delay: delay, 
           ease: "easeInOut" 
         }}
       />
-      {/* Side 2: Top-Center -> Left -> Bottom-Center */}
+      {/* Path 2: Bottom-Center -> Right -> Top-Center */}
       <motion.path
-        d="M 50 0 L 2 0 C 1 0 0 1 0 2 L 0 98 C 0 99 1 100 2 100 L 50 100"
+        d="M 50 100 L 95 100 C 98 100 100 98 100 95 L 100 5 C 100 2 98 0 95 0 L 50 0"
         fill="none"
         stroke="white"
-        strokeWidth="0.2"
+        strokeWidth="1.5"
         vectorEffect="non-scaling-stroke"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ 
@@ -465,8 +465,8 @@ function DrawingStroke({ delay }: { delay: number }) {
           opacity: [0, 1, 1, 0] 
         }}
         transition={{ 
-          duration: 9, 
-          times: [0, 0.4, 0.9, 1],
+          duration: 2.5, 
+          times: [0, 0.7, 0.9, 1],
           delay: delay, 
           ease: "easeInOut" 
         }}
@@ -478,11 +478,10 @@ function DrawingStroke({ delay }: { delay: number }) {
 function AtmosphericBloom() {
   return (
     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 mix-blend-screen">
-      {/* Soft volumetric blobs that replicate the 'fog' feel without WebGL */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 10.5, duration: 4 }}
+        transition={{ delay: 12.0, duration: 4 }}
         className="absolute inset-0"
       >
         <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
@@ -502,21 +501,20 @@ export default function SpaceHorizonHero() {
         style={{ background: 'radial-gradient(circle at center, #0a0a25 0%, #000000 100%)' }}
       />
 
-      {/* NAVIGATION LAYER (Starts 14s - Sync with text expansion) */}
+      {/* NAVIGATION LAYER (Delayed until after Drawing) */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={11.5} />
+        <Navigation show={true} delay={13.5} />
       </div>
 
       {/* UI LAYER - GLASS CARD (Bottom Aligned) */}
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
         <div className="w-full max-w-[1800px] px-4 md:px-8">
-          {/* STEP 2: GLASS CARD REVEAL (Starts 9.5s) */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
               duration: 3.5, 
-              delay: 10.0, 
+              delay: 12.0, // Reveal after Drawing complete
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
@@ -528,8 +526,9 @@ export default function SpaceHorizonHero() {
               WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
             }}
           >
-            {/* 1. SAAS GRADIENT WAVE & PLASMA FLAME */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
+              {/* STAGE 1: THE DRAWING STROKE REVEAL */}
+              <DrawingStroke delay={10.0} />
               {/* HIGH-FIDELITY GRADIENT STACK (Rising Horizon + Razor Sharp Side Glows) */}
               <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
                 {/* 1. The Deep Black Atmosphere (Top down) */}
@@ -596,11 +595,11 @@ export default function SpaceHorizonHero() {
               initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
               animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
               transition={{ 
-                opacity: { duration: 2, delay: 11 },
+                opacity: { duration: 2, delay: 13 },
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                scale: { duration: 4, delay: 11, ease: [0.16, 1, 0.3, 1] as any },
-                letterSpacing: { duration: 5, delay: 11.5, ease: "easeOut" },
-                filter: { duration: 2, delay: 11 }
+                scale: { duration: 4, delay: 13, ease: [0.16, 1, 0.3, 1] as any },
+                letterSpacing: { duration: 5, delay: 13.5, ease: "easeOut" },
+                filter: { duration: 2, delay: 13 }
               }}
               className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest"
               style={{ 
