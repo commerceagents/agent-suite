@@ -4,72 +4,152 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
  
-function PixelBlocks() {
-  const cellSize = 25;
-  
-  // Define classic Tetrimino shapes
-  const shapes = React.useMemo(() => [
-    { name: 'I', cells: [[0,0], [0,1], [0,2], [0,3]], l: '10%', duration: 12, delay: 0 },
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], l: '25%', duration: 15, delay: -2 },
-    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], l: '40%', duration: 10, delay: -5 },
-    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], l: '55%', duration: 18, delay: -8 },
-    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], l: '70%', duration: 14, delay: -3 },
-    { name: 'J', cells: [[1,0], [1,1], [1,2], [0,2]], l: '85%', duration: 16, delay: -10 },
-    { name: 'L', cells: [[0,0], [0,1], [0,2], [1,2]], l: '15%', duration: 13, delay: -4 },
-    { name: 'I', cells: [[0,0], [1,0], [2,0], [3,0]], l: '45%', duration: 17, delay: -7 },
-    { name: 'T', cells: [[0,0], [1,0], [2,0], [1,1]], l: '65%', duration: 11, delay: -1 },
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], l: '80%', duration: 19, delay: -6 },
-  ], []);
+function TetrisSimulation() {
+  const GRID_COLS = 30;
+  const GRID_ROWS = 25;
+  const [cellSize, setCellSize] = React.useState(25);
+  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number}[]>([]);
+  const [activeShapes, setActiveShapes] = React.useState<{
+    id: number;
+    cells: [number, number][];
+    x: number;
+    y: number;
+    delay: number;
+  }[]>([]);
+
+  // Initialize shapes
+  React.useEffect(() => {
+    const shapesData = [
+      [[0,0], [0,1], [0,2], [0,3]], // I
+      [[0,0], [1,0], [0,1], [1,1]], // O
+      [[1,0], [0,1], [1,1], [2,1]], // T
+      [[1,0], [2,0], [0,1], [1,1]], // S
+      [[0,0], [1,0], [1,1], [2,1]], // Z
+      [[1,0], [1,1], [1,2], [0,2]], // J
+      [[0,0], [0,1], [0,2], [1,2]], // L
+    ];
+
+    const spawnShape = (id: number) => {
+      const shapeType = shapesData[Math.floor(Math.random() * shapesData.length)];
+      return {
+        id,
+        cells: shapeType as [number, number][],
+        x: Math.floor(Math.random() * (GRID_COLS - 4)),
+        y: -4,
+        delay: Math.random() * 5
+      };
+    };
+
+    setActiveShapes(Array.from({ length: 8 }, (_, i) => spawnShape(i)));
+  }, []);
+
+  // Game Loop
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setStackedBlocks(prevStacked => {
+        let newStacked = [...prevStacked];
+        let linesCleared = false;
+
+        setActiveShapes(prevShapes => {
+          return prevShapes.map(shape => {
+            // Calculate next position
+            const nextY = shape.y + 0.5;
+            
+            // Check collision with bottom or stacked blocks
+            const hasCollision = shape.cells.some(([cx, cy]) => {
+              const absX = shape.x + cx;
+              const absY = Math.floor(nextY + cy);
+              return absY >= GRID_ROWS || newStacked.some(b => b.x === absX && b.y === absY);
+            });
+
+            if (hasCollision) {
+              // Add to stacked
+              shape.cells.forEach(([cx, cy]) => {
+                newStacked.push({ x: shape.x + cx, y: Math.floor(shape.y + cy) });
+              });
+              
+              // Check for line clears (simplified: if a row has > 60% blocks)
+              for (let r = GRID_ROWS - 1; r >= 0; r--) {
+                const rowBlocks = newStacked.filter(b => b.y === r);
+                if (rowBlocks.length >= GRID_COLS * 0.7) {
+                  newStacked = newStacked.filter(b => b.y !== r).map(b => b.y < r ? { ...b, y: b.y + 1 } : b);
+                  linesCleared = true;
+                }
+              }
+
+              // Respawn
+              return {
+                ...shape,
+                x: Math.floor(Math.random() * (GRID_COLS - 4)),
+                y: -4
+              };
+            }
+
+            return { ...shape, y: nextY };
+          });
+        });
+
+        return newStacked;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Dynamic cell sizing
+  React.useEffect(() => {
+    const updateSize = () => {
+      const width = window.innerWidth;
+      setCellSize(width < 768 ? 12 : 20);
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      <style>{`
-        @keyframes fall {
-          from { transform: translateY(-150px); }
-          to { transform: translateY(100vh); }
-        }
-        .falling-shape {
-          animation: fall linear infinite;
-        }
-        .falling-shape:hover {
-          animation-play-state: paused;
-        }
-        .falling-shape:hover .piece-block {
-          background-color: rgba(255, 255, 255, 0.3);
-          box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-          border-color: rgba(255, 255, 255, 0.5);
-        }
-      `}</style>
-      {shapes.map((shape, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 10.2 + i * 0.1, duration: 1 }}
-          className="falling-shape absolute pointer-events-auto cursor-crosshair group"
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40">
+      {/* Falling Shapes */}
+      {activeShapes.map(shape => (
+        <div 
+          key={shape.id} 
+          className="absolute transition-all duration-100 ease-linear"
           style={{ 
-            left: shape.l,
-            width: cellSize * 4, 
-            height: cellSize * 4,
-            animationDuration: `${shape.duration}s`,
-            animationDelay: `${shape.delay}s`,
-            top: 0
+            left: `${(shape.x / GRID_COLS) * 100}%`,
+            top: `${(shape.y / GRID_ROWS) * 100}%`
           }}
         >
-          {shape.cells.map(([cx, cy], ci) => (
+          {shape.cells.map(([cx, cy], i) => (
             <div 
-              key={ci}
-              className="piece-block absolute bg-white/10 border border-white/5 transition-all duration-300"
-              style={{
-                width: cellSize - 1,
-                height: cellSize - 1,
+              key={i}
+              className="absolute bg-white/20 border border-white/10"
+              style={{ 
+                width: cellSize, 
+                height: cellSize,
                 left: cx * cellSize,
                 top: cy * cellSize,
-                boxShadow: '0 0 10px rgba(255,255,255,0.05)',
+                boxShadow: '0 0 15px rgba(255,255,255,0.1)'
               }}
             />
           ))}
-        </motion.div>
+        </div>
+      ))}
+
+      {/* Stacked Blocks */}
+      {stackedBlocks.map((block, i) => (
+        <motion.div 
+          key={`stacked-${i}`}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="absolute bg-white/10 border border-white/5"
+          style={{ 
+            width: cellSize, 
+            height: cellSize,
+            left: `${(block.x / GRID_COLS) * 100}%`,
+            top: `${(block.y / GRID_ROWS) * 100}%`,
+            boxShadow: '0 0 10px rgba(255,255,255,0.05)'
+          }}
+        />
       ))}
     </div>
   );
@@ -224,7 +304,7 @@ export default function SpaceHorizonHero() {
 
             {/* 2. SUBTLE GRID & PIXEL BLOCKS */}
             <GridBackground />
-            <PixelBlocks />
+            <TetrisSimulation />
 
             {/* BRAND TEXT */}
             <style>{`
