@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import MercuryCanvas from './MercuryCanvas';
+import LiquidGlassButton from './LiquidGlassButton';
 
 export default function HeroMercury() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -61,7 +62,7 @@ export default function HeroMercury() {
         <span>Features</span>
         <span>Pricing</span>
         <div className="w-[1px] h-3 bg-white/10" />
-        <span className="px-3 py-1 bg-white/10 rounded-full text-white">Contact us</span>
+        <LiquidGlassButton label="Contact us" className="scale-75 -mx-4" />
       </motion.nav>
 
       {/* Main Content */}
