@@ -513,7 +513,7 @@ export default function SpaceHorizonHero() {
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none flex items-center justify-center">
 
       {/* NAVIGATION LAYER */}
-      <div className="absolute top-0 left-0 right-0 z-50 pt-6 flex justify-center">
+      <div className="absolute top-0 left-0 right-0 z-50 pt-5 flex justify-center">
         <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20">
           <Navigation show={true} delay={13.0} />
         </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import LineMatrixCanvas from './LineMatrixCanvas';
+import LiquidGlassButton from './LiquidGlassButton';
 
 export default function PremiumHero() {
   const [isMorphed, setIsMorphed] = useState(false);
@@ -73,12 +74,10 @@ export default function PremiumHero() {
 
         {/* Primary CTA - White Rounded Button */}
         <motion.div variants={itemVars}>
-          <button 
+          <LiquidGlassButton 
+            label={isMorphed ? 'CONTINUE EXPLORING' : 'CONTACT US'}
             onClick={() => setIsMorphed(!isMorphed)}
-            className="px-20 py-5 bg-white text-black font-bold text-[10px] tracking-[0.3em] uppercase rounded-full transition-all duration-700 hover:scale-105 active:scale-95 shadow-xl shadow-cyan-500/10"
-          >
-            {isMorphed ? 'CONTINUE EXPLORING' : 'CONTACT US'}
-          </button>
+          />
         </motion.div>
       </motion.div>
 

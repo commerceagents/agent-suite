@@ -3,13 +3,12 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { useLenis } from 'lenis/react';
+import LiquidGlassButton from './LiquidGlassButton';
  
 const navLinks = [
   { name: 'About us', href: '#about' },
-  { name: 'Services', href: '#services' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'People', href: '#people' },
-  { name: 'Testimonial', href: '#testimonial' },
+  { name: 'Service', href: '#services' },
+  { name: 'Project', href: '#projects' },
 ];
  
 export default function Navigation({ show = true, delay = 0 }) {
@@ -30,9 +29,9 @@ export default function Navigation({ show = true, delay = 0 }) {
       } else if (scrollPos > windowHeight * 4.4) {
         setActiveSection('People');
       } else if (scrollPos > windowHeight * 2.6) {
-        setActiveSection('Projects');
+        setActiveSection('Project');
       } else if (scrollPos > windowHeight * 1.6) {
-        setActiveSection('Services');
+        setActiveSection('Service');
       } else if (scrollPos > windowHeight * 0.6) {
         setActiveSection('About us');
       } else {
@@ -103,107 +102,102 @@ export default function Navigation({ show = true, delay = 0 }) {
         variants={container}
         initial="hidden"
         animate={show ? "show" : "hidden"}
-        className="relative flex justify-between md:justify-center items-center w-full z-50"
+        className="fixed top-0 left-0 w-full z-50 flex justify-center items-center px-6 py-8"
       >
-        
-        {/* 1. LOGO SECTION */}
-        <motion.div 
-          variants={item} 
-          className="md:absolute left-0 flex items-center h-full group"
+        <div className="flex items-center gap-6 md:gap-10 lg:gap-12 backdrop-blur-2xl border border-white/10 rounded-2xl pl-3 md:pl-5 pr-5 md:pr-8 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] ring-1 ring-white/10"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(0,242,255,0.08) 50%, rgba(59,130,246,0.03) 100%)',
+          }}
         >
-          <div className="relative cursor-pointer py-2" onClick={() => lenis?.scrollTo(0)}>
-              <img
-                src="/image/CA_logo-PNG.png"
-                alt="Commerce Agents Logo"
-                className="w-[45px] md:w-[65px] lg:w-[75px] h-auto object-contain group-hover:scale-105 transition-transform"
-              />
-          </div>
-        </motion.div>
-  
-        {/* 2. HEADER LINKS (HIDDEN ON MOBILE) */}
-        <div className="hidden md:flex items-center gap-4 px-4 py-2">
-          {navLinks.map((link) => (
-            <motion.div 
-              variants={item} 
-              key={link.name} 
-              className="relative px-3 group"
-              onMouseEnter={() => setHoveredSection(link.name)}
-              onMouseLeave={() => setHoveredSection(null)}
-            >
-              <a 
-                href={link.href}
-                suppressHydrationWarning
-                onClick={(e) => {
-                  if (link.href.startsWith('#')) {
-                    e.preventDefault();
-                    lenis?.scrollTo(link.href);
-                  }
-                  setActiveSection(link.name);
-                }}
-                className={`text-[16px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
-                  activeSection === link.name ? 'text-white' : 'text-white/50 hover:text-white'
-                }`}
-                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                {link.name}
-              </a>
-              
-              {activeSection === link.name && (
-                <motion.div 
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+          {/* LOGO SECTION */}
+          <motion.div 
+            variants={item} 
+            className="flex items-center group -ml-1 md:-ml-2"
+          >
+            <div className="relative cursor-pointer py-1" onClick={() => lenis?.scrollTo(0)}>
+                <img
+                  src="/image/CA_logo-PNG.png"
+                  alt="Commerce Agents Logo"
+                  className="w-[38px] md:w-[48px] lg:w-[54px] h-auto object-contain group-hover:scale-105 transition-transform"
                 />
-              )}
-  
-              {activeSection !== link.name && (
-                <div className="absolute -bottom-1 left-3 right-3 h-[1.5px] bg-white/0 group-hover:bg-white/10 transition-colors" />
-              )}
-            </motion.div>
-          ))}
-        </div>
-  
-        {/* 3. CONTACT US SECTION (HIDDEN ON MOBILE) */}
-        <motion.div 
-          variants={item} 
-          className="hidden md:flex absolute right-8 flex items-center h-full group"
-        >
-          <div className="relative py-2">
-            <button 
+            </div>
+          </motion.div>
+
+          {/* HEADER LINKS - Reduced gap and padding to tighten spacing */}
+          <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
+            {navLinks.map((link) => (
+              <motion.div 
+                variants={item} 
+                key={link.name} 
+                className="relative px-2 group"
+                onMouseEnter={() => setHoveredSection(link.name)}
+                onMouseLeave={() => setHoveredSection(null)}
+              >
+                <a 
+                  href={link.href}
+                  suppressHydrationWarning
+                  onClick={(e) => {
+                    if (link.href.startsWith('#')) {
+                      e.preventDefault();
+                      lenis?.scrollTo(link.href);
+                    }
+                    setActiveSection(link.name);
+                  }}
+                  className={`text-[13px] lg:text-[14px] font-medium tracking-wide transition-colors duration-300 select-none cursor-pointer ${
+                    activeSection === link.name ? 'text-white' : 'text-white/60 hover:text-white'
+                  }`}
+                  style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+                >
+                  {link.name}
+                </a>
+                
+                {activeSection === link.name && (
+                  <motion.div 
+                    layoutId="activeNav"
+                    className="absolute -bottom-1 left-2 right-2 h-[1.5px] bg-white shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CONTACT US BUTTON */}
+          <motion.div 
+            variants={item} 
+            className="hidden md:flex items-center"
+          >
+            <LiquidGlassButton 
+              label="Contact us"
               onClick={(e) => {
                 e.preventDefault();
                 lenis?.scrollTo('#contact');
               }}
-              suppressHydrationWarning
-              className="bg-white text-black px-7 py-3 text-[14px] font-bold tracking-wide hover:bg-gray-200 transition-all active:scale-95 flex items-center gap-2"
-              style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-            >
-              Contact us
-            </button>
-          </div>
-        </motion.div>
+            />
+          </motion.div>
 
-        {/* 4. MOBILE HAMBURGER ICON */}
-        <motion.div
-          variants={item}
-          className="md:hidden z-[100]"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <div className="w-10 h-10 flex flex-col items-center justify-center gap-1.5 cursor-pointer">
-            <motion.div 
-              animate={isOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-              className="w-8 h-0.5 bg-white rounded-full" 
-            />
-            <motion.div 
-              animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="w-8 h-0.5 bg-white rounded-full" 
-            />
-            <motion.div 
-              animate={isOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-              className="w-8 h-0.5 bg-white rounded-full" 
-            />
-          </div>
-        </motion.div>
+          {/* MOBILE HAMBURGER ICON */}
+          <motion.div
+            variants={item}
+            className="md:hidden"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <div className="w-8 h-8 flex flex-col items-center justify-center gap-1 cursor-pointer">
+              <motion.div 
+                animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                className="w-6 h-0.5 bg-white rounded-full" 
+              />
+              <motion.div 
+                animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+                className="w-6 h-0.5 bg-white rounded-full" 
+              />
+              <motion.div 
+                animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+                className="w-6 h-0.5 bg-white rounded-full" 
+              />
+            </div>
+          </motion.div>
+        </div>
       </motion.nav>
 
       {/* MOBILE FULLSCREEN MENU */}
@@ -230,17 +224,16 @@ export default function Navigation({ show = true, delay = 0 }) {
               {link.name}
             </motion.a>
           ))}
-          <motion.button
-            variants={menuItemVariants}
-            onClick={() => {
-              lenis?.scrollTo('#contact');
-              setIsOpen(false);
-            }}
-            className="mt-8 bg-white text-black px-10 py-5 text-lg font-bold tracking-wide uppercase"
-            style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-          >
-            Contact us
-          </motion.button>
+          <motion.div variants={menuItemVariants} className="mt-8">
+            <LiquidGlassButton
+              label="Contact us"
+              onClick={() => {
+                lenis?.scrollTo('#contact');
+                setIsOpen(false);
+              }}
+              className="px-10 py-5 text-lg"
+            />
+          </motion.div>
         </div>
       </motion.div>
     </>
