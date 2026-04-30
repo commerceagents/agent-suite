@@ -212,9 +212,9 @@ function RippleGrid() {
     if (!ctx) return;
 
     const CONFIG = {
-      spacing: 28,
-      dotRadius: 1.2,
-      color: { r: 192, g: 132, b: 252 }, // Brighter Electric Purple (Purple-400)
+      spacing: 32,
+      dotRadius: 1.5,
+      color: { r: 255, g: 255, b: 255 }, // Neon White
       centerDeadzone: 80,
       centerFade: 160,
       autoWaveSpeed: 200,
@@ -418,8 +418,8 @@ function GridBackground() {
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       {/* Grassroot Foundation Physics with Purple Aesthetic */}
       <div className="absolute inset-0 opacity-40">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#a855f7]/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-purple-900/10 rounded-full blur-[100px]" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-blue-900/10 rounded-full blur-[100px]" />
       </div>
       <RippleGrid />
     </div>
@@ -481,16 +481,28 @@ function DrawingStroke({ delay }: { delay: number }) {
 
 function AtmosphericBloom() {
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40 mix-blend-screen">
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-60 mix-blend-screen">
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 10.0, duration: 4 }}
         className="absolute inset-0"
       >
-        <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] bg-purple-600/20 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-blue-600/10 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[20%] left-[30%] w-[40%] h-[40%] bg-purple-900/5 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
+        {/* 1. Absolute Bottom White Core (Sharp & Glowing) */}
+        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-white shadow-[0_0_30px_rgba(255,255,255,1)] z-10" />
+
+        {/* 2. Main Atmosphere: White -> Neon Purple -> Blue */}
+        <div 
+          className="absolute bottom-0 left-0 right-0 h-[70%] pointer-events-none"
+          style={{
+            background: 'linear-gradient(to top, #ffffff 0%, #d946ef 15%, #4f46e5 40%, #1e1b4b 60%, transparent 100%)',
+            filter: 'blur(50px)',
+            opacity: 0.8
+          }}
+        />
+        
+        {/* 3. Deep Blue Ambient (Middle of Screen Fill) */}
+        <div className="absolute bottom-0 left-0 right-0 h-full bg-[radial-gradient(ellipse_at_bottom,rgba(30,27,75,0.4)_0%,transparent_70%)] pointer-events-none" />
       </motion.div>
     </div>
   );
@@ -501,12 +513,14 @@ export default function SpaceHorizonHero() {
     <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none flex items-center justify-center">
 
       {/* NAVIGATION LAYER */}
-      <div className="absolute top-0 left-0 right-0 z-50 pt-6 px-4">
-        <Navigation show={true} delay={13.0} />
+      <div className="absolute top-0 left-0 right-0 z-50 pt-6 flex justify-center">
+        <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20">
+          <Navigation show={true} delay={13.0} />
+        </div>
       </div>
 
       <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
-        <div className="w-full max-w-[1800px] px-4 md:px-8 relative">
+        <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20 relative">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -525,33 +539,35 @@ export default function SpaceHorizonHero() {
             }}
           >
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              <div className="absolute inset-0 z-[-1] pointer-events-none overflow-hidden">
-                {/* 1. The Deep Black Atmosphere (Top down) */}
-                <div className="absolute inset-0 bg-black/60" />
+              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                {/* 1. The Physical "U" Horizon Curve (Neon Electric Blue) */}
+                <div 
+                  className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(to top, #ffffff 0%, #00f2ff 20%, #3b82f6 45%, transparent 85%)',
+                    filter: 'blur(60px)',
+                    opacity: 1
+                  }}
+                />
                 
-                {/* 2. The Vibrant Purple Bloom (Bottom-Up) - Tall & Immersive */}
-                <div className="absolute bottom-0 left-0 right-0 h-[55%] bg-gradient-to-t from-purple-600/50 via-purple-900/10 to-transparent blur-[30px]" />
+
                 
-                {/* 3. Left Side Bloom - Pure Atmospheric Beam (Pulsing) */}
+                {/* 3. Left Side Atmospheric Beam */}
                 <motion.div 
-                  animate={{ opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  animate={{ opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 left-0 z-10"
                 >
-                  <div className="absolute inset-y-0 left-0 w-[80px] bg-gradient-to-r from-purple-500/60 to-transparent blur-[30px]" />
-                  {/* Removed sharp core line */}
-                  <div className="absolute inset-y-0 left-0 w-[1px] shadow-[0_0_40px_rgba(168,85,247,0.8)]" />
+                  <div className="absolute inset-y-0 left-0 w-[120px] bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-transparent blur-[40px]" />
                 </motion.div>
                 
-                {/* 4. Right Side Bloom - Pure Atmospheric Beam (Pulsing) */}
+                {/* 4. Right Side Atmospheric Beam */}
                 <motion.div 
-                  animate={{ opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  animate={{ opacity: [0.4, 0.7, 0.4] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute inset-y-0 right-0 z-10"
                 >
-                  <div className="absolute inset-y-0 right-0 w-[80px] bg-gradient-to-l from-purple-500/60 to-transparent blur-[30px]" />
-                  {/* Removed sharp core line */}
-                  <div className="absolute inset-y-0 right-0 w-[1px] shadow-[0_0_40px_rgba(168,85,247,0.8)]" />
+                  <div className="absolute inset-y-0 right-0 w-[120px] bg-gradient-to-l from-indigo-500/20 via-purple-500/10 to-transparent blur-[40px]" />
                 </motion.div>
 
                 {/* 5. The Dense White Horizon (Absolute Bottom) */}
@@ -572,17 +588,21 @@ export default function SpaceHorizonHero() {
               }
               .shimmer-text {
                 background: linear-gradient(90deg, 
-                  rgba(255,255,255,0.7) 0%, 
+                  rgba(255,255,255,0.6) 0%, 
                   rgba(255,255,255,1) 50%, 
-                  rgba(255,255,255,0.7) 100%
+                  rgba(255,255,255,0.6) 100%
                 );
                 background-size: 200% auto;
                 -webkit-background-clip: text;
                 background-clip: text;
-                animation: shimmer 5s linear infinite;
+                animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                text-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
               }
             `}</style>
             <div className="relative z-10 flex flex-col items-center">
+              {/* Specific Text Highlight Glow (Electric Blue) */}
+              <div className="absolute -bottom-[30%] left-1/2 -translate-x-1/2 w-[150%] h-[200%] bg-[radial-gradient(ellipse_at_center,rgba(0,242,255,0.25)_0%,rgba(59,130,246,0.1)_50%,transparent_80%)] blur-[80px] pointer-events-none z-[-1]" />
+              
               <motion.h1
                 initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
                 animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
@@ -601,7 +621,6 @@ export default function SpaceHorizonHero() {
               >
                 COMMERCE AGENTS
               </motion.h1>
-
             </div>
           </motion.div>
         </div>

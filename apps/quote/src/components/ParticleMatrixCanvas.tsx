@@ -86,7 +86,7 @@ export default function ParticleMatrixCanvas() {
         // Parallax depth color / glow
         // Electric Blue / Violet accents based on depth
         const hue = p.z > 0.5 ? 220 : 260; // Blue for foreground, Violet for background
-        ctx.fillStyle = `hsla(${hue}, 80%, 70%, ${p.opacity})`;
+        ctx.fillStyle = `hsla(0, 0%, 100%, ${p.opacity})`;
         
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -94,7 +94,7 @@ export default function ParticleMatrixCanvas() {
         // Glow effect
         if (p.z > 0.7) {
           ctx.shadowBlur = 10;
-          ctx.shadowColor = `hsla(${hue}, 80%, 70%, 0.5)`;
+          ctx.shadowColor = `hsla(0, 0%, 100%, 0.5)`;
         } else {
           ctx.shadowBlur = 0;
         }

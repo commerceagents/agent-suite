@@ -103,13 +103,13 @@ export default function Navigation({ show = true, delay = 0 }) {
         variants={container}
         initial="hidden"
         animate={show ? "show" : "hidden"}
-        className="relative flex justify-between md:justify-center items-center w-full z-50 px-6 md:px-0"
+        className="relative flex justify-between md:justify-center items-center w-full z-50"
       >
         
         {/* 1. LOGO SECTION */}
         <motion.div 
           variants={item} 
-          className="md:absolute left-0 md:left-4 lg:left-8 flex items-center h-full group"
+          className="md:absolute left-0 flex items-center h-full group"
         >
           <div className="relative cursor-pointer py-2" onClick={() => lenis?.scrollTo(0)}>
               <img
@@ -166,7 +166,7 @@ export default function Navigation({ show = true, delay = 0 }) {
         {/* 3. CONTACT US SECTION (HIDDEN ON MOBILE) */}
         <motion.div 
           variants={item} 
-          className="hidden md:flex absolute right-0 md:right-4 lg:right-8 flex items-center h-full group"
+          className="hidden md:flex absolute right-8 flex items-center h-full group"
         >
           <div className="relative py-2">
             <button 
