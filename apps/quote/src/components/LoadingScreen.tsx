@@ -1,35 +1,37 @@
 "use client";
-
+ 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import AnimatedLogo from "./AnimatedLogo";
 import RippleGrid from "./RippleGrid";
-
+ 
 export default function LoadingScreen() {
+  const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(true);
   const [showText, setShowText] = useState(false);
   const [showRipples, setShowRipples] = useState(false);
-
+ 
   const TIMELINE = {
     TEXT_REVEAL_DELAY: 3.8,
     TOTAL_HIDE_DELAY: 6.5,
     BARS_OPEN_DELAY: 8.0,
   };
-
+ 
   useEffect(() => {
+    setMounted(true);
     document.body.style.overflow = "hidden";
-
+ 
     const rippleTimeout = setTimeout(() => setShowRipples(true), 2400);
-
+ 
     const textTimeout = setTimeout(() => {
       setShowText(true);
     }, TIMELINE.TEXT_REVEAL_DELAY * 1000);
-
+ 
     const hideTimeout = setTimeout(() => {
       setShow(false);
       document.body.style.overflow = "unset";
     }, TIMELINE.TOTAL_HIDE_DELAY * 1000);
-
+ 
     return () => {
       clearTimeout(rippleTimeout);
       clearTimeout(textTimeout);
@@ -38,6 +40,8 @@ export default function LoadingScreen() {
     };
   }, []);
 
+  if (!mounted) return null;
+ 
   return (
     <>
       <AnimatePresence mode="wait">
@@ -52,7 +56,7 @@ export default function LoadingScreen() {
           >
             {/* ═══ DOT RIPPLE GRID ═══ */}
             <RippleGrid trigger={showRipples} />
-
+ 
             {/* Blueprint corner markers */}
             {["top-6 left-6", "top-6 right-6", "bottom-6 left-6", "bottom-6 right-6"].map((pos) => (
               <div
@@ -63,7 +67,7 @@ export default function LoadingScreen() {
                 +
               </div>
             ))}
-
+ 
             {/* Vertical blueprint text — left */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -81,7 +85,7 @@ export default function LoadingScreen() {
             >
               COMMERCE AGENTS — AGENT SUITE
             </motion.div>
-
+ 
             {/* Vertical blueprint text — right */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -99,22 +103,21 @@ export default function LoadingScreen() {
             >
               SYSTEM LOADING — V2.0
             </motion.div>
-
-            {/* Center content — split reveal: logo slides left, text reveals right */}
+ 
+            {/* Center content */}
             <div className="relative flex items-center justify-center w-full h-full" style={{ zIndex: 10 }}>
-              <motion.div className="flex items-center gap-1" layout transition={{ layout: { duration: 1.0, ease: [0.16, 1, 0.3, 1] } }}>
-                {/* Logo — starts centered, smoothly shifts left via layout animation */}
-                <motion.div className="relative z-20" layout>
+              <div className="flex items-center gap-6">
+                {/* Logo — removed layout prop to prevent unstable scaling */}
+                <motion.div className="relative z-20">
                   <AnimatedLogo size="base" delay={0.2} shimmerDelay={4.0} />
                 </motion.div>
-
+ 
                 {/* Text — smooth clipPath mask reveal */}
                 {showText && (
                   <motion.div
                     initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
                     animate={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
                     transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-                    layout
                   >
                     <motion.div
                       className="flex flex-col leading-none whitespace-nowrap"
@@ -122,36 +125,20 @@ export default function LoadingScreen() {
                       animate={{ x: 0 }}
                       transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <motion.div
-                        className="flex flex-col items-center"
-                        animate={{ backgroundPosition: ["200% center", "-200% center"] }}
-                        transition={{
-                          delay: 0.8,
-                          duration: 2.0,
-                          ease: "easeInOut",
-                        }}
-                        style={{
-                          background:
-                            "linear-gradient(90deg, rgba(192,192,200,0.5) 0%, rgba(192,192,200,0.5) 40%, rgba(255,255,255,1) 50%, rgba(192,192,200,0.5) 60%, rgba(192,192,200,0.5) 100%)",
-                          backgroundSize: "300% auto",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          backgroundClip: "text",
-                        }}
-                      >
-                        <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: "22px", fontWeight: 500, letterSpacing: "0.3em", textTransform: "uppercase" }}>
+                      <div className="flex flex-col items-center">
+                        <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: "22px", fontWeight: 500, letterSpacing: "0.3em", textTransform: "uppercase", color: "#C0C0C8" }}>
                           COMMERCE
                         </span>
-                        <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: "36px", fontWeight: 800, letterSpacing: "0.22em", textTransform: "uppercase", marginTop: "4px" }}>
+                        <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: "36px", fontWeight: 800, letterSpacing: "0.22em", textTransform: "uppercase", marginTop: "4px", color: "#FFFFFF" }}>
                           AGENTS
                         </span>
-                      </motion.div>
+                      </div>
                     </motion.div>
                   </motion.div>
                 )}
-              </motion.div>
+              </div>
             </div>
-
+ 
             {/* Bottom text */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -162,7 +149,7 @@ export default function LoadingScreen() {
             >
               INITIALIZING SYSTEM
             </motion.div>
-
+ 
             {/* Film grain */}
             <div
               className="absolute inset-0 pointer-events-none"
@@ -176,78 +163,50 @@ export default function LoadingScreen() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Cinemascope letterbox bars — with chrome edge glow */}
-      <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: "-100%" }}
-        transition={{ delay: TIMELINE.BARS_OPEN_DELAY, duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 w-full pointer-events-none"
-        style={{ height: "50.1%", backgroundColor: "#050508", zIndex: 100 }}
-      >
-        {/* Chrome edge glow — hidden until bars open */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: TIMELINE.BARS_OPEN_DELAY - 0.3, duration: 0.5 }}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "3px",
-            background: "linear-gradient(90deg, transparent 0%, rgba(192,192,200,0.3) 20%, rgba(255,255,255,0.6) 50%, rgba(192,192,200,0.3) 80%, transparent 100%)",
-          }}
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: TIMELINE.BARS_OPEN_DELAY - 0.3, duration: 0.5 }}
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "20px",
-            background: "linear-gradient(to top, rgba(192,192,200,0.08), transparent)",
-          }}
-        />
-      </motion.div>
-      <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: "100%" }}
-        transition={{ delay: TIMELINE.BARS_OPEN_DELAY, duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed bottom-0 left-0 w-full pointer-events-none"
-        style={{ height: "50.1%", backgroundColor: "#050508", zIndex: 100 }}
-      >
-        {/* Chrome edge glow — hidden until bars open */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: TIMELINE.BARS_OPEN_DELAY - 0.3, duration: 0.5 }}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "3px",
-            background: "linear-gradient(90deg, transparent 0%, rgba(192,192,200,0.3) 20%, rgba(255,255,255,0.6) 50%, rgba(192,192,200,0.3) 80%, transparent 100%)",
-          }}
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: TIMELINE.BARS_OPEN_DELAY - 0.3, duration: 0.5 }}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "20px",
-            background: "linear-gradient(to bottom, rgba(192,192,200,0.08), transparent)",
-          }}
-        />
-      </motion.div>
+ 
+      {/* Cinemascope letterbox bars — only visible when 'show' is true or exiting */}
+      <AnimatePresence>
+        {show && (
+          <>
+            <motion.div
+              initial={{ y: 0 }}
+              exit={{ y: "-100%" }}
+              transition={{ delay: 1.5, duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 left-0 w-full pointer-events-none"
+              style={{ height: "50.1%", backgroundColor: "#050508", zIndex: 100 }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: "3px",
+                  background: "linear-gradient(90deg, transparent 0%, rgba(192,192,200,0.3) 20%, rgba(255,255,255,0.6) 50%, rgba(192,192,200,0.3) 80%, transparent 100%)",
+                }}
+              />
+            </motion.div>
+            <motion.div
+              initial={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ delay: 1.5, duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed bottom-0 left-0 w-full pointer-events-none"
+              style={{ height: "50.1%", backgroundColor: "#050508", zIndex: 100 }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: "3px",
+                  background: "linear-gradient(90deg, transparent 0%, rgba(192,192,200,0.3) 20%, rgba(255,255,255,0.6) 50%, rgba(192,192,200,0.3) 80%, transparent 100%)",
+                }}
+              />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
