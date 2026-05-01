@@ -1,26 +1,26 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 // ─── Halftone Looping Hemisphere ─────────────────────────────────────────────
 function HalftoneHemisphere() {
   const meshRef = useRef<THREE.Points>(null!);
-  
+  const [hasAssembled, setHasAssembled] = useState(false);
+  const startTime = useRef(Date.now());
+
   const { startPositions, targetPositions, sizes, delays } = useMemo(() => {
-    const radius = 7.0; // "a bit big"
-    const segments = 60; // structured halftone grid density
+    const radius = 7.0;
+    const segments = 60;
     const points: number[] = [];
     const targets: number[] = [];
     const szs: number[] = [];
     const dls: number[] = [];
 
-    // Create a structured "halftone" grid on the hemisphere
     for (let i = 0; i <= segments / 2; i++) {
       const phi = (i / (segments / 2)) * (Math.PI / 2);
-      // Adjust horizontal density based on latitude to maintain "halftone" grid look
-      const ringPoints = Math.round(segments * 2 * Math.sin(phi)) || 1;
+      const ringPoints = Math.round(segments * 2.1 * Math.sin(phi)) || 1;
       
       for (let j = 0; j < ringPoints; j++) {
         const theta = (j / ringPoints) * (Math.PI * 2);
@@ -31,8 +31,8 @@ function HalftoneHemisphere() {
         
         targets.push(x, y, z);
         
-        // Start: completely scattered in a large sphere shell
-        const randR = 12 + Math.random() * 8;
+        // Start: completely scattered far away
+        const randR = 15 + Math.random() * 10;
         const rTheta = Math.random() * Math.PI * 2;
         const rPhi = Math.random() * Math.PI;
         points.push(
@@ -41,8 +41,9 @@ function HalftoneHemisphere() {
           randR * Math.sin(rPhi) * Math.sin(rTheta)
         );
 
-        szs.push(0.015 + Math.random() * 0.02);
-        dls.push(Math.random() * 0.8);
+        // Brighter dots = slightly larger and more dense szs
+        szs.push(0.02 + Math.random() * 0.03);
+        dls.push(Math.random() * 1.0);
       }
     }
 
@@ -56,22 +57,17 @@ function HalftoneHemisphere() {
 
   useFrame((state) => {
     if (meshRef.current) {
-      const time = state.clock.elapsedTime;
-      // Loop: 0->2 Assemble, 2->4 Hold, 4->6 Scatter
-      const loopTime = time % 6;
-      let t = 0;
+      const elapsed = (Date.now() - startTime.current) / 1000;
       
-      if (loopTime < 2) {
-        t = THREE.MathUtils.smoothstep(loopTime, 0, 2);
-      } else if (loopTime < 4) {
-        t = 1;
-      } else {
-        t = 1 - THREE.MathUtils.smoothstep(loopTime, 4, 6);
-      }
+      // FORMATION: Happens only once on mount
+      // Progress goes 0 -> 1 over 3 seconds
+      const progress = Math.min(1.0, elapsed / 3.0);
+      
+      // Majestic rotation loop (always on)
+      meshRef.current.rotation.y += 0.0035;
 
-      meshRef.current.rotation.y += 0.002;
-      meshRef.current.material.uniforms.uProgress.value = t;
-      meshRef.current.material.uniforms.uTime.value = time;
+      meshRef.current.material.uniforms.uProgress.value = progress;
+      meshRef.current.material.uniforms.uTime.value = state.clock.elapsedTime;
     }
   });
 
@@ -102,27 +98,34 @@ function HalftoneHemisphere() {
           attribute float delay;
           varying float vAlpha;
           void main() {
-            // Organic delay arrival
-            float p = clamp(uProgress * 1.5 - delay, 0.0, 1.0);
-            p = p * p * (3.0 - 2.0 * p); // ease
+            // Smooth one-time assembly
+            float p = clamp(uProgress * 1.6 - delay, 0.0, 1.0);
+            p = p * p * (3.0 - 2.0 * p);
             
             vec3 pos = mix(position, target, p);
             
-            // Subtle floaty noise
-            pos += 0.03 * sin(uTime + position.x * 0.5) * (1.0 - p);
-            
+            // Subtle shimmer/noise
+            if (p > 0.95) {
+               pos += 0.015 * sin(uTime * 2.0 + target.x * 5.0) * normalize(target);
+            }
+
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
             gl_Position = projectionMatrix * mvPosition;
-            gl_PointSize = size * (400.0 / -mvPosition.z);
-            vAlpha = p * 0.8;
+            gl_PointSize = size * (450.0 / -mvPosition.z);
+            vAlpha = (0.2 + 0.8 * p); // fade in as it forms
           }
         `}
         fragmentShader={`
           varying float vAlpha;
           uniform vec3 color;
           void main() {
-            if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
-            gl_FragColor = vec4(color, vAlpha);
+            vec2 uv = gl_PointCoord - 0.5;
+            float dist = length(uv);
+            if (dist > 0.5) discard;
+            
+            // Brighter core dots
+            float glow = 1.0 - smoothstep(0.0, 0.5, dist);
+            gl_FragColor = vec4(color, vAlpha * glow);
           }
         `}
       />
@@ -133,8 +136,8 @@ function HalftoneHemisphere() {
 // ─── Extra Scattered Background Particles ───────────────────────────────────
 function AmbientDots() {
   const points = useMemo(() => {
-    const p = new Float32Array(2000 * 3);
-    for (let i = 0; i < 2000; i++) {
+    const p = new Float32Array(1500 * 3);
+    for (let i = 0; i < 1500; i++) {
       p[i * 3] = (Math.random() - 0.5) * 30;
       p[i * 3 + 1] = (Math.random() - 0.5) * 30;
       p[i * 3 + 2] = (Math.random() - 0.5) * 30;
@@ -145,8 +148,8 @@ function AmbientDots() {
   const ref = useRef<THREE.Points>(null!);
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y += 0.0005;
-      ref.current.rotation.x += 0.0002;
+      ref.current.rotation.y += 0.0006;
+      ref.current.rotation.x += 0.0003;
     }
   });
 
@@ -155,7 +158,7 @@ function AmbientDots() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[points, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#ffffff" size={0.015} transparent opacity={0.2} blending={THREE.AdditiveBlending} />
+      <pointsMaterial color="#ffffff" size={0.02} transparent opacity={0.3} blending={THREE.AdditiveBlending} />
     </points>
   );
 }
