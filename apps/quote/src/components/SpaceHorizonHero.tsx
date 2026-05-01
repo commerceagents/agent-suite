@@ -627,7 +627,7 @@ export default function SpaceHorizonHero() {
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 transition={{ duration: 2, delay: 11.5, ease: [0.16, 1, 0.3, 1] as any }}
-                className="text-white/80 font-medium text-base md:text-xl lg:text-2xl tracking-[0.2em] uppercase text-center"
+                className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
               >
                 Autonomous Intelligence for Modern Commerce
