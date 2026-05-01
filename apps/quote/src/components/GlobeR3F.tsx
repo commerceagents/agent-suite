@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useRef, useMemo, useState, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── High-Contrast World Map Mask (72x36) ───────────────────────────────────
+// ─── High-Resolution World Map Mask (72x36) ─────────────────────────────────
 const LAND_MASK = [
+  '000000000000000000000000000000000000000000000000000000000000000000000000',
   '000000000000000000000000000000000000000000000000000000000000000000000000',
   '000000000000000000000000011000000000000000000000000000000000000000000000',
   '000000001100000000000000011100001111110000000111111111111111111000000000',
@@ -44,28 +45,91 @@ const LAND_MASK = [
 function isLand(lat: number, lon: number): boolean {
   const col = Math.floor(((lon + 180) / 360) * 72) % 72;
   const row = Math.floor(((90 - lat) / 180) * 36);
-  const r = Math.max(0, Math.min(32, row));
+  const r = Math.max(0, Math.min(33, row));
   const c = Math.max(0, Math.min(71, col));
   return LAND_MASK[r]?.[c] === '1';
 }
 
-// ─── WebGL Renderer Version ──────────────────────────────────────────────────
-function WebGLGlobe() {
+// ─── Custom Shader for Looping Assembly ──────────────────────────────────────
+const vertexShader = `
+  uniform float uTime;
+  attribute float size;
+  attribute vec3 target;
+  attribute float delay;
+  
+  varying float vAlpha;
+  varying float vY;
+
+  void main() {
+    vY = target.y;
+    
+    // LOOPING PROGRESS (0 → 1 formation, 1 → 2 stay, 2 → 3 scatter)
+    float loopTime = mod(uProgress, 5.0);
+    float t;
+    
+    if (loopTime < 2.0) {
+      // Assemble
+      t = clamp(loopTime - delay, 0.0, 1.0);
+      t = t * t * (3.0 - 2.0 * t);
+    } else if (loopTime < 3.5) {
+      // Stay
+      t = 1.0;
+    } else {
+      // Scatter
+      t = 1.0 - clamp(loopTime - 3.5 - delay, 0.0, 1.0);
+      t = t * t * (3.0 - 2.0 * t);
+    }
+    
+    vec3 pos = mix(position, target, t);
+    
+    // Add subtle breathing/noise when assembled
+    if (t > 0.95) {
+       pos += 0.02 * sin(uTime * 1.5 + target.x * 10.0) * normalize(target);
+    }
+
+    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+    gl_PointSize = size * (360.0 / -mvPosition.z);
+    
+    vAlpha = t;
+  }
+`;
+
+const fragmentShader = `
+  varying float vAlpha;
+  varying float vY;
+  uniform vec3 color;
+
+  void main() {
+    if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
+    
+    // Brighter at the top rim
+    float rim = smoothstep(0.0, 5.0, vY);
+    gl_FragColor = vec4(color, vAlpha * (0.4 + 0.6 * rim));
+  }
+`;
+
+// ─── Looping Cinematic Hemisphere ───────────────────────────────────────────
+function LoopingGlobe() {
   const meshRef = useRef<THREE.Points>(null!);
-  const [progress, setProgress] = useState(0);
+  const uniforms = useMemo(() => ({
+    uTime: { value: 0 },
+    uProgress: { value: 0 },
+    color: { value: new THREE.Color(0xffffff) },
+  }), []);
 
   const { startPositions, targetPositions, sizes, delays } = useMemo(() => {
-    const COUNT = 25000;
+    const COUNT = 32000; // Even higher density for the "plexus" look
     const startPos = new Float32Array(COUNT * 3);
     const targetPos = new Float32Array(COUNT * 3);
     const sz = new Float32Array(COUNT);
     const dl = new Float32Array(COUNT);
 
-    const radius = 5.2;
+    const radius = 5.0;
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
     
     let count = 0;
-    for (let i = 0; i < COUNT * 15 && count < COUNT; i++) {
+    for (let i = 0; i < COUNT * 18 && count < COUNT; i++) {
       const t = i / (COUNT * 12);
       const inclination = Math.acos(1 - 2 * t);
       const azimuth = (2 * Math.PI * i) / goldenRatio;
@@ -78,11 +142,15 @@ function WebGLGlobe() {
         targetPos[count * 3 + 1] = radius * y;
         targetPos[count * 3 + 2] = radius * Math.sin(inclination) * Math.sin(azimuth);
         
-        startPos[count * 3]     = (Math.random() - 0.5) * 20;
-        startPos[count * 3 + 1] = (Math.random() - 0.5) * 20;
-        startPos[count * 3 + 2] = (Math.random() - 0.5) * 20;
+        // Start: random sphere shell or box
+        const randR = 10 + Math.random() * 5;
+        const rTheta = Math.random() * Math.PI * 2;
+        const rPhi = Math.acos(2 * Math.random() - 1);
+        startPos[count * 3]     = randR * Math.sin(rPhi) * Math.cos(rTheta);
+        startPos[count * 3 + 1] = randR * Math.cos(rPhi);
+        startPos[count * 3 + 2] = randR * Math.sin(rPhi) * Math.sin(rTheta);
 
-        sz[count] = 0.012 + Math.random() * 0.02;
+        sz[count] = 0.01 + Math.random() * 0.025;
         dl[count] = Math.random() * 0.5;
         count++;
       }
@@ -95,19 +163,13 @@ function WebGLGlobe() {
     };
   }, []);
 
-  useFrame((_state, delta) => {
+  useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.06;
-      setProgress(p => Math.min(1.5, p + delta * 0.5));
+      meshRef.current.rotation.y += 0.003;
+      uniforms.uTime.value = state.clock.elapsedTime;
+      uniforms.uProgress.value = state.clock.elapsedTime * 0.8;
     }
   });
-
-  const uniforms = useMemo(() => ({
-    color: { value: new THREE.Color(0xffffff) },
-    uProgress: { value: 0 },
-  }), []);
-
-  useEffect(() => { uniforms.uProgress.value = progress; }, [progress, uniforms]);
 
   return (
     <points ref={meshRef}>
@@ -119,115 +181,44 @@ function WebGLGlobe() {
       </bufferGeometry>
       <shaderMaterial
         uniforms={uniforms}
-        vertexShader={`
-          uniform float uProgress;
-          attribute float size;
-          attribute vec3 target;
-          attribute float delay;
-          varying float vAlpha;
-          void main() {
-            float t = clamp(uProgress - delay, 0.0, 1.0);
-            t = t * t * (3.0 - 2.0 * t);
-            vec3 pos = mix(position, target, t);
-            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
-            gl_PointSize = size * (350.0 / -mvPosition.z);
-            vAlpha = t * (1.0 - smoothstep(0.0, 4.0, target.y));
-          }
-        `}
-        fragmentShader={`
-          varying float vAlpha;
-          uniform vec3 color;
-          void main() {
-            if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
-            gl_FragColor = vec4(color, vAlpha * 0.8);
-          }
-        `}
+        vertexShader={vertexShader.replace('uProgress', 'uniform float uProgress;')}
+        fragmentShader={fragmentShader}
         transparent blending={THREE.AdditiveBlending} depthWrite={false}
       />
     </points>
   );
 }
 
-// ─── Canvas 2D Fallback Version (for environments without WebGL) ──────────────
-function Canvas2DFallback() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let w = 0, h = 0;
-    const resize = () => {
-      w = canvas.clientWidth; h = canvas.clientHeight;
-      canvas.width = w * window.devicePixelRatio; canvas.height = h * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    };
-
-    const dots: any[] = [];
-    const radius = 300;
-    for (let i = 0; i < 4000; i++) {
-      const lat = Math.asin(Math.random() * 2 - 1) * 180 / Math.PI;
-      const lon = Math.random() * 360 - 180;
-      if (lat > -10 && isLand(lat, lon)) {
-        dots.push({ lat, lon, sz: 1 + Math.random() * 1.5 });
-      }
+// ─── Glowing Horizon Rim ────────────────────────────────────────────────────
+function AtmosphereRim() {
+  const ref = useRef<THREE.Mesh>(null!);
+  useFrame((state) => {
+    if (ref.current) {
+      // Pulsing glow
+      const s = 1 + 0.02 * Math.sin(state.clock.elapsedTime * 2);
+      ref.current.scale.set(s, s, s);
     }
-
-    let rot = 0;
-    const render = () => {
-      ctx.clearRect(0, 0, w, h);
-      rot += 0.002;
-      dots.forEach(d => {
-        const phi = (90 - d.lat) * Math.PI / 180;
-        const theta = (d.lon + 180) * Math.PI / 180 + rot;
-        const z = Math.sin(phi) * Math.sin(theta);
-        if (z < -0.1) return;
-        const x = w/2 + radius * Math.sin(phi) * Math.cos(theta);
-        const y = h/1.3 + radius * Math.cos(phi);
-        ctx.globalAlpha = (z + 0.5) * 0.6;
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(x, y, d.sz, 0, Math.PI * 2); ctx.fill();
-      });
-      requestAnimationFrame(render);
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    const anim = requestAnimationFrame(render);
-    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(anim); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />;
-}
-
-// ─── Root Component with Fallback ─────────────────────────────────────────────
-export default function GlobeR3F() {
-  const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    setWebglSupported(!!gl);
-  }, []);
-
-  if (webglSupported === null) return null;
-
-  if (!webglSupported) {
-    return <Canvas2DFallback />;
-  }
+  });
 
   return (
+    <mesh ref={ref} position={[0, 0, -0.5]}>
+      <torusGeometry args={[5.05, 0.04, 16, 100]} />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.3} blending={THREE.AdditiveBlending} />
+    </mesh>
+  );
+}
+
+export default function GlobeR3F() {
+  return (
     <Canvas
-      camera={{ position: [0, 0, 10], fov: 40 }}
+      camera={{ position: [0, 0, 11], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
     >
-      <group position={[0, -3.5, 0]}>
-        <WebGLGlobe />
+      <group position={[0, -3.2, 0]}>
+        <LoopingGlobe />
+        <AtmosphereRim />
       </group>
     </Canvas>
   );
