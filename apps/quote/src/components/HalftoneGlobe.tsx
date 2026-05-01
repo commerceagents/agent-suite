@@ -157,8 +157,8 @@ export default function HalftoneGlobe() {
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]}
       >
-        {/* MOVED DOWN: Position Y changed to -5.8 */}
-        <group position={[0, -5.8, 0]}>
+        {/* MOVED DOWN: Position Y changed to -7.8 */}
+        <group position={[0, -7.8, 0]}>
           <HalftoneHemisphere />
           <AmbientDots />
         </group>
