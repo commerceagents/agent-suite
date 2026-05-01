@@ -4,13 +4,13 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── Halftone Looping Hemisphere ─────────────────────────────────────────────
+// ─── Halftone Hemisphere ──────────────────────────────────────────────────
 function HalftoneHemisphere() {
   const meshRef = useRef<THREE.Points>(null!);
   const startTime = useRef(Date.now());
 
   const { startPositions, targetPositions, sizes, delays } = useMemo(() => {
-    const radius = 8.8; // Increased to "fill the container"
+    const radius = 8.8;
     const segments = 64;
     const points: number[] = [];
     const targets: number[] = [];
@@ -39,8 +39,8 @@ function HalftoneHemisphere() {
           randR * Math.sin(rPhi) * Math.sin(rTheta)
         );
 
-        // DARKER DOTS: Smaller and more subtle sizes
-        szs.push(0.012 + Math.random() * 0.018);
+        // BOLD DOTS: Increased size for better visibility
+        szs.push(0.025 + Math.random() * 0.035);
         dls.push(Math.random() * 1.2);
       }
     }
@@ -58,7 +58,7 @@ function HalftoneHemisphere() {
       const elapsed = (Date.now() - startTime.current) / 1000;
       const progress = Math.min(1.0, elapsed / 3.5);
       
-      meshRef.current.rotation.y += 0.0025; // slow majestic rotation
+      meshRef.current.rotation.y += 0.0025;
 
       meshRef.current.material.uniforms.uProgress.value = progress;
       meshRef.current.material.uniforms.uTime.value = state.clock.elapsedTime;
@@ -103,16 +103,23 @@ function HalftoneHemisphere() {
 
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
             gl_Position = projectionMatrix * mvPosition;
-            gl_PointSize = size * (380.0 / -mvPosition.z);
-            vAlpha = (0.1 + 0.4 * p); // Lower alpha for "darker" look
+            gl_PointSize = size * (400.0 / -mvPosition.z);
+            
+            // BOLD ALPHA: Higher visibility
+            vAlpha = (0.2 + 0.8 * p);
           }
         `}
         fragmentShader={`
           varying float vAlpha;
           uniform vec3 color;
           void main() {
-            if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
-            gl_FragColor = vec4(color, vAlpha * 0.7);
+            vec2 uv = gl_PointCoord - 0.5;
+            float dist = length(uv);
+            if (dist > 0.5) discard;
+            
+            // Stronger glow core
+            float glow = 1.0 - smoothstep(0.0, 0.5, dist);
+            gl_FragColor = vec4(color, vAlpha * glow);
           }
         `}
       />
@@ -123,8 +130,8 @@ function HalftoneHemisphere() {
 // ─── Ambient Dots ───────────────────────────────────────────────────────────
 function AmbientDots() {
   const points = useMemo(() => {
-    const p = new Float32Array(1000 * 3);
-    for (let i = 0; i < 1000; i++) {
+    const p = new Float32Array(1200 * 3);
+    for (let i = 0; i < 1200; i++) {
       p[i * 3] = (Math.random() - 0.5) * 40;
       p[i * 3 + 1] = (Math.random() - 0.5) * 40;
       p[i * 3 + 2] = (Math.random() - 0.5) * 40;
@@ -144,7 +151,7 @@ function AmbientDots() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[points, 3]} />
       </bufferGeometry>
-      <pointsMaterial color="#ffffff" size={0.01} transparent opacity={0.15} blending={THREE.AdditiveBlending} />
+      <pointsMaterial color="#ffffff" size={0.015} transparent opacity={0.25} blending={THREE.AdditiveBlending} />
     </points>
   );
 }
@@ -157,7 +164,6 @@ export default function HalftoneGlobe() {
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]}
       >
-        {/* MOVED DOWN: Position Y changed to -7.8 */}
         <group position={[0, -7.8, 0]}>
           <HalftoneHemisphere />
           <AmbientDots />
