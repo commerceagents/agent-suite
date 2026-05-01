@@ -4,8 +4,8 @@ import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── Inline world map (simplified land mask as run-length encoded rows) ────────
-const LAND_MASK_72x36 = [
+// ─── High-Contrast World Map Mask (72x36) ───────────────────────────────────
+const LAND_MASK = [
   '000000000000000000000000000000000000000000000000000000000000000000000000',
   '000000000000000000000000000000000000000000000000000000000000000000000000',
   '000000000000000000000000011000000000000000000000000000000000000000000000',
@@ -44,16 +44,16 @@ const LAND_MASK_72x36 = [
   '000000000000000000000000000000000000000000000000000000000000000000000000',
 ];
 
-function sampleLandMask(lat: number, lon: number): boolean {
+function isLand(lat: number, lon: number): boolean {
   const col = Math.floor(((lon + 180) / 360) * 72) % 72;
   const row = Math.floor(((90 - lat) / 180) * 36);
   const r = Math.max(0, Math.min(35, row));
   const c = Math.max(0, Math.min(71, col));
-  return LAND_MASK_72x36[r]?.[c] === '1';
+  return LAND_MASK[r]?.[c] === '1';
 }
 
-// ─── Custom Shader for Vertical Fade ────────────────────────────────────────
-const hemisphereVertexShader = `
+// ─── Custom Shader for White Horizon ───────────────────────────────────────
+const vertexShader = `
   varying float vY;
   varying float vZ;
   attribute float size;
@@ -62,11 +62,11 @@ const hemisphereVertexShader = `
     vZ = position.z;
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = size * (350.0 / -mvPosition.z);
+    gl_PointSize = size * (380.0 / -mvPosition.z);
   }
 `;
 
-const hemisphereFragmentShader = `
+const fragmentShader = `
   varying float vY;
   varying float vZ;
   uniform vec3 color;
@@ -76,34 +76,33 @@ const hemisphereFragmentShader = `
     if (dist > 0.5) discard;
     float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
 
-    // VERTICAL FADE: Anchor fade to world Y positioning
-    // Local Y ranges from 0 to 4.0
-    float verticalFade = smoothstep(-0.2, 3.8, vY);
+    // VERTICAL FADE: Anchor to local dome Y (0 to radius)
+    float verticalFade = smoothstep(0.0, 5.0, vY);
     
-    // EDGE FADE: Fade out points at the sides/back for depth
-    float edgeFade = smoothstep(-0.5, 1.5, vZ);
+    // DEPTH FADE: Fade out the back for horizon clarity
+    float depthFade = smoothstep(-0.8, 2.0, vZ);
 
-    gl_FragColor = vec4(color, alpha * verticalFade * edgeFade * opacity);
+    gl_FragColor = vec4(color, alpha * verticalFade * depthFade * opacity);
   }
 `;
 
-// ─── White Continent Hemisphere ──────────────────────────────────────────────
-function WhiteContinentHemisphere() {
+// ─── Massive Continent Hemisphere ───────────────────────────────────────────
+function CinematicHorizon() {
   const meshRef = useRef<THREE.Points>(null!);
 
   const { positions, sizes } = useMemo(() => {
-    const LAND_TARGET = 22000;
-    const pos = new Float32Array(LAND_TARGET * 3);
-    const sz = new Float32Array(LAND_TARGET);
+    const TARGET_COUNT = 25000;
+    const pos = new Float32Array(TARGET_COUNT * 3);
+    const sz = new Float32Array(TARGET_COUNT);
 
-    const radius = 4.0; // 20-30% increase for massive look
+    const radius = 5.5; // Massive Earth-like curve
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
     
-    let landCount = 0;
+    let count = 0;
     let i = 0;
-    // We sample a high number of points and only keep those on land
-    while (landCount < LAND_TARGET && i < LAND_TARGET * 8) {
-      const t = i / (LAND_TARGET * 8);
+    // Fibonacci sphere sampling + Rejection for continents
+    while (count < TARGET_COUNT && i < TARGET_COUNT * 10) {
+      const t = i / (TARGET_COUNT * 10);
       const inclination = Math.acos(1 - 2 * t);
       const azimuth = (2 * Math.PI * i) / goldenRatio;
       
@@ -112,49 +111,48 @@ function WhiteContinentHemisphere() {
 
       const y = Math.cos(inclination);
       
-      // HEMISPHERE ONLY: Upper half
-      if (y >= 0 && sampleLandMask(lat, lon)) {
+      // PERFECT HEMISPHERE (y >= 0) + Land check
+      if (y >= 0 && isLand(lat, lon)) {
         const phi = inclination;
         const theta = azimuth;
 
-        pos[landCount * 3]     = radius * Math.sin(phi) * Math.cos(theta);
-        pos[landCount * 3 + 1] = radius * y;
-        pos[landCount * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+        pos[count * 3]     = radius * Math.sin(phi) * Math.cos(theta);
+        pos[count * 3 + 1] = radius * y;
+        pos[count * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
         
-        sz[landCount] = 0.016 + Math.random() * 0.02;
-        landCount++;
+        sz[count] = 0.015 + Math.random() * 0.025;
+        count++;
       }
       i++;
     }
 
-    // Trim the array to the actual number of points found
     return { 
-      positions: pos.slice(0, landCount * 3), 
-      sizes: sz.slice(0, landCount) 
+      positions: pos.slice(0, count * 3), 
+      sizes: sz.slice(0, count) 
     };
   }, []);
 
   useFrame((_state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.07;
+      meshRef.current.rotation.y += delta * 0.05; // Majestic slow rotation
     }
   });
 
   const uniforms = useMemo(() => ({
     color: { value: new THREE.Color(0xffffff) },
-    opacity: { value: 0.9 },
+    opacity: { value: 0.95 },
   }), []);
 
   return (
-    <points ref={meshRef}>
+    <points ref={meshRef} scale={[1, 1, 1]}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
       </bufferGeometry>
       <shaderMaterial
         uniforms={uniforms}
-        vertexShader={hemisphereVertexShader}
-        fragmentShader={hemisphereFragmentShader}
+        vertexShader={vertexShader}
+        fragmentShader={fragmentShader}
         transparent
         blending={THREE.AdditiveBlending}
         depthWrite={false}
@@ -166,18 +164,21 @@ function WhiteContinentHemisphere() {
 export default function GlobeR3F() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 8], fov: 45 }}
+      camera={{ position: [0, 0, 10], fov: 40 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
+      onCreated={({ camera }) => {
+        camera.updateProjectionMatrix();
+      }}
     >
       {/* 
-          HORIZON ANCHOR:
-          Moving group down so the base (y=0) is at the viewport bottom.
-          Since radius is 4.0, position.y = -4.5 places the dome base correctly.
+          POSITIONING:
+          Radius is 5.5. Moving it down by 5.8 units anchors the base 
+          at the very bottom, creating a wide rising horizon.
       */}
-      <group position={[0, -4.2, 0]}>
-        <WhiteContinentHemisphere />
+      <group position={[0, -5.8, 0]}>
+        <CinematicHorizon />
       </group>
     </Canvas>
   );
