@@ -613,7 +613,7 @@ export default function SpaceHorizonHero() {
                   letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
                   filter: { duration: 2, delay: 10.7 }
                 }}
-                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-4"
+                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
                 style={{ 
                   fontFamily: "'Alexandria', sans-serif",
                   fontSize: "clamp(32px, 6vw, 72px)",
