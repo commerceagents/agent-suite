@@ -106,7 +106,7 @@ export default function ParticleGlobe() {
       w = canvas.offsetWidth; h = canvas.offsetHeight;
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      R = Math.min(w * 0.56, h * 0.92);
+      R = Math.min(w * 0.42, h * 0.72);
       build();
     };
 
