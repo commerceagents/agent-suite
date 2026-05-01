@@ -3,6 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
+import dynamic from 'next/dynamic';
+const GlobeR3F = dynamic(() => import('./GlobeR3F'), { ssr: false });
  
  
 function TetrisSimulation() {
@@ -523,11 +525,10 @@ export default function SpaceHorizonHero() {
                   }}
                 />
               </div>
+            </div>            {/* R3F PURPLE PARTICLE GLOBE */}
+            <div className="absolute inset-0 z-[1] pointer-events-none">
+              <GlobeR3F />
             </div>
-
-
-
-
 
             {/* BRAND TEXT */}
             <style>{`
