@@ -1,161 +1,207 @@
 'use client';
 import React, { useRef, useEffect } from 'react';
-import * as THREE from 'three';
+
+// Simplified land detection
+function isLand(lat: number, lon: number): boolean {
+  if (lat > 15 && lat < 75 && lon > -168 && lon < -52) return true; // North America
+  if (lat > 5 && lat < 20 && lon > -90 && lon < -60) return true; // Central America
+  if (lat > -57 && lat < 12 && lon > -82 && lon < -34) return true; // South America
+  if (lat > 36 && lat < 71 && lon > -10 && lon < 40) return true; // Europe
+  if (lat > 55 && lat < 72 && lon > -25 && lon < 32) return true; // Scandinavia
+  if (lat > -35 && lat < 37 && lon > -18 && lon < 52) return true; // Africa
+  if (lat > 14 && lat < 42 && lon > 35 && lon < 65) return true; // Middle East
+  if (lat > 6 && lat < 37 && lon > 68 && lon < 92) return true; // India
+  if (lat > 20 && lat < 80 && lon > 60 && lon < 140) return true; // Asia
+  if (lat > -5 && lat < 25 && lon > 95 && lon < 125) return true; // SE Asia
+  if (lat > 30 && lat < 46 && lon > 128 && lon < 146) return true; // Japan
+  if (lat > -45 && lat < -10 && lon > 113 && lon < 154) return true; // Australia
+  if (lat > 60 && lat < 84 && lon > -55 && lon < -17) return true; // Greenland
+  return false;
+}
+
+function latLonToXYZ(lat: number, lon: number): [number, number, number] {
+  const phi = (90 - lat) * Math.PI / 180;
+  const theta = (lon + 180) * Math.PI / 180;
+  return [Math.sin(phi) * Math.cos(theta), Math.cos(phi), Math.sin(phi) * Math.sin(theta)];
+}
+
+const ease = (t: number) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
 
 export default function ParticleGlobe() {
-  const mountRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-    // ── Scene setup ─────────────────────────────────────────────────────
-    const scene = new THREE.Scene();
+    let w = 0, h = 0, animId: number, R = 400, rotY = 0, connAlpha = 0;
+    const T0 = performance.now();
+    const FORM_DELAY = 300;
+    const FORM_DUR = 2800;
+    const N = 2600;
+    const TILT = 0.38, cT = Math.cos(TILT), sT = Math.sin(TILT);
 
-    const camera = new THREE.PerspectiveCamera(
-      55,
-      mount.clientWidth / mount.clientHeight,
-      0.1,
-      1000
-    );
-    camera.position.set(0, 0.2, 2.8);
-    camera.lookAt(0, 0, 0);
+    const waveNoise = (x: number, z: number, t: number) =>
+      0.38 * Math.sin(2.2*x + 0.8*t) +
+      0.26 * Math.sin(1.7*z + 0.6*t + 1.2) +
+      0.18 * Math.sin(3.0*x - 1.3*z + 0.9*t) +
+      0.10 * Math.sin(0.9*x + 2.4*z + 1.4*t);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x05070a, 1);
-    mount.appendChild(renderer.domElement);
+    type P = { sx:number;sy:number;sz:number; tx:number;ty:number;tz:number; d:number; sz2:number; driftX:number;driftY:number;driftZ:number; };
+    type C = { a:number; b:number };
+    let pts: P[] = [];
+    let conns: C[] = [];
 
-    let points: THREE.Points | null = null;
-    let glow: THREE.Points  | null = null;
-    let animId = 0;
+    const build = () => {
+      pts = []; conns = [];
+      const targets: [number,number,number][] = [];
+      let tries = 0;
+      while (targets.length < N && tries < N * 25) {
+        tries++;
+        const lat = Math.random() * 180 - 90;
+        const lon = Math.random() * 360 - 180;
+        if (!isLand(lat, lon)) continue;
+        targets.push(latLonToXYZ(lat, lon));
+      }
 
-    // ── Load Earth texture & build particles ─────────────────────────────
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      'https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg',
-      (texture) => {
-        // Sample texture to find land pixels
-        const img = texture.image as HTMLImageElement;
-        const offscreen = document.createElement('canvas');
-        offscreen.width  = img.width;
-        offscreen.height = img.height;
-        const ctx = offscreen.getContext('2d')!;
-        ctx.drawImage(img, 0, 0);
-        const data = ctx.getImageData(0, 0, img.width, img.height).data;
+      for (const [tx, ty, tz] of targets) {
+        const sr = 0.6 + Math.random() * 2.2;
+        const sa = Math.random() * Math.PI * 2;
+        const sb = Math.random() * Math.PI;
+        pts.push({
+          sx: Math.sin(sb)*Math.cos(sa)*sr, sy: Math.cos(sb)*sr, sz: Math.sin(sb)*Math.sin(sa)*sr,
+          tx, ty, tz,
+          d: Math.random() * 0.45,
+          sz2: 0.7 + Math.random() * 1.1,
+          driftX: (Math.random()-0.5)*0.25,
+          driftY: (Math.random()-0.5)*0.25,
+          driftZ: (Math.random()-0.5)*0.25,
+        });
+      }
 
-        // Build sphere geometry to sample UV positions
-        const sphere = new THREE.SphereGeometry(1, 256, 128);
-        const posAttr = sphere.attributes.position as THREE.BufferAttribute;
-        const uvAttr  = sphere.attributes.uv       as THREE.BufferAttribute;
+      // Pre-compute connections
+      const CDIST = 0.28, MAX_C = 4;
+      const cnt = new Uint8Array(pts.length);
+      for (let a = 0; a < pts.length; a++) {
+        if (cnt[a] >= MAX_C) continue;
+        for (let b = a+1; b < pts.length; b++) {
+          if (cnt[b] >= MAX_C) continue;
+          const dx = pts[a].tx-pts[b].tx, dy = pts[a].ty-pts[b].ty, dz = pts[a].tz-pts[b].tz;
+          if (dx*dx+dy*dy+dz*dz < CDIST*CDIST) { conns.push({a,b}); cnt[a]++; cnt[b]++; }
+          if (cnt[a] >= MAX_C) break;
+        }
+      }
+    };
 
-        const positions: number[] = [];
-        const opacities: number[] = [];
+    const project = (wx: number, wy: number, wz: number, cx: number, cy: number) => {
+      // Y rotation then X tilt
+      const tx = wx, ty = wy*cT - wz*sT, tz = wy*sT + wz*cT;
+      const p = 1400 / Math.max(1400 + tz*R, 1);
+      return { sx: cx + tx*R*p, sy: cy - ty*R*p, depth: (tz+1)/2, p };
+    };
 
-        for (let i = 0; i < posAttr.count; i++) {
-          const u = uvAttr.getX(i);
-          const v = uvAttr.getY(i);
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      w = canvas.offsetWidth; h = canvas.offsetHeight;
+      canvas.width = w*dpr; canvas.height = h*dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      R = Math.min(w*0.56, h*0.92);
+      build();
+    };
 
-          const px = Math.floor(u * (img.width  - 1));
-          const py = Math.floor((1 - v) * (img.height - 1)); // flip V
-          const idx = (py * img.width + px) * 4;
-          const brightness = data[idx]; // R channel as brightness
+    const render = () => {
+      const now = performance.now(), t = (now - T0) / 1000;
+      const fp = Math.min((now - T0 - FORM_DELAY) / FORM_DUR, 1);
+      const formed = fp >= 1;
 
-          // Only land areas (threshold > 100)
-          if (brightness < 100) continue;
+      rotY += formed ? 0.0012 : 0.0003;
+      const cR = Math.cos(rotY), sR = Math.sin(rotY);
+      if (formed) connAlpha = Math.min(connAlpha + 0.006, 1);
 
-          const x = posAttr.getX(i);
-          const y = posAttr.getY(i);
-          const z = posAttr.getZ(i);
+      const cx = w/2, cy = h + R*0.05;
+      const WAMP = R * 0.038;
 
-          // Front hemisphere only (z > 0 after slight tilt offset)
-          if (z < -0.05) continue;
+      ctx.clearRect(0, 0, w, h);
 
-          // Depth-based opacity: front=1 back=0 with smooth edge fade
-          const depthAlpha = Math.max(0, z);
+      type PD = { sx:number; sy:number; depth:number; alpha:number; size:number };
+      const pd: PD[] = new Array(pts.length);
 
-          positions.push(x, y, z);
-          opacities.push(depthAlpha);
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        const lp = Math.max(0, Math.min((fp - p.d) / (1 - p.d + 0.001), 1));
+        const ep = ease(lp);
+        const arc = Math.sin(lp * Math.PI) * 0.18;
+        const wv = formed ? waveNoise(p.tx, p.tz, t) * WAMP : 0;
+
+        // Current world-space pos
+        let wx = p.sx + (p.tx - p.sx)*ep + p.driftX*arc;
+        let wy = p.sy + (p.ty - p.sy)*ep + p.driftY*arc;
+        let wz = p.sz + (p.tz - p.sz)*ep + p.driftZ*arc;
+
+        // Y-axis rotation
+        const rx = wx*cR - wz*sR, rz = wx*sR + wz*cR;
+        wx = rx; wz = rz;
+
+        const pr = project(wx, wy + (formed ? wv/R : 0), wz, cx, cy);
+        const alpha = (0.12 + pr.depth*0.78) * (0.25 + ep*0.75);
+        const size = (0.7 + pr.depth*1.4) * p.sz2 * Math.min(pr.p*1.5, 2.2);
+        pd[i] = { sx: pr.sx, sy: pr.sy, depth: pr.depth, alpha, size };
+      }
+
+      // Connections
+      if (connAlpha > 0.005) {
+        ctx.lineWidth = 0.4;
+        for (const c of conns) {
+          const pa = pd[c.a], pb = pd[c.b];
+          if (pa.depth < 0.08 || pb.depth < 0.08) continue;
+          const a = ((pa.alpha+pb.alpha)/2) * 0.28 * connAlpha;
+          ctx.strokeStyle = `rgba(180,210,255,${a.toFixed(3)})`;
+          ctx.beginPath(); ctx.moveTo(pa.sx, pa.sy); ctx.lineTo(pb.sx, pb.sy); ctx.stroke();
+        }
+      }
+
+      // Particles
+      for (let i = 0; i < pd.length; i++) {
+        const p = pd[i];
+        if (p.sy > h * 1.06 || p.size < 0.1) continue;
+
+        if (p.depth > 0.3) {
+          const gR = p.size * 5;
+          const g = ctx.createRadialGradient(p.sx, p.sy, 0, p.sx, p.sy, gR);
+          g.addColorStop(0, `rgba(200,230,255,${(p.alpha*0.45).toFixed(3)})`);
+          g.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath(); ctx.arc(p.sx, p.sy, gR, 0, Math.PI*2); ctx.fill();
         }
 
-        // Core particles
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-        const mat = new THREE.PointsMaterial({
-          color: 0xffffff,
-          size: 0.008,
-          transparent: true,
-          opacity: 0.88,
-          depthWrite: false,
-          sizeAttenuation: true,
-        });
-
-        points = new THREE.Points(geo, mat);
-        scene.add(points);
-
-        // Glow layer (larger, semi-transparent blue-white)
-        const glowMat = new THREE.PointsMaterial({
-          color: 0xaad4ff,
-          size: 0.018,
-          transparent: true,
-          opacity: 0.12,
-          depthWrite: false,
-          sizeAttenuation: true,
-        });
-        glow = new THREE.Points(geo, glowMat);
-        scene.add(glow);
-
-        sphere.dispose();
-        texture.dispose();
-      },
-      undefined,
-      (err) => console.error('Texture load error', err)
-    );
-
-    // ── Soft fog to darken edges ─────────────────────────────────────────
-    scene.fog = new THREE.FogExp2(0x05070a, 0.18);
-
-    // ── Animation loop ───────────────────────────────────────────────────
-    const animate = () => {
-      animId = requestAnimationFrame(animate);
-      if (points) {
-        points.rotation.y += 0.0015;
+        ctx.beginPath();
+        ctx.arc(p.sx, p.sy, Math.max(p.size*0.55, 0.4), 0, Math.PI*2);
+        ctx.fillStyle = `rgba(210,235,255,${p.alpha.toFixed(3)})`;
+        ctx.fill();
       }
-      if (glow) {
-        glow.rotation.y += 0.0015;
-      }
-      renderer.render(scene, camera);
-    };
-    animate();
 
-    // ── Resize handler ────────────────────────────────────────────────────
-    const onResize = () => {
-      if (!mount) return;
-      const w = mount.clientWidth;
-      const h = mount.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-    window.addEventListener('resize', onResize);
+      // Blue edge glow (top-right)
+      const eg = ctx.createRadialGradient(w*0.73, h*0.14, 0, w*0.73, h*0.14, R*0.65);
+      eg.addColorStop(0, 'rgba(60,140,255,0.13)');
+      eg.addColorStop(0.5, 'rgba(30,80,200,0.05)');
+      eg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = eg; ctx.fillRect(0, 0, w, h);
 
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', onResize);
-      renderer.dispose();
-      if (mount.contains(renderer.domElement)) {
-        mount.removeChild(renderer.domElement);
-      }
+      // Bottom fog
+      const fog = ctx.createLinearGradient(0, h*0.68, 0, h);
+      fog.addColorStop(0, 'rgba(5,7,10,0)');
+      fog.addColorStop(1, 'rgba(5,7,10,0.96)');
+      ctx.fillStyle = fog; ctx.fillRect(0, h*0.68, w, h*0.32);
+
+      animId = requestAnimationFrame(render);
     };
+
+    resize(); render();
+    window.addEventListener('resize', resize);
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
   }, []);
 
-  return (
-    <div
-      ref={mountRef}
-      className="w-full h-full"
-      style={{ background: '#05070a' }}
-    />
-  );
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />;
 }
