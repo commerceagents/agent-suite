@@ -484,111 +484,17 @@ function DrawingStroke({ delay }: { delay: number }) {
 
 export default function SpaceHorizonHero() {
   return (
-    <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none flex items-center justify-center">
-
-      {/* NAVIGATION LAYER */}
+    <section className="relative h-[100dvh] w-full overflow-hidden select-none" style={{ background: '#05070a' }}>
+      {/* NAVIGATION */}
       <div className="absolute top-0 left-0 right-0 z-50 pt-5 flex justify-center">
         <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20">
-          <Navigation show={true} delay={13.0} />
+          <Navigation show={true} delay={0} />
         </div>
       </div>
 
-      <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
-        <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 3.5, 
-              delay: 10.2, // Reveal AFTER Loading complete (10.2s)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ease: [0.16, 1, 0.3, 1] as any 
-            }}
-            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
-            style={{ 
-              isolation: 'isolate',
-              willChange: 'transform, opacity',
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
-            }}
-          >
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* Subtle white glow at the bottom edge */}
-                <div 
-                  className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 40%, transparent 70%)',
-                    filter: 'blur(40px)',
-                    opacity: 0.6
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* 2. SUBTLE GRID */}
-            <GridBackground />
-
-            {/* 3. PARTICLE HEMISPHERE DOME */}
-            <div className="absolute inset-0 z-[1] pointer-events-auto overflow-hidden rounded-[48px]">
-              <ParticleGlobe />
-            </div>
-
-            {/* BRAND TEXT */}
-            <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
-              
-              @keyframes shimmer {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .shimmer-text {
-                background: linear-gradient(90deg, 
-                  rgba(255,255,255,0.6) 0%, 
-                  rgba(255,255,255,1) 50%, 
-                  rgba(255,255,255,0.6) 100%
-                );
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                background-clip: text;
-                animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-                text-shadow: 0 0 30px rgba(255,255,255,0.15);
-              }
-            `}</style>
-            <div className="relative z-10 flex flex-col items-center">
-              
-              <motion.h1
-                initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
-                animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
-                transition={{ 
-                  opacity: { duration: 2, delay: 10.7 },
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  scale: { duration: 4, delay: 10.7, ease: [0.16, 1, 0.3, 1] as any },
-                  letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
-                  filter: { duration: 2, delay: 10.7 }
-                }}
-                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
-                style={{ 
-                  fontFamily: "'Alexandria', sans-serif",
-                  fontSize: "clamp(32px, 6vw, 72px)",
-                }}
-              >
-                COMMERCE AGENTS
-              </motion.h1>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transition={{ duration: 2, delay: 14.0, ease: [0.16, 1, 0.3, 1] as any }}
-                className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
-                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                Autonomous Intelligence for Modern Commerce
-              </motion.p>
-            </div>
-          </motion.div>
-        </div>
+      {/* FULLSCREEN PARTICLE GLOBE */}
+      <div className="absolute inset-0 z-10">
+        <ParticleGlobe />
       </div>
     </section>
   );

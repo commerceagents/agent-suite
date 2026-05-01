@@ -1,65 +1,100 @@
 'use client';
-
 import React, { useRef, useEffect } from 'react';
 
+const N = 2500, TILT = 0.38, ROT = 0.00014;
+
+function isLand(lat: number, lon: number): boolean {
+  if (lon > 180) lon -= 360;
+  if (lon < -180) lon += 360;
+  if (lat > 60 && lat < 84 && lon > -55 && lon < -17) return true; // Greenland
+  if (lat > 63 && lat < 67 && lon > -24 && lon < -12) return true; // Iceland
+  if (lat > 55 && lat < 72 && lon > -168 && lon < -130) return true; // Alaska
+  if (lat > 25 && lat < 72 && lon > -128 && lon < -54) return true; // N.America
+  if (lat > 8  && lat < 30 && lon > -118 && lon < -77) return true; // Mexico
+  if (lat > 0  && lat < 12 && lon > -80  && lon < -34) return true; // N.S.America
+  if (lat > 50 && lat < 61 && lon > -8   && lon < 2)   return true; // UK
+  if (lat > 36 && lat < 72 && lon > -5   && lon < 28)  return true; // W.Europe
+  if (lat > 44 && lat < 70 && lon > 22   && lon < 40)  return true; // E.Europe
+  if (lat > 48 && lat < 78 && lon > 30   && lon < 180) return true; // Russia
+  if (lat > 0  && lat < 38 && lon > -18  && lon < 52)  return true; // Africa
+  if (lat > 12 && lat < 38 && lon > 33   && lon < 63)  return true; // M.East
+  if (lat > 8  && lat < 35 && lon > 63   && lon < 92)  return true; // India
+  if (lat > 20 && lat < 55 && lon > 90   && lon < 145) return true; // E.Asia
+  if (lat > 30 && lat < 46 && lon > 129  && lon < 147) return true; // Japan
+  if (lat > 0  && lat < 22 && lon > 95   && lon < 141) return Math.random() > 0.45; // SE Asia
+  return false;
+}
+
 export default function ParticleGlobe() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ref = useRef<HTMLCanvasElement>(null);
   const mouse = useRef({ x: -9999, y: -9999 });
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const canvas = ref.current; if (!canvas) return;
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    let w = 0, h = 0, R = 0, animId = 0, rotY = 0;
+    const T0 = performance.now();
 
-    let w = 0, h = 0, animId: number;
-    let R = 400, rotY = 0;
-    const startTime = performance.now();
-    const TILT = 0.42; // ~24 degrees
-    const cosTilt = Math.cos(TILT), sinTilt = Math.sin(TILT);
-
-    // Layered sine wave noise (cheap, smooth, organic)
-    const wave = (x: number, z: number, t: number) =>
-      0.40 * Math.sin(2.2 * x + 0.80 * t) +
-      0.28 * Math.sin(1.6 * z + 0.55 * t + 1.2) +
-      0.20 * Math.sin(3.0 * x - 1.3 * z + 0.90 * t) +
-      0.12 * Math.sin(0.9 * x + 2.5 * z + 1.40 * t);
-
-    type Dot = { ux: number; uy: number; uz: number };
+    // ── Particles ──────────────────────────────────────────────────────────
+    type Pt = {
+      // scatter origin
+      ox: number; oy: number; oz: number;
+      // target on sphere
+      tx: number; ty: number; tz: number;
+      delay: number; dur: number;
+      // curve bias axis (perpendicular kick)
+      bx: number; by: number; bz: number;
+    };
     type Conn = { a: number; b: number };
+    let pts: Pt[] = [], conns: Conn[] = [];
 
-    let dots: Dot[] = [];
-    let conns: Conn[] = [];
+    const ease = (x: number) => x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x+2,3)/2;
 
     const build = () => {
-      dots = [];
-      conns = [];
+      pts = []; conns = [];
+      let placed = 0, tries = 0;
+      while (placed < N && tries < N * 30) {
+        tries++;
+        // Fibonacci hemisphere (upper half y>=0)
+        const phi = Math.acos(1 - Math.random()); // 0..PI/2 range biased
+        const theta = Math.random() * Math.PI * 2;
+        const lat = 90 - phi * 180 / Math.PI;
+        const lon = theta * 180 / Math.PI - 180;
+        if (!isLand(lat, lon) && Math.random() > 0.08) continue; // keep some ocean dots
 
-      // Fibonacci hemisphere (upper half only, y >= 0)
-      const N = 1400;
-      const total = N * 2 + 300;
-      const gold = Math.PI * (3 - Math.sqrt(5));
-      for (let i = 0; i < total && dots.length < N; i++) {
-        const y = 1 - (i / (total - 1)) * 2;
-        if (y < -0.01) continue;
-        const r = Math.sqrt(Math.max(0, 1 - y * y));
-        const t = gold * i;
-        dots.push({ ux: Math.cos(t) * r, uy: y, uz: Math.sin(t) * r });
+        const sinP = Math.sin(phi), cosP = Math.cos(phi);
+        const tx = sinP * Math.cos(theta);
+        const ty = cosP;
+        const tz = sinP * Math.sin(theta);
+
+        // Random scatter position
+        const spread = 3.5;
+        const ox = (Math.random() - 0.5) * spread;
+        const oy = (Math.random() - 0.5) * spread;
+        const oz = (Math.random() - 0.5) * spread - 0.5;
+
+        // Curve bias: perpendicular vector
+        const len = Math.sqrt(ox*ox+oy*oy+oz*oz)||1;
+        const bx = -(oz/len)*0.4, by = 0, bz = (ox/len)*0.4;
+
+        pts.push({ ox, oy, oz, tx, ty, tz,
+          delay: Math.random() * 900,
+          dur:   1400 + Math.random() * 800,
+          bx, by, bz
+        });
+        placed++;
       }
 
-      // Pre-compute proximity connections
-      const cnt = new Uint8Array(dots.length);
-      const THRESH = 0.30;
-      for (let a = 0; a < dots.length; a++) {
+      // Pre-compute connections
+      const cnt = new Uint8Array(pts.length);
+      const CDIST2 = 0.30 * 0.30;
+      for (let a = 0; a < pts.length; a++) {
         if (cnt[a] >= 5) continue;
-        for (let b = a + 1; b < dots.length; b++) {
+        for (let b = a + 1; b < pts.length; b++) {
           if (cnt[b] >= 5) continue;
-          const dx = dots[a].ux - dots[b].ux;
-          const dy = dots[a].uy - dots[b].uy;
-          const dz = dots[a].uz - dots[b].uz;
-          if (dx * dx + dy * dy + dz * dz < THRESH * THRESH) {
-            conns.push({ a, b });
-            cnt[a]++; cnt[b]++;
+          const dx=pts[a].tx-pts[b].tx, dy=pts[a].ty-pts[b].ty, dz=pts[a].tz-pts[b].tz;
+          if (dx*dx+dy*dy+dz*dz < CDIST2) {
+            conns.push({a,b}); cnt[a]++; cnt[b]++;
           }
           if (cnt[a] >= 5) break;
         }
@@ -67,115 +102,148 @@ export default function ParticleGlobe() {
     };
 
     const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      w = canvas.offsetWidth;
-      h = canvas.offsetHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
+      const dpr = devicePixelRatio || 1;
+      w = canvas.offsetWidth; h = canvas.offsetHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       R = Math.min(w * 0.56, h * 0.92);
       build();
     };
 
+    const cosTilt = Math.cos(TILT), sinTilt = Math.sin(TILT);
+
     const render = () => {
-      const t = (performance.now() - startTime) / 1000;
-      rotY += 0.0014;
+      const now = performance.now();
+      const elapsed = now - T0;
+      rotY += ROT;
       const cosR = Math.cos(rotY), sinR = Math.sin(rotY);
 
-      // Dome: sphere center sits just below visible bottom
-      const cx = w / 2;
-      const cy = h + R * 0.06;
+      // Sphere center: below canvas = dome effect
+      const cx = w / 2, cy = h + R * 0.05;
       const FOV = 1300;
-      const WAMP = R * 0.038;
 
       ctx.clearRect(0, 0, w, h);
 
-      // Project all dots
-      type P = { sx: number; sy: number; depth: number; alpha: number };
-      const proj: P[] = new Array(dots.length);
+      // Top-right ambient blue glow (light rays)
+      const lr = ctx.createRadialGradient(w*0.78, 0, 0, w*0.78, 0, w*0.65);
+      lr.addColorStop(0, 'rgba(30,80,200,0.18)');
+      lr.addColorStop(0.4,'rgba(10,40,120,0.07)');
+      lr.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = lr; ctx.fillRect(0, 0, w, h);
 
-      for (let i = 0; i < dots.length; i++) {
-        const d = dots[i];
-        const wv = wave(d.ux, d.uz, t) * WAMP;
+      // ── Project particles ──────────────────────────────────────────────
+      type ProjPt = { sx:number; sy:number; depth:number; alpha:number; prog:number };
+      const proj: ProjPt[] = new Array(pts.length);
+      let allDone = true;
 
-        // Y-axis rotation
-        const rx = d.ux * cosR - d.uz * sinR;
-        const rz = d.ux * sinR + d.uz * cosR;
-        const ry = d.uy;
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+        const raw = Math.max(0, Math.min(1, (elapsed - p.delay) / p.dur));
+        if (raw < 1) allDone = false;
+        const ep = ease(raw);
 
-        // X-axis tilt (camera angle)
-        const tx = rx;
-        const ty = ry * cosTilt - rz * sinTilt;
-        const tz = ry * sinTilt + rz * cosTilt;
+        // Curve: parabolic lift during mid-flight
+        const arc = Math.sin(raw * Math.PI);
+        const wx = p.ox + (p.tx - p.ox) * ep + p.bx * arc;
+        const wy = p.oy + (p.ty - p.oy) * ep + p.by * arc;
+        const wz = p.oz + (p.tz - p.oz) * ep + p.bz * arc;
 
-        const persp = FOV / Math.max(FOV + tz * R, 1);
-        const sx = cx + tx * R * persp;
-        const sy = cy - (ty * R + wv) * persp;
+        // Y-axis rotation (only applied to settled portion)
+        const mix = ep; // rotate target proportion by rotY
+        const rx = wx * cosR - wz * sinR * mix + wx * (1-mix);
+        const rz = wz * cosR * mix + wx * sinR * mix + wz * (1-mix);
+        // Simpler: just rotate target position and lerp
+        const ttx = p.tx * cosR - p.tz * sinR;
+        const ttz = p.tx * sinR + p.tz * cosR;
+        const tty = p.ty;
 
-        // depth 0=back 1=front
-        const depth = (tz + 1) / 2;
-        const alpha = 0.12 + depth * 0.78;
+        const fx = p.ox + (ttx - p.ox)*ep + p.bx*arc;
+        const fy = p.oy + (tty - p.oy)*ep + p.by*arc;
+        const fz = p.oz + (ttz - p.oz)*ep + p.bz*arc;
 
-        proj[i] = { sx, sy, depth, alpha };
+        // Camera tilt
+        const tx2 = fx;
+        const ty2 = fy * cosTilt - fz * sinTilt;
+        const tz2 = fy * sinTilt + fz * cosTilt;
+
+        const persp = FOV / Math.max(FOV + tz2 * R, 1);
+        const sx = cx + tx2 * R * persp;
+        const sy = cy - ty2 * R * persp;
+
+        const depth = (tz2 + 1.5) / 2.5;
+        const alpha = (0.1 + depth * 0.85) * (0.3 + ep * 0.7);
+        proj[i] = { sx, sy, depth, alpha, prog: ep };
       }
 
-      // Draw connections
-      ctx.lineWidth = 0.45;
-      for (const c of conns) {
-        const pa = proj[c.a], pb = proj[c.b];
-        if (pa.depth < 0.08 || pb.depth < 0.08) continue;
-        const a = ((pa.alpha + pb.alpha) / 2) * 0.22;
-        ctx.strokeStyle = `rgba(255,255,255,${a.toFixed(3)})`;
-        ctx.beginPath();
-        ctx.moveTo(pa.sx, pa.sy);
-        ctx.lineTo(pb.sx, pb.sy);
-        ctx.stroke();
+      // ── Connections (fade in after formation) ──────────────────────────
+      const connAlpha = allDone ? Math.min((elapsed - (pts[0]?.dur + pts[0]?.delay + 400)) / 1200, 1) : 0;
+      if (connAlpha > 0) {
+        // Pulse wave
+        const pulse = ((elapsed / 1000) % 3) / 3;
+
+        ctx.lineWidth = 0.4;
+        for (let ci = 0; ci < conns.length; ci++) {
+          const pa = proj[conns[ci].a], pb = proj[conns[ci].b];
+          if (pa.depth < 0.1 || pb.depth < 0.1) continue;
+          const avgA = (pa.alpha + pb.alpha) / 2;
+
+          // Pulse effect
+          const midDepth = (pa.depth + pb.depth) / 2;
+          const pulseGlow = Math.abs(Math.sin((midDepth - pulse) * Math.PI * 4)) * 0.15;
+          const la = (avgA * 0.18 + pulseGlow) * connAlpha;
+
+          ctx.strokeStyle = `rgba(180,220,255,${la.toFixed(3)})`;
+          ctx.beginPath();
+          ctx.moveTo(pa.sx, pa.sy);
+          ctx.lineTo(pb.sx, pb.sy);
+          ctx.stroke();
+        }
       }
 
-      // Mouse ripple
+      // ── Draw particles (additive blend for bloom) ──────────────────────
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
       const { x: mx, y: my } = mouse.current;
 
-      // Draw dots
       for (let i = 0; i < proj.length; i++) {
         const p = proj[i];
-        if (p.sy > h * 1.04) continue; // skip below screen
+        if (p.sy > h * 1.05) continue;
 
-        // Mouse proximity ripple
+        // Mouse ripple
         const mdx = p.sx - mx, mdy = p.sy - my;
-        const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-        const ripple = mDist < 110
-          ? Math.sin((110 - mDist) * 0.06 + t * 4) * 6
-          : 0;
-        const sx = p.sx + (mDist < 110 ? (mdx / (mDist || 1)) * ripple * 0.25 : 0);
-        const sy = p.sy + (mDist < 110 ? (mdy / (mDist || 1)) * ripple * 0.25 : 0);
+        const md = Math.sqrt(mdx*mdx + mdy*mdy);
+        const rip = md < 100 ? Math.sin((100-md)*0.07 + elapsed*0.004)*8 : 0;
+        const sx = p.sx + (md < 100 && md > 0 ? (mdx/md)*rip*0.3 : 0);
+        const sy = p.sy + (md < 100 && md > 0 ? (mdy/md)*rip*0.3 : 0);
 
-        const size = 0.9 + p.depth * 1.2;
+        const baseSize = 0.7 + p.depth * 1.3;
+        const a = p.alpha;
 
-        // Glow halo (only brighter dots)
-        if (p.depth > 0.35) {
-          const gR = size * 5;
-          const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, gR);
-          g.addColorStop(0, `rgba(255,255,255,${(p.alpha * 0.35).toFixed(3)})`);
-          g.addColorStop(1, 'rgba(255,255,255,0)');
+        // Outer glow
+        if (p.depth > 0.3) {
           ctx.beginPath();
-          ctx.arc(sx, sy, gR, 0, Math.PI * 2);
-          ctx.fillStyle = g;
+          ctx.arc(sx, sy, baseSize * 7, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(100,160,255,${(a*0.04).toFixed(3)})`;
           ctx.fill();
         }
-
-        // Core dot
+        // Mid glow
         ctx.beginPath();
-        ctx.arc(sx, sy, Math.max(size, 0.5), 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha.toFixed(3)})`;
+        ctx.arc(sx, sy, baseSize * 2.5, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(200,225,255,${(a*0.18).toFixed(3)})`;
+        ctx.fill();
+        // Core
+        ctx.beginPath();
+        ctx.arc(sx, sy, Math.max(baseSize * 0.9, 0.4), 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.min(a, 0.95).toFixed(3)})`;
         ctx.fill();
       }
+      ctx.restore();
 
-      // Bottom fog gradient
-      const fog = ctx.createLinearGradient(0, h * 0.72, 0, h);
-      fog.addColorStop(0, 'rgba(0,0,0,0)');
-      fog.addColorStop(1, 'rgba(0,0,0,0.9)');
-      ctx.fillStyle = fog;
-      ctx.fillRect(0, h * 0.72, w, h * 0.28);
+      // Bottom fog
+      const fog = ctx.createLinearGradient(0, h*0.68, 0, h);
+      fog.addColorStop(0, 'rgba(5,7,10,0)');
+      fog.addColorStop(1, 'rgba(5,7,10,0.95)');
+      ctx.fillStyle = fog; ctx.fillRect(0, h*0.68, w, h*0.32);
 
       animId = requestAnimationFrame(render);
     };
@@ -187,24 +255,15 @@ export default function ParticleGlobe() {
       const r = canvas.getBoundingClientRect();
       mouse.current = { x: e.clientX - r.left, y: e.clientY - r.top };
     };
-    const onLeave = () => { mouse.current = { x: -9999, y: -9999 }; };
-
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', () => { resize(); });
     canvas.addEventListener('mousemove', onMove);
-    canvas.addEventListener('mouseleave', onLeave);
+    canvas.addEventListener('mouseleave', () => { mouse.current = {x:-9999,y:-9999}; });
 
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
-      canvas.removeEventListener('mousemove', onMove);
-      canvas.removeEventListener('mouseleave', onLeave);
     };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-auto"
-    />
-  );
+  return <canvas ref={ref} className="w-full h-full block" style={{background:'#05070a'}} />;
 }
