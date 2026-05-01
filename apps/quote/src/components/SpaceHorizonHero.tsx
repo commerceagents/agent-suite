@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
+import ParticleGlobe from './ParticleGlobe';
  
  
 function TetrisSimulation() {
@@ -480,34 +481,6 @@ function DrawingStroke({ delay }: { delay: number }) {
   );
 }
 
-function AtmosphericBloom() {
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-60 mix-blend-screen">
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 10.0, duration: 4 }}
-        className="absolute inset-0"
-      >
-        {/* 1. Absolute Bottom White Core (Sharp & Glowing) */}
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-white shadow-[0_0_30px_rgba(255,255,255,1)] z-10" />
-
-        {/* 2. Main Atmosphere: White -> Neon Purple -> Blue */}
-        <div 
-          className="absolute bottom-0 left-0 right-0 h-[70%] pointer-events-none"
-          style={{
-            background: 'linear-gradient(to top, #ffffff 0%, #d946ef 15%, #4f46e5 40%, #1e1b4b 60%, transparent 100%)',
-            filter: 'blur(50px)',
-            opacity: 0.8
-          }}
-        />
-        
-        {/* 3. Deep Blue Ambient (Middle of Screen Fill) */}
-        <div className="absolute bottom-0 left-0 right-0 h-full bg-[radial-gradient(ellipse_at_bottom,rgba(30,27,75,0.4)_0%,transparent_70%)] pointer-events-none" />
-      </motion.div>
-    </div>
-  );
-}
 
 export default function SpaceHorizonHero() {
   return (
@@ -541,43 +514,25 @@ export default function SpaceHorizonHero() {
           >
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
               <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* 1. The Physical "U" Horizon Curve (Neon Electric Blue) */}
+                {/* Subtle white glow at the bottom edge */}
                 <div 
                   className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
                   style={{
-                    background: 'linear-gradient(to top, #ffffff 0%, #00f2ff 20%, #3b82f6 45%, transparent 85%)',
-                    filter: 'blur(60px)',
-                    opacity: 1
+                    background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 40%, transparent 70%)',
+                    filter: 'blur(40px)',
+                    opacity: 0.6
                   }}
                 />
-                
-
-                
-                {/* 3. Left Side Atmospheric Beam */}
-                <motion.div 
-                  animate={{ opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-y-0 left-0 z-10"
-                >
-                  <div className="absolute inset-y-0 left-0 w-[120px] bg-gradient-to-r from-indigo-500/20 via-purple-500/10 to-transparent blur-[40px]" />
-                </motion.div>
-                
-                {/* 4. Right Side Atmospheric Beam */}
-                <motion.div 
-                  animate={{ opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-y-0 right-0 z-10"
-                >
-                  <div className="absolute inset-y-0 right-0 w-[120px] bg-gradient-to-l from-indigo-500/20 via-purple-500/10 to-transparent blur-[40px]" />
-                </motion.div>
-
-                {/* 5. The Dense White Horizon (Absolute Bottom) */}
               </div>
             </div>
 
             {/* 2. SUBTLE GRID */}
             <GridBackground />
-            {/* TetrisSimulation removed */}
+
+            {/* 3. PARTICLE GLOBE — assembles after loading screen */}
+            <div className="absolute inset-0 z-[1] pointer-events-auto">
+              <ParticleGlobe startDelay={10200} radius={260} particleCount={2000} />
+            </div>
 
             {/* BRAND TEXT */}
             <style>{`
@@ -597,12 +552,10 @@ export default function SpaceHorizonHero() {
                 -webkit-background-clip: text;
                 background-clip: text;
                 animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-                text-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+                text-shadow: 0 0 30px rgba(255,255,255,0.15);
               }
             `}</style>
             <div className="relative z-10 flex flex-col items-center">
-              {/* Specific Text Highlight Glow (Electric Blue) */}
-              <div className="absolute -bottom-[30%] left-1/2 -translate-x-1/2 w-[150%] h-[200%] bg-[radial-gradient(ellipse_at_center,rgba(0,242,255,0.25)_0%,rgba(59,130,246,0.1)_50%,transparent_80%)] blur-[80px] pointer-events-none z-[-1]" />
               
               <motion.h1
                 initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
