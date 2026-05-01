@@ -4,7 +4,7 @@ import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// ─── High-Resolution World Map Mask (72x36) ─────────────────────────────────
+// ─── High-Resolution World Map Mask ─────────────────────────────────────────
 const LAND_MASK = [
   '000000000000000000000000000000000000000000000000000000000000000000000000',
   '000000000000000000000000000000000000000000000000000000000000000000000000',
@@ -50,160 +50,111 @@ function isLand(lat: number, lon: number): boolean {
   return LAND_MASK[r]?.[c] === '1';
 }
 
-// ─── Custom Shader for Looping Assembly ──────────────────────────────────────
+// ─── Custom Shader Material ──────────────────────────────────────────────────
 const vertexShader = `
-  uniform float uTime;
-  attribute float size;
-  attribute vec3 target;
-  attribute float delay;
-  
-  varying float vAlpha;
   varying float vY;
-
+  varying float vZ;
+  attribute float size;
   void main() {
-    vY = target.y;
-    
-    // LOOPING PROGRESS (0 → 1 formation, 1 → 2 stay, 2 → 3 scatter)
-    float loopTime = mod(uProgress, 5.0);
-    float t;
-    
-    if (loopTime < 2.0) {
-      // Assemble
-      t = clamp(loopTime - delay, 0.0, 1.0);
-      t = t * t * (3.0 - 2.0 * t);
-    } else if (loopTime < 3.5) {
-      // Stay
-      t = 1.0;
-    } else {
-      // Scatter
-      t = 1.0 - clamp(loopTime - 3.5 - delay, 0.0, 1.0);
-      t = t * t * (3.0 - 2.0 * t);
-    }
-    
-    vec3 pos = mix(position, target, t);
-    
-    // Add subtle breathing/noise when assembled
-    if (t > 0.95) {
-       pos += 0.02 * sin(uTime * 1.5 + target.x * 10.0) * normalize(target);
-    }
-
-    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+    vY = position.y;
+    vZ = position.z;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = size * (360.0 / -mvPosition.z);
-    
-    vAlpha = t;
+    gl_PointSize = size * (400.0 / -mvPosition.z);
   }
 `;
 
 const fragmentShader = `
-  varying float vAlpha;
   varying float vY;
+  varying float vZ;
   uniform vec3 color;
-
   void main() {
-    if (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
+    float dist = distance(gl_PointCoord, vec2(0.5));
+    if (dist > 0.5) discard;
     
-    // Brighter at the top rim
-    float rim = smoothstep(0.0, 5.0, vY);
-    gl_FragColor = vec4(color, vAlpha * (0.4 + 0.6 * rim));
+    // RIM LIGHTING: Brighten the edges (front and top)
+    float rim = smoothstep(-1.0, 5.0, vY) * smoothstep(-1.0, 3.0, vZ);
+    float alpha = (1.0 - smoothstep(0.0, 0.5, dist)) * (0.3 + 0.7 * rim);
+    
+    gl_FragColor = vec4(color, alpha);
   }
 `;
 
-// ─── Looping Cinematic Hemisphere ───────────────────────────────────────────
-function LoopingGlobe() {
+// ─── Majestic Rotating Hemisphere ───────────────────────────────────────────
+function RotatingGlobe() {
   const meshRef = useRef<THREE.Points>(null!);
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uProgress: { value: 0 },
-    color: { value: new THREE.Color(0xffffff) },
-  }), []);
 
-  const { startPositions, targetPositions, sizes, delays } = useMemo(() => {
-    const COUNT = 32000; // Even higher density for the "plexus" look
-    const startPos = new Float32Array(COUNT * 3);
-    const targetPos = new Float32Array(COUNT * 3);
-    const sz = new Float32Array(COUNT);
-    const dl = new Float32Array(COUNT);
+  const { positions, sizes } = useMemo(() => {
+    const TARGET = 45000; // Ultra-high density for that "exact" look
+    const pos = new Float32Array(TARGET * 3);
+    const sz = new Float32Array(TARGET);
 
-    const radius = 5.0;
+    const radius = 5.2;
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
     
     let count = 0;
-    for (let i = 0; i < COUNT * 18 && count < COUNT; i++) {
-      const t = i / (COUNT * 12);
+    let i = 0;
+    while (count < TARGET && i < TARGET * 15) {
+      const t = i / (TARGET * 12);
       const inclination = Math.acos(1 - 2 * t);
       const azimuth = (2 * Math.PI * i) / goldenRatio;
+      
       const lat = 90 - (inclination * 180 / Math.PI);
       const lon = ((azimuth * 180 / Math.PI) % 360) - 180;
       const y = Math.cos(inclination);
       
-      if (y >= -0.05 && isLand(lat, lon)) {
-        targetPos[count * 3]     = radius * Math.sin(inclination) * Math.cos(azimuth);
-        targetPos[count * 3 + 1] = radius * y;
-        targetPos[count * 3 + 2] = radius * Math.sin(inclination) * Math.sin(azimuth);
+      // Strict hemisphere clipping + Land mask
+      if (y >= -0.02 && isLand(lat, lon)) {
+        pos[count * 3]     = radius * Math.sin(inclination) * Math.cos(azimuth);
+        pos[count * 3 + 1] = radius * y;
+        pos[count * 3 + 2] = radius * Math.sin(inclination) * Math.sin(azimuth);
         
-        // Start: random sphere shell or box
-        const randR = 10 + Math.random() * 5;
-        const rTheta = Math.random() * Math.PI * 2;
-        const rPhi = Math.acos(2 * Math.random() - 1);
-        startPos[count * 3]     = randR * Math.sin(rPhi) * Math.cos(rTheta);
-        startPos[count * 3 + 1] = randR * Math.cos(rPhi);
-        startPos[count * 3 + 2] = randR * Math.sin(rPhi) * Math.sin(rTheta);
-
-        sz[count] = 0.01 + Math.random() * 0.025;
-        dl[count] = Math.random() * 0.5;
+        sz[count] = 0.012 + Math.random() * 0.018;
         count++;
       }
+      i++;
     }
+
     return { 
-      startPositions: startPos.slice(0, count * 3),
-      targetPositions: targetPos.slice(0, count * 3),
-      sizes: sz.slice(0, count),
-      delays: dl.slice(0, count)
+      positions: pos.slice(0, count * 3), 
+      sizes: sz.slice(0, count) 
     };
   }, []);
 
-  useFrame((state) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.003;
-      uniforms.uTime.value = state.clock.elapsedTime;
-      uniforms.uProgress.value = state.clock.elapsedTime * 0.8;
+      meshRef.current.rotation.y += delta * 0.08; // slow majestic rotation
     }
   });
+
+  const uniforms = useMemo(() => ({
+    color: { value: new THREE.Color(0xffffff) },
+  }), []);
 
   return (
     <points ref={meshRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[startPositions, 3]} />
-        <bufferAttribute attach="attributes-target" args={[targetPositions, 3]} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
-        <bufferAttribute attach="attributes-delay" args={[delays, 1]} />
       </bufferGeometry>
       <shaderMaterial
         uniforms={uniforms}
-        vertexShader={vertexShader.replace('uProgress', 'uniform float uProgress;')}
+        vertexShader={vertexShader}
         fragmentShader={fragmentShader}
-        transparent blending={THREE.AdditiveBlending} depthWrite={false}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
       />
     </points>
   );
 }
 
-// ─── Glowing Horizon Rim ────────────────────────────────────────────────────
-function AtmosphereRim() {
-  const ref = useRef<THREE.Mesh>(null!);
-  useFrame((state) => {
-    if (ref.current) {
-      // Pulsing glow
-      const s = 1 + 0.02 * Math.sin(state.clock.elapsedTime * 2);
-      ref.current.scale.set(s, s, s);
-    }
-  });
-
+// ─── Bright Rim Atmosphere ──────────────────────────────────────────────────
+function GlowRim() {
   return (
-    <mesh ref={ref} position={[0, 0, -0.5]}>
-      <torusGeometry args={[5.05, 0.04, 16, 100]} />
-      <meshBasicMaterial color="#ffffff" transparent opacity={0.3} blending={THREE.AdditiveBlending} />
+    <mesh position={[0, 0, -0.2]}>
+      <torusGeometry args={[5.25, 0.03, 16, 100]} />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.25} blending={THREE.AdditiveBlending} />
     </mesh>
   );
 }
@@ -216,9 +167,9 @@ export default function GlobeR3F() {
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
     >
-      <group position={[0, -3.2, 0]}>
-        <LoopingGlobe />
-        <AtmosphereRim />
+      <group position={[0, -3.5, 0]}>
+        <RotatingGlobe />
+        <GlowRim />
       </group>
     </Canvas>
   );
