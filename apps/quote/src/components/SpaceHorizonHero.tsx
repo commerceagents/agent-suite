@@ -4,6 +4,60 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
  
+function ParticleText({ text, delay = 0, className = "", style = {} }: { text: string, delay?: number, className?: string, style?: React.CSSProperties }) {
+  const characters = text.split("");
+
+  return (
+    <div className={`flex flex-wrap justify-center overflow-visible ${className}`} style={style}>
+      {characters.map((char, index) => {
+        // Generate deterministic pseudo-random values based on index to avoid hydration mismatch
+        // But since this is client-side only (or we use suppressHydrationWarning), we can use Math.random
+        // Let's use pseudo-random to be safe
+        const seed = index * 137.5;
+        const randomX = (Math.sin(seed) * 800);
+        const randomY = (Math.cos(seed) * 800);
+        const randomRotate = (Math.sin(seed * 2) * 180);
+        
+        return (
+          <motion.span
+            key={index}
+            initial={{ 
+              opacity: 0, 
+              x: randomX, 
+              y: randomY, 
+              rotate: randomRotate, 
+              filter: 'blur(24px) brightness(300%)',
+              scale: 0.2
+            }}
+            animate={{ 
+              opacity: 1, 
+              x: 0, 
+              y: 0, 
+              rotate: 0, 
+              filter: 'blur(0px) brightness(100%)',
+              scale: 1
+            }}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            transition={{
+              duration: 3.5,
+              delay: delay + (index * 0.04) + (Math.sin(index) * 0.2), // Organic stagger
+              ease: [0.16, 1, 0.3, 1] as any
+            }}
+            style={{ 
+              display: 'inline-block',
+              whiteSpace: char === ' ' ? 'pre' : 'normal',
+              willChange: 'transform, filter, opacity'
+            }}
+            suppressHydrationWarning
+          >
+            {char}
+          </motion.span>
+        );
+      })}
+    </div>
+  );
+}
+ 
 function TetrisSimulation() {
   const [gridDim, setGridDim] = React.useState({ cols: 20, rows: 20 });
   const cellSize = 40; // Perfect match for GridBackground
@@ -622,16 +676,12 @@ export default function SpaceHorizonHero() {
                 COMMERCE AGENTS
               </motion.h1>
               
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transition={{ duration: 2, delay: 11.5, ease: [0.16, 1, 0.3, 1] as any }}
+              <ParticleText
+                text="Autonomous Intelligence for Modern Commerce"
+                delay={11.0}
                 className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                Autonomous Intelligence for Modern Commerce
-              </motion.p>
+              />
             </div>
           </motion.div>
         </div>
