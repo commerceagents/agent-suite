@@ -529,9 +529,9 @@ export default function SpaceHorizonHero() {
             {/* 2. SUBTLE GRID */}
             <GridBackground />
 
-            {/* 3. PARTICLE GLOBE — assembles after loading screen */}
-            <div className="absolute inset-0 z-[1] pointer-events-auto">
-              <ParticleGlobe startDelay={10200} radius={260} particleCount={2000} />
+            {/* 3. PARTICLE HEMISPHERE DOME */}
+            <div className="absolute inset-0 z-[1] pointer-events-auto overflow-hidden rounded-[48px]">
+              <ParticleGlobe />
             </div>
 
             {/* BRAND TEXT */}

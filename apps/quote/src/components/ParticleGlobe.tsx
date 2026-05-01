@@ -2,21 +2,9 @@
 
 import React, { useRef, useEffect } from 'react';
 
-interface ParticleGlobeProps {
-  /** Delay in ms before scatter-to-globe assembly begins */
-  startDelay?: number;
-  /** Radius of the globe in pixels */
-  radius?: number;
-  /** Number of particles */
-  particleCount?: number;
-}
-
-export default function ParticleGlobe({
-  startDelay = 10200,
-  radius = 280,
-  particleCount = 2200,
-}: ParticleGlobeProps) {
+export default function ParticleGlobe() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouse = useRef({ x: -9999, y: -9999 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,217 +12,199 @@ export default function ParticleGlobe({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let w = 0, h = 0, cx = 0, cy = 0;
-    let animId: number;
-    let mouseX = -9999, mouseY = -9999;
+    let w = 0, h = 0, animId: number;
+    let R = 400, rotY = 0;
     const startTime = performance.now();
-    let assembled = false; // tracks whether assembly has started
+    const TILT = 0.42; // ~24 degrees
+    const cosTilt = Math.cos(TILT), sinTilt = Math.sin(TILT);
 
-    // ─── Resize ─────────────────────────────────────────────────────────────
+    // Layered sine wave noise (cheap, smooth, organic)
+    const wave = (x: number, z: number, t: number) =>
+      0.40 * Math.sin(2.2 * x + 0.80 * t) +
+      0.28 * Math.sin(1.6 * z + 0.55 * t + 1.2) +
+      0.20 * Math.sin(3.0 * x - 1.3 * z + 0.90 * t) +
+      0.12 * Math.sin(0.9 * x + 2.5 * z + 1.40 * t);
+
+    type Dot = { ux: number; uy: number; uz: number };
+    type Conn = { a: number; b: number };
+
+    let dots: Dot[] = [];
+    let conns: Conn[] = [];
+
+    const build = () => {
+      dots = [];
+      conns = [];
+
+      // Fibonacci hemisphere (upper half only, y >= 0)
+      const N = 1400;
+      const total = N * 2 + 300;
+      const gold = Math.PI * (3 - Math.sqrt(5));
+      for (let i = 0; i < total && dots.length < N; i++) {
+        const y = 1 - (i / (total - 1)) * 2;
+        if (y < -0.01) continue;
+        const r = Math.sqrt(Math.max(0, 1 - y * y));
+        const t = gold * i;
+        dots.push({ ux: Math.cos(t) * r, uy: y, uz: Math.sin(t) * r });
+      }
+
+      // Pre-compute proximity connections
+      const cnt = new Uint8Array(dots.length);
+      const THRESH = 0.30;
+      for (let a = 0; a < dots.length; a++) {
+        if (cnt[a] >= 5) continue;
+        for (let b = a + 1; b < dots.length; b++) {
+          if (cnt[b] >= 5) continue;
+          const dx = dots[a].ux - dots[b].ux;
+          const dy = dots[a].uy - dots[b].uy;
+          const dz = dots[a].uz - dots[b].uz;
+          if (dx * dx + dy * dy + dz * dz < THRESH * THRESH) {
+            conns.push({ a, b });
+            cnt[a]++; cnt[b]++;
+          }
+          if (cnt[a] >= 5) break;
+        }
+      }
+    };
+
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       w = canvas.offsetWidth;
       h = canvas.offsetHeight;
-      cx = w / 2;
-      cy = h / 2;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      R = Math.min(w * 0.56, h * 0.92);
+      build();
     };
-
-    // ─── Particle definition ─────────────────────────────────────────────────
-    type Particle = {
-      // Scatter origin (random screen position)
-      sx: number; sy: number; sz: number;
-      // Target position on sphere surface (spherical coordinates baked to XYZ)
-      tx: number; ty: number; tz: number;
-      // Current world position
-      wx: number; wy: number; wz: number;
-      // For sphere rotation
-      theta: number; phi: number;
-      // Visual
-      alpha: number;
-      size: number;
-      // Individual assembly progress (0 → 1)
-      progress: number;
-      speed: number; // assembly lerp speed
-    };
-
-    const particles: Particle[] = [];
-
-    const buildParticles = () => {
-      particles.length = 0;
-      const r = radius;
-
-      for (let i = 0; i < particleCount; i++) {
-        // Fibonacci sphere distribution — perfectly even coverage
-        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-        const y = 1 - (i / (particleCount - 1)) * 2; // -1 to 1
-        const rad = Math.sqrt(1 - y * y);
-        const theta = goldenAngle * i;
-
-        const tx = Math.cos(theta) * rad * r;
-        const ty = y * r;
-        const tz = Math.sin(theta) * rad * r;
-
-        // Random scatter origin — exploded outward from center
-        const scatterDist = 200 + Math.random() * 600;
-        const sa = Math.random() * Math.PI * 2;
-        const sb = Math.random() * Math.PI;
-        const sx = Math.cos(sa) * Math.sin(sb) * scatterDist;
-        const sy2 = Math.cos(sb) * scatterDist;
-        const sz = Math.sin(sa) * Math.sin(sb) * scatterDist;
-
-        particles.push({
-          sx, sy: sy2, sz,
-          tx, ty, tz,
-          wx: sx, wy: sy2, wz: sz,
-          theta: Math.atan2(tz, tx),
-          phi: Math.asin(Math.max(-1, Math.min(1, ty / r))),
-          alpha: 0,
-          size: 0.8 + Math.random() * 1.2,
-          progress: 0,
-          speed: 0.008 + Math.random() * 0.012,
-        });
-      }
-    };
-
-    // ─── Main render loop ─────────────────────────────────────────────────────
-    let rotationY = 0; // current Y-axis rotation angle (radians)
-    const ROTATE_SPEED = 0.0015; // radians per frame
 
     const render = () => {
-      const now = performance.now();
-      const elapsed = now - startTime;
-      const shouldAssemble = elapsed >= startDelay;
+      const t = (performance.now() - startTime) / 1000;
+      rotY += 0.0014;
+      const cosR = Math.cos(rotY), sinR = Math.sin(rotY);
 
-      rotationY += ROTATE_SPEED;
+      // Dome: sphere center sits just below visible bottom
+      const cx = w / 2;
+      const cy = h + R * 0.06;
+      const FOV = 1300;
+      const WAMP = R * 0.038;
 
       ctx.clearRect(0, 0, w, h);
 
-      for (const p of particles) {
-        if (!shouldAssemble) {
-          // Pre-assembly: particles float as scattered glowing dots
-          p.alpha = Math.min(p.alpha + 0.005, 0.25);
+      // Project all dots
+      type P = { sx: number; sy: number; depth: number; alpha: number };
+      const proj: P[] = new Array(dots.length);
 
-          // Gentle ambient drift
-          const drift = elapsed * 0.0001;
-          const dx = p.sx * Math.cos(drift) - p.sz * Math.sin(drift) - p.sx;
-          const dy = p.sy * 0.1 * Math.sin(drift * 0.7) - p.sy;
-          const dz = p.sx * Math.sin(drift) + p.sz * Math.cos(drift) - p.sz;
-          const screenX = cx + (p.sx + dx * 0.02);
-          const screenY = cy + (p.sy + dy * 0.02);
+      for (let i = 0; i < dots.length; i++) {
+        const d = dots[i];
+        const wv = wave(d.ux, d.uz, t) * WAMP;
 
-          ctx.beginPath();
-          ctx.arc(screenX, screenY, p.size * 0.6, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
-          ctx.fill();
-          continue;
-        }
+        // Y-axis rotation
+        const rx = d.ux * cosR - d.uz * sinR;
+        const rz = d.ux * sinR + d.uz * cosR;
+        const ry = d.uy;
 
-        // ── Assembly phase: lerp toward target sphere position ──
-        if (!assembled) {
-          p.progress = Math.min(p.progress + p.speed, 1);
-        }
+        // X-axis tilt (camera angle)
+        const tx = rx;
+        const ty = ry * cosTilt - rz * sinTilt;
+        const tz = ry * sinTilt + rz * cosTilt;
 
-        const eased = p.progress < 1
-          ? 1 - Math.pow(1 - p.progress, 3) // ease-out cubic
-          : 1;
+        const persp = FOV / Math.max(FOV + tz * R, 1);
+        const sx = cx + tx * R * persp;
+        const sy = cy - (ty * R + wv) * persp;
 
-        // World coords: interpolate scatter → sphere surface
-        p.wx = p.sx + (p.tx - p.sx) * eased;
-        p.wy = p.sy + (p.ty - p.sy) * eased;
-        p.wz = p.sz + (p.tz - p.sz) * eased;
+        // depth 0=back 1=front
+        const depth = (tz + 1) / 2;
+        const alpha = 0.12 + depth * 0.78;
 
-        // Apply Y-axis rotation to the sphere
-        const cosR = Math.cos(rotationY);
-        const sinR = Math.sin(rotationY);
-        const rx = p.wx * cosR - p.wz * sinR;
-        const rz = p.wx * sinR + p.wz * cosR;
-        const ry = p.wy;
+        proj[i] = { sx, sy, depth, alpha };
+      }
 
-        // Perspective projection
-        const fov = 900;
-        const perspective = fov / (fov + rz);
-        const screenX = cx + rx * perspective;
-        const screenY = cy + ry * perspective;
+      // Draw connections
+      ctx.lineWidth = 0.45;
+      for (const c of conns) {
+        const pa = proj[c.a], pb = proj[c.b];
+        if (pa.depth < 0.08 || pb.depth < 0.08) continue;
+        const a = ((pa.alpha + pb.alpha) / 2) * 0.22;
+        ctx.strokeStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+        ctx.beginPath();
+        ctx.moveTo(pa.sx, pa.sy);
+        ctx.lineTo(pb.sx, pb.sy);
+        ctx.stroke();
+      }
 
-        // Mouse repulsion (gentle disturbance)
-        const mdx = screenX - mouseX;
-        const mdy = screenY - mouseY;
+      // Mouse ripple
+      const { x: mx, y: my } = mouse.current;
+
+      // Draw dots
+      for (let i = 0; i < proj.length; i++) {
+        const p = proj[i];
+        if (p.sy > h * 1.04) continue; // skip below screen
+
+        // Mouse proximity ripple
+        const mdx = p.sx - mx, mdy = p.sy - my;
         const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-        let perturbX = 0, perturbY = 0;
-        if (mDist < 100) {
-          const force = (100 - mDist) / 100;
-          perturbX = (mdx / mDist) * force * 18;
-          perturbY = (mdy / mDist) * force * 18;
+        const ripple = mDist < 110
+          ? Math.sin((110 - mDist) * 0.06 + t * 4) * 6
+          : 0;
+        const sx = p.sx + (mDist < 110 ? (mdx / (mDist || 1)) * ripple * 0.25 : 0);
+        const sy = p.sy + (mDist < 110 ? (mdy / (mDist || 1)) * ripple * 0.25 : 0);
+
+        const size = 0.9 + p.depth * 1.2;
+
+        // Glow halo (only brighter dots)
+        if (p.depth > 0.35) {
+          const gR = size * 5;
+          const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, gR);
+          g.addColorStop(0, `rgba(255,255,255,${(p.alpha * 0.35).toFixed(3)})`);
+          g.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.beginPath();
+          ctx.arc(sx, sy, gR, 0, Math.PI * 2);
+          ctx.fillStyle = g;
+          ctx.fill();
         }
 
-        // Depth-based brightness: front = bright, back = dim
-        const depthAlpha = (rz / radius + 1) / 2; // 0 (back) to 1 (front)
-        const baseAlpha = 0.25 + depthAlpha * 0.65;
-        const finalAlpha = Math.min(baseAlpha * (0.5 + eased * 0.5), 0.95);
-        const finalSize = p.size * perspective;
-
-        // Draw glow halo
-        const grad = ctx.createRadialGradient(
-          screenX + perturbX, screenY + perturbY, 0,
-          screenX + perturbX, screenY + perturbY, finalSize * 4
-        );
-        grad.addColorStop(0, `rgba(255,255,255,${finalAlpha * 0.5})`);
-        grad.addColorStop(1, `rgba(255,255,255,0)`);
+        // Core dot
         ctx.beginPath();
-        ctx.arc(screenX + perturbX, screenY + perturbY, finalSize * 4, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        // Draw core dot
-        ctx.beginPath();
-        ctx.arc(screenX + perturbX, screenY + perturbY, finalSize, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${finalAlpha})`;
+        ctx.arc(sx, sy, Math.max(size, 0.5), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha.toFixed(3)})`;
         ctx.fill();
       }
 
-      // Check if all particles are fully assembled
-      if (!assembled && shouldAssemble) {
-        assembled = particles.every(p => p.progress >= 1);
-      }
+      // Bottom fog gradient
+      const fog = ctx.createLinearGradient(0, h * 0.72, 0, h);
+      fog.addColorStop(0, 'rgba(0,0,0,0)');
+      fog.addColorStop(1, 'rgba(0,0,0,0.9)');
+      ctx.fillStyle = fog;
+      ctx.fillRect(0, h * 0.72, w, h * 0.28);
 
       animId = requestAnimationFrame(render);
     };
 
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseX = e.clientX - rect.left;
-      mouseY = e.clientY - rect.top;
-    };
-
-    const onMouseLeave = () => {
-      mouseX = -9999;
-      mouseY = -9999;
-    };
-
     resize();
-    buildParticles();
     render();
 
-    window.addEventListener('resize', () => { resize(); buildParticles(); });
-    canvas.addEventListener('mousemove', onMouseMove);
-    canvas.addEventListener('mouseleave', onMouseLeave);
+    const onMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      mouse.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    const onLeave = () => { mouse.current = { x: -9999, y: -9999 }; };
+
+    window.addEventListener('resize', resize);
+    canvas.addEventListener('mousemove', onMove);
+    canvas.addEventListener('mouseleave', onLeave);
 
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
-      canvas.removeEventListener('mousemove', onMouseMove);
-      canvas.removeEventListener('mouseleave', onMouseLeave);
+      canvas.removeEventListener('mousemove', onMove);
+      canvas.removeEventListener('mouseleave', onLeave);
     };
-  }, [startDelay, radius, particleCount]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-auto"
-      style={{ display: 'block' }}
     />
   );
 }
