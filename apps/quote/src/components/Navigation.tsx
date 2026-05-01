@@ -113,7 +113,7 @@ export default function Navigation({ show = true, delay = 0 }) {
           {/* LOGO SECTION */}
           <motion.div 
             variants={item} 
-            className="flex items-center group -ml-1 md:-ml-2 pr-0 md:pr-2"
+            className="flex items-center group -ml-1 md:-ml-2 pr-2 md:pr-4"
           >
             <div className="relative cursor-pointer py-1" onClick={() => lenis?.scrollTo(0)}>
                 <img
@@ -134,7 +134,7 @@ export default function Navigation({ show = true, delay = 0 }) {
                 <motion.div 
                   key={link.name}
                   variants={item} 
-                  className={`relative py-1.5 lg:py-2 group cursor-pointer ${link.name === 'Contact us' ? 'px-4 lg:px-6 ml-8 md:ml-16 lg:ml-24' : 'px-2 lg:px-3'}`}
+                  className={`relative py-1.5 lg:py-2 group cursor-pointer ${link.name === 'Contact us' ? 'px-4 lg:px-6 ml-6 md:ml-12 lg:ml-16' : 'px-2 lg:px-3'}`}
                   onMouseEnter={() => setHoveredSection(link.name)}
                   onMouseLeave={() => setHoveredSection(null)}
                   onClick={(e) => {
