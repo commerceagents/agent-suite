@@ -613,7 +613,7 @@ export default function SpaceHorizonHero() {
                   letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
                   filter: { duration: 2, delay: 10.7 }
                 }}
-                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
+                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-4"
                 style={{ 
                   fontFamily: "'Alexandria', sans-serif",
                   fontSize: "clamp(32px, 6vw, 72px)",
@@ -621,6 +621,17 @@ export default function SpaceHorizonHero() {
               >
                 COMMERCE AGENTS
               </motion.h1>
+              
+              <motion.p
+                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                transition={{ duration: 2, delay: 11.5, ease: [0.16, 1, 0.3, 1] as any }}
+                className="text-white/70 font-medium text-[10px] md:text-xs lg:text-sm tracking-[0.4em] uppercase text-center"
+                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+              >
+                Autonomous Intelligence for Modern Commerce
+              </motion.p>
             </div>
           </motion.div>
         </div>
