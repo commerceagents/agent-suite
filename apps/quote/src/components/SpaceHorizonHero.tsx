@@ -627,7 +627,7 @@ export default function SpaceHorizonHero() {
                 initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transition={{ duration: 2, delay: 11.5, ease: [0.16, 1, 0.3, 1] as any }}
+                transition={{ duration: 2, delay: 14.0, ease: [0.16, 1, 0.3, 1] as any }}
                 className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
               >
