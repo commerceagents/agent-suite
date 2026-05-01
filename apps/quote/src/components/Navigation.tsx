@@ -134,7 +134,7 @@ export default function Navigation({ show = true, delay = 0 }) {
                 <motion.div 
                   key={link.name}
                   variants={item} 
-                  className={`relative py-1.5 lg:py-2 group cursor-pointer ${link.name === 'Contact us' ? 'px-4 lg:px-6 ml-1 md:ml-2' : 'px-2 lg:px-3'}`}
+                  className={`relative py-1.5 lg:py-2 group cursor-pointer ${link.name === 'Contact us' ? 'px-4 lg:px-6 ml-6 md:ml-12 lg:ml-20' : 'px-2 lg:px-3'}`}
                   onMouseEnter={() => setHoveredSection(link.name)}
                   onMouseLeave={() => setHoveredSection(null)}
                   onClick={(e) => {
