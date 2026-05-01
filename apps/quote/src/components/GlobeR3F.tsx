@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -52,102 +52,132 @@ function isLand(lat: number, lon: number): boolean {
   return LAND_MASK[r]?.[c] === '1';
 }
 
-// ─── Custom Shader for White Horizon ───────────────────────────────────────
+// ─── Custom Shader for Assembly ───────────────────────────────────────────
 const vertexShader = `
-  varying float vY;
-  varying float vZ;
+  uniform float uProgress;
   attribute float size;
+  attribute vec3 target;
+  attribute float delay;
+  
+  varying float vAlpha;
+  varying float vY;
+
   void main() {
-    vY = position.y;
-    vZ = position.z;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    vY = target.y;
+    
+    // Smooth assembly transition
+    float t = clamp(uProgress - delay, 0.0, 1.0);
+    // Cubic easing for smooth arrival
+    t = t * t * (3.0 - 2.0 * t);
+    
+    // Interpolate from scattered to target
+    vec3 pos = mix(position, target, t);
+    
+    vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = size * (380.0 / -mvPosition.z);
+    gl_PointSize = size * (350.0 / -mvPosition.z);
+    
+    // Alpha fade in
+    vAlpha = t;
   }
 `;
 
 const fragmentShader = `
+  varying float vAlpha;
   varying float vY;
-  varying float vZ;
   uniform vec3 color;
-  uniform float opacity;
+
   void main() {
     float dist = distance(gl_PointCoord, vec2(0.5));
     if (dist > 0.5) discard;
-    float alpha = 1.0 - smoothstep(0.0, 0.5, dist);
-
-    // VERTICAL FADE: Anchor to local dome Y (0 to radius)
-    float verticalFade = smoothstep(0.0, 5.0, vY);
     
-    // DEPTH FADE: Fade out the back for horizon clarity
-    float depthFade = smoothstep(-0.8, 2.0, vZ);
-
-    gl_FragColor = vec4(color, alpha * verticalFade * depthFade * opacity);
+    // Vertical fade based on target Y
+    float verticalFade = smoothstep(-1.0, 4.0, vY);
+    
+    gl_FragColor = vec4(color, vAlpha * verticalFade * (1.0 - smoothstep(0.0, 0.5, dist)));
   }
 `;
 
-// ─── Massive Continent Hemisphere ───────────────────────────────────────────
-function CinematicHorizon() {
+// ─── Assembling Continent Hemisphere ───────────────────────────────────────
+function AssemblingGlobe() {
   const meshRef = useRef<THREE.Points>(null!);
+  const [progress, setProgress] = useState(0);
 
-  const { positions, sizes } = useMemo(() => {
-    const TARGET_COUNT = 25000;
-    const pos = new Float32Array(TARGET_COUNT * 3);
-    const sz = new Float32Array(TARGET_COUNT);
+  const { startPositions, targetPositions, sizes, delays } = useMemo(() => {
+    const COUNT = 25000;
+    const startPos = new Float32Array(COUNT * 3);
+    const targetPos = new Float32Array(COUNT * 3);
+    const sz = new Float32Array(COUNT);
+    const dl = new Float32Array(COUNT);
 
-    const radius = 5.5; // Massive Earth-like curve
+    const radius = 4.8;
     const goldenRatio = (1 + Math.sqrt(5)) / 2;
     
     let count = 0;
     let i = 0;
-    // Fibonacci sphere sampling + Rejection for continents
-    while (count < TARGET_COUNT && i < TARGET_COUNT * 10) {
-      const t = i / (TARGET_COUNT * 10);
+    while (count < COUNT && i < COUNT * 15) {
+      const t = i / (COUNT * 10);
       const inclination = Math.acos(1 - 2 * t);
       const azimuth = (2 * Math.PI * i) / goldenRatio;
       
       const lat = 90 - (inclination * 180 / Math.PI);
       const lon = ((azimuth * 180 / Math.PI) % 360) - 180;
-
       const y = Math.cos(inclination);
       
-      // PERFECT HEMISPHERE (y >= 0) + Land check
-      if (y >= 0 && isLand(lat, lon)) {
+      // Hemisphere (y >= 0) + Land check
+      if (y >= -0.1 && isLand(lat, lon)) {
         const phi = inclination;
         const theta = azimuth;
 
-        pos[count * 3]     = radius * Math.sin(phi) * Math.cos(theta);
-        pos[count * 3 + 1] = radius * y;
-        pos[count * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
+        // Target: on the sphere
+        targetPos[count * 3]     = radius * Math.sin(phi) * Math.cos(theta);
+        targetPos[count * 3 + 1] = radius * y;
+        targetPos[count * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
         
-        sz[count] = 0.015 + Math.random() * 0.025;
+        // Start: scattered in a wider box
+        startPos[count * 3]     = (Math.random() - 0.5) * 20;
+        startPos[count * 3 + 1] = (Math.random() - 0.5) * 20;
+        startPos[count * 3 + 2] = (Math.random() - 0.5) * 20;
+
+        sz[count] = 0.012 + Math.random() * 0.02;
+        dl[count] = Math.random() * 0.4; // random delay for organic feel
         count++;
       }
       i++;
     }
 
     return { 
-      positions: pos.slice(0, count * 3), 
-      sizes: sz.slice(0, count) 
+      startPositions: startPos.slice(0, count * 3),
+      targetPositions: targetPos.slice(0, count * 3),
+      sizes: sz.slice(0, count),
+      delays: dl.slice(0, count)
     };
   }, []);
 
   useFrame((_state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.05; // Majestic slow rotation
+      meshRef.current.rotation.y += delta * 0.06;
+      // Animate progress from 0 to 1.5 over time
+      setProgress(p => Math.min(1.5, p + delta * 0.45));
     }
   });
 
   const uniforms = useMemo(() => ({
     color: { value: new THREE.Color(0xffffff) },
-    opacity: { value: 0.95 },
+    uProgress: { value: 0 },
   }), []);
 
+  useEffect(() => {
+    uniforms.uProgress.value = progress;
+  }, [progress, uniforms]);
+
   return (
-    <points ref={meshRef} scale={[1, 1, 1]}>
+    <points ref={meshRef}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+        <bufferAttribute attach="attributes-position" args={[startPositions, 3]} />
+        <bufferAttribute attach="attributes-target" args={[targetPositions, 3]} />
         <bufferAttribute attach="attributes-size" args={[sizes, 1]} />
+        <bufferAttribute attach="attributes-delay" args={[delays, 1]} />
       </bufferGeometry>
       <shaderMaterial
         uniforms={uniforms}
@@ -164,21 +194,14 @@ function CinematicHorizon() {
 export default function GlobeR3F() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 10], fov: 40 }}
+      camera={{ position: [0, 0, 9], fov: 42 }}
       gl={{ antialias: true, alpha: true }}
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
-      onCreated={({ camera }) => {
-        camera.updateProjectionMatrix();
-      }}
     >
-      {/* 
-          POSITIONING:
-          Radius is 5.5. Moving it down by 5.8 units anchors the base 
-          at the very bottom, creating a wide rising horizon.
-      */}
-      <group position={[0, -5.8, 0]}>
-        <CinematicHorizon />
+      {/* Positioned slightly higher so the WHOLE hemisphere is visible */}
+      <group position={[0, -2.8, 0]}>
+        <AssemblingGlobe />
       </group>
     </Canvas>
   );
