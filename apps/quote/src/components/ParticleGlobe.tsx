@@ -25,8 +25,7 @@ function isLand(lat: number, lon: number): boolean {
   return false;
 }
 
-const easeInOutCubic = (x: number) =>
-  x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const ease = (x: number) => x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x+2,3)/2;
 
 export default function ParticleGlobe() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -39,12 +38,13 @@ export default function ParticleGlobe() {
     const T0 = performance.now();
 
     type Pt = {
-      ox: number; oy: number; oz: number; // scatter origin
-      tx: number; ty: number; tz: number; // target on sphere
+      ox: number; oy: number; oz: number;
+      tx: number; ty: number; tz: number;
       delay: number; dur: number;
-      bx: number; by: number; bz: number; // curve bias
-      jx: number; jy: number; jz: number; // organic jitter on final pos
+      bx: number; bz: number;        // arc curve bias
       size: number;
+      glowPhase: number;             // random phase for flicker glow
+      glowSpeed: number;
     };
     type Conn = { a: number; b: number; dist: number };
     let pts: Pt[] = [], conns: Conn[] = [];
@@ -54,11 +54,10 @@ export default function ParticleGlobe() {
       let placed = 0, tries = 0;
       while (placed < N && tries < N * 40) {
         tries++;
-        const u = Math.random(), v = Math.random();
-        const phi   = Math.acos(1 - u);        // 0..PI/2 upper hemi bias
-        const theta = v * Math.PI * 2;
-        const lat = 90 - phi * 180 / Math.PI;
-        const lon = theta * 180 / Math.PI - 180;
+        const phi   = Math.acos(1 - Math.random());
+        const theta = Math.random() * Math.PI * 2;
+        const lat   = 90 - phi * 180 / Math.PI;
+        const lon   = theta * 180 / Math.PI - 180;
         if (!isLand(lat, lon) && Math.random() > 0.07) continue;
 
         const sinP = Math.sin(phi), cosP = Math.cos(phi);
@@ -67,39 +66,34 @@ export default function ParticleGlobe() {
         const tz = sinP * Math.sin(theta);
 
         const spread = 3.2;
-        const ox = (Math.random() - 0.5) * spread;
-        const oy = (Math.random() - 0.5) * spread;
-        const oz = (Math.random() - 0.5) * spread - 0.5;
+        const ox = (Math.random()-0.5)*spread;
+        const oy = (Math.random()-0.5)*spread;
+        const oz = (Math.random()-0.5)*spread - 0.5;
 
-        // Perpendicular curve bias for arc paths
         const len = Math.sqrt(ox*ox+oy*oy+oz*oz) || 1;
-        const bx = -(oz/len)*0.35, by = (Math.random()-0.5)*0.2, bz = (ox/len)*0.35;
+        const bx = -(oz/len)*0.3, bz = (ox/len)*0.3;
 
-        // Subtle organic jitter on landing position
-        const jitter = 0.012;
-        const jx = (Math.random()-0.5)*jitter;
-        const jy = (Math.random()-0.5)*jitter;
-        const jz = (Math.random()-0.5)*jitter;
-
-        pts.push({ ox, oy, oz, tx, ty, tz, delay: Math.random() * 800,
-          dur: 1400 + Math.random() * 700, bx, by, bz, jx, jy, jz,
-          size: 0.6 + Math.random() * 0.8 });
+        pts.push({ ox, oy, oz, tx, ty, tz,
+          delay: Math.random() * 900,
+          dur:   1500 + Math.random() * 700,
+          bx, bz,
+          size: 0.7 + Math.random() * 0.9,
+          glowPhase: Math.random() * Math.PI * 2,
+          glowSpeed: 0.4 + Math.random() * 1.2,
+        });
         placed++;
       }
 
-      // Sparse connections: max 2 per particle, short threshold
+      // Sparse connections: max 2 per dot
       const cnt = new Uint8Array(pts.length);
-      const CDIST2 = 0.22 * 0.22; // shorter threshold = fewer connections
+      const THRESH2 = 0.24 * 0.24;
       for (let a = 0; a < pts.length; a++) {
         if (cnt[a] >= 2) continue;
         for (let b = a + 1; b < pts.length; b++) {
           if (cnt[b] >= 2) continue;
           const dx=pts[a].tx-pts[b].tx, dy=pts[a].ty-pts[b].ty, dz=pts[a].tz-pts[b].tz;
-          const d2 = dx*dx+dy*dy+dz*dz;
-          if (d2 < CDIST2) {
-            conns.push({ a, b, dist: Math.sqrt(d2) });
-            cnt[a]++; cnt[b]++;
-          }
+          const d2=dx*dx+dy*dy+dz*dz;
+          if (d2 < THRESH2) { conns.push({a,b,dist:Math.sqrt(d2)}); cnt[a]++; cnt[b]++; }
           if (cnt[a] >= 2) break;
         }
       }
@@ -116,12 +110,10 @@ export default function ParticleGlobe() {
 
     const cosTilt = Math.cos(TILT), sinTilt = Math.sin(TILT);
 
-    // Directional light vector (top-right): normalized
-    const LX = 0.6, LY = 0.7, LZ = 0.4;
-
     const render = () => {
       const now = performance.now();
       const elapsed = now - T0;
+      const t = elapsed / 1000;
       rotY += ROT;
       const cosR = Math.cos(rotY), sinR = Math.sin(rotY);
       const cx = w / 2, cy = h + R * 0.05;
@@ -129,35 +121,25 @@ export default function ParticleGlobe() {
 
       ctx.clearRect(0, 0, w, h);
 
-      // ── Background top-right directional glow (rim light source) ──────
-      const rimGrad = ctx.createRadialGradient(w*0.80, h*0.05, 0, w*0.80, h*0.05, w*0.55);
-      rimGrad.addColorStop(0,   'rgba(40,100,255,0.20)');
-      rimGrad.addColorStop(0.4, 'rgba(20,60,180,0.08)');
-      rimGrad.addColorStop(1,   'rgba(0,0,0,0)');
-      ctx.fillStyle = rimGrad; ctx.fillRect(0, 0, w, h);
-
-      // ── Project ────────────────────────────────────────────────────────
-      type ProjPt = { sx:number; sy:number; depth:number; alpha:number;
-                      ep:number; lit:number; nx:number; ny:number; nz:number };
+      // Project all particles
+      type ProjPt = { sx:number; sy:number; depth:number; alpha:number; ep:number; idx:number };
       const proj: ProjPt[] = new Array(pts.length);
-      let allDone = true, maxElapsed = 0;
 
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
         const raw = Math.max(0, Math.min(1, (elapsed - p.delay) / p.dur));
-        if (raw < 1) allDone = false;
-        const ep = easeInOutCubic(raw);
+        const ep  = ease(raw);
         const arc = Math.sin(raw * Math.PI);
 
-        // Rotate target position
+        // Rotate target
         const ttx = p.tx * cosR - p.tz * sinR;
         const ttz = p.tx * sinR + p.tz * cosR;
         const tty = p.ty;
 
-        // Interpolate scatter → rotated target with curve bias + jitter
-        const fx = p.ox + (ttx + p.jx - p.ox)*ep + p.bx*arc;
-        const fy = p.oy + (tty + p.jy - p.oy)*ep + p.by*arc;
-        const fz = p.oz + (ttz + p.jz - p.oz)*ep + p.bz*arc;
+        // Lerp scatter → target with curved arc
+        const fx = p.ox + (ttx - p.ox)*ep + p.bx*arc;
+        const fy = p.oy + (tty - p.oy)*ep;
+        const fz = p.oz + (ttz - p.oz)*ep + p.bz*arc;
 
         // Camera tilt
         const tx2 = fx;
@@ -167,54 +149,26 @@ export default function ParticleGlobe() {
         const persp = FOV / Math.max(FOV + tz2 * R, 1);
         const sx = cx + tx2 * R * persp;
         const sy = cy - ty2 * R * persp;
-
-        // Depth 0=back 1=front
         const depth = (tz2 + 1.5) / 2.5;
+        const alpha = (0.08 + depth * 0.80) * (0.15 + ep * 0.85);
 
-        // Lighting: dot product of surface normal with light direction
-        // Normal = normalized world position of settled particle
-        const nx = ttx, ny = tty, nz = ttz;
-        const lit = Math.max(0, nx*LX + ny*LY + nz*LZ);
-
-        const alpha = (0.08 + depth * 0.75) * (0.2 + ep * 0.8);
-
-        maxElapsed = Math.max(maxElapsed, elapsed - p.delay);
-        proj[i] = { sx, sy, depth, alpha, ep, lit, nx, ny, nz };
+        proj[i] = { sx, sy, depth, alpha, ep, idx: i };
       }
 
-      // ── Connections ────────────────────────────────────────────────────
-      // Fade in 1s after all formed
-      const formEnd = 800 + 1400 + 700; // max delay + max dur
-      const connProg = Math.max(0, Math.min(1, (elapsed - formEnd) / 1000));
+      // Connections — fade in after formation (max delay+dur ≈ 2200ms)
+      const formEnd = 900 + 1500 + 700;
+      const connAlpha = Math.max(0, Math.min(1, (elapsed - formEnd) / 1200));
 
-      if (connProg > 0) {
-        // Pulse wave: travels across globe every 4s
-        const pulseT = (elapsed / 1000) % 4;
-        const pulseFront = pulseT / 4; // 0..1 across depth
-
-        ctx.lineWidth = 0.5;
+      if (connAlpha > 0) {
+        ctx.lineWidth = 0.4;
         for (const c of conns) {
           const pa = proj[c.a], pb = proj[c.b];
           if (pa.depth < 0.12 || pb.depth < 0.12) continue;
-
-          const avgDepth = (pa.depth + pb.depth) / 2;
-          const avgLit   = (pa.lit   + pb.lit  ) / 2;
-
-          // Distance-based fade
-          const distFade = 1 - (c.dist / 0.22);
-
-          // Pulse highlight
-          const pulseProx = Math.exp(-Math.pow((avgDepth - pulseFront) * 8, 2));
-          const pulseBoost = pulseProx * 0.35;
-
-          const la = (0.04 + avgLit * 0.12 + pulseBoost) * distFade * connProg;
+          const avgD  = (pa.depth + pb.depth) / 2;
+          const dFade = 1 - c.dist / 0.24;
+          const la = avgD * 0.18 * dFade * connAlpha;
           if (la < 0.01) continue;
-
-          // Lit side: cyan tint. Dark side: muted blue
-          const r = Math.floor(80  + avgLit * 120);
-          const g = Math.floor(140 + avgLit * 100);
-          const b2 = 255;
-          ctx.strokeStyle = `rgba(${r},${g},${b2},${la.toFixed(3)})`;
+          ctx.strokeStyle = `rgba(255,255,255,${la.toFixed(3)})`;
           ctx.beginPath();
           ctx.moveTo(pa.sx, pa.sy);
           ctx.lineTo(pb.sx, pb.sy);
@@ -222,63 +176,60 @@ export default function ParticleGlobe() {
         }
       }
 
-      // ── Particles ──────────────────────────────────────────────────────
+      // Draw particles with additive blending for glow
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
       const { x: mx, y: my } = mouse.current;
 
       for (let i = 0; i < proj.length; i++) {
-        const p = proj[i];
+        const p  = proj[i];
+        const pt = pts[i];
         if (p.sy > h * 1.05 || p.alpha < 0.01) continue;
 
-        // Mouse ripple
+        // Random flicker glow: each particle pulses independently
+        const flicker = 0.5 + 0.5 * Math.sin(t * pt.glowSpeed + pt.glowPhase);
+        // Only ~20% of dots are "lit up" at any moment via phase offset
+        const isGlowing = flicker > 0.78;
+        const glowBoost = isGlowing ? (flicker - 0.78) / 0.22 : 0; // 0..1
+
+        // Mouse repel
         const mdx = p.sx - mx, mdy = p.sy - my;
-        const md = Math.sqrt(mdx*mdx + mdy*mdy);
-        const rip = md < 90 ? Math.sin((90-md)*0.08 + elapsed*0.004)*6 : 0;
-        const sx = p.sx + (md < 90 && md > 0.5 ? (mdx/md)*rip*0.25 : 0);
-        const sy = p.sy + (md < 90 && md > 0.5 ? (mdy/md)*rip*0.25 : 0);
+        const md  = Math.sqrt(mdx*mdx + mdy*mdy);
+        const rip = md < 90 ? Math.sin((90-md)*0.08 + t*4)*5 : 0;
+        const sx  = p.sx + (md < 90 && md > 0.5 ? (mdx/md)*rip*0.25 : 0);
+        const sy  = p.sy + (md < 90 && md > 0.5 ? (mdy/md)*rip*0.25 : 0);
 
-        // Lighting affects color and size
-        const lit = p.lit;
-        const baseSize = p.depth > 0 ? (pts[i]?.size ?? 1) * (0.5 + p.depth * 0.9) : 0.5;
-
-        // Color: lit side = bright cyan-white, dark side = deep blue
-        const cr = Math.floor(60  + lit * 195); // 60..255
-        const cg = Math.floor(120 + lit * 135); // 120..255
-        const cb = 255;
-
+        const baseSize = pt.size * (0.5 + p.depth * 0.9);
         const a = p.alpha;
 
-        // Outer bloom (only on lit side)
-        if (lit > 0.2 && p.depth > 0.25) {
+        // Large bloom on glowing particles
+        if (glowBoost > 0 && p.ep > 0.5) {
           ctx.beginPath();
-          ctx.arc(sx, sy, baseSize * 8, 0, Math.PI*2);
-          ctx.fillStyle = `rgba(${cr},${cg},${cb},${(a*0.025).toFixed(3)})`;
+          ctx.arc(sx, sy, baseSize * (10 + glowBoost * 8), 0, Math.PI*2);
+          ctx.fillStyle = `rgba(255,255,255,${(a * glowBoost * 0.06).toFixed(3)})`;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(sx, sy, baseSize * (4 + glowBoost * 4), 0, Math.PI*2);
+          ctx.fillStyle = `rgba(255,255,255,${(a * glowBoost * 0.18).toFixed(3)})`;
           ctx.fill();
         }
-        // Mid glow
+
+        // Subtle constant halo (all dots)
         ctx.beginPath();
-        ctx.arc(sx, sy, baseSize * 2.8, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(${cr},${cg},${cb},${(a*0.14).toFixed(3)})`;
+        ctx.arc(sx, sy, baseSize * 3, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${(a * 0.08).toFixed(3)})`;
         ctx.fill();
-        // Core
+
+        // Core dot
         ctx.beginPath();
-        ctx.arc(sx, sy, Math.max(baseSize * 0.85, 0.4), 0, Math.PI*2);
-        ctx.fillStyle = `rgba(${cr},${cg},${cb},${Math.min(a, 0.9).toFixed(3)})`;
+        ctx.arc(sx, sy, Math.max(baseSize * 0.9, 0.4), 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.min(a + glowBoost * 0.3, 0.95).toFixed(3)})`;
         ctx.fill();
       }
       ctx.restore();
 
-      // ── Rim light edge glow around globe ──────────────────────────────
-      // Draw a soft arc highlight on top-right of globe
-      const glowX = cx + R * 0.38, glowY = cy - R * 0.72;
-      const rimR = ctx.createRadialGradient(glowX, glowY, 0, glowX, glowY, R * 0.5);
-      rimR.addColorStop(0,   'rgba(100,180,255,0.18)');
-      rimR.addColorStop(0.5, 'rgba(60,120,255,0.06)');
-      rimR.addColorStop(1,   'rgba(0,0,0,0)');
-      ctx.fillStyle = rimR; ctx.fillRect(0, 0, w, h);
-
-      // ── Bottom fog ────────────────────────────────────────────────────
+      // Bottom fog
       const fog = ctx.createLinearGradient(0, h*0.65, 0, h);
       fog.addColorStop(0, 'rgba(5,7,10,0)');
       fog.addColorStop(1, 'rgba(5,7,10,0.97)');
@@ -292,11 +243,11 @@ export default function ParticleGlobe() {
 
     const onMove = (e: MouseEvent) => {
       const r = canvas.getBoundingClientRect();
-      mouse.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+      mouse.current = { x: e.clientX-r.left, y: e.clientY-r.top };
     };
     window.addEventListener('resize', resize);
     canvas.addEventListener('mousemove', onMove);
-    canvas.addEventListener('mouseleave', () => { mouse.current = {x:-9999,y:-9999}; });
+    canvas.addEventListener('mouseleave', () => { mouse.current={x:-9999,y:-9999}; });
 
     return () => {
       cancelAnimationFrame(animId);
