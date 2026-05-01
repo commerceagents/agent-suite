@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
 import dynamic from 'next/dynamic';
-const HemisphereGlobe = dynamic(() => import('./HemisphereGlobe'), { ssr: false });
+const HalftoneGlobe = dynamic(() => import('./HalftoneGlobe'), { ssr: false });
  
  
 function TetrisSimulation() {
@@ -525,9 +525,9 @@ export default function SpaceHorizonHero() {
                   }}
                 />
               </div>
-            </div>            {/* WHITE WIREFRAME HEMISPHERE */}
+            </div>            {/* LOOPING HALFTONE HEMISPHERE */}
             <div className="absolute inset-0 z-[1] pointer-events-none">
-              <HemisphereGlobe />
+              <HalftoneGlobe />
             </div>
 
             {/* BRAND TEXT */}
