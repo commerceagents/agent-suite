@@ -105,7 +105,7 @@ export default function Navigation({ show = true, delay = 0 }) {
         animate={show ? "show" : "hidden"}
         className="fixed top-0 left-0 w-full z-50 flex justify-center items-center px-6 py-8"
       >
-        <div className="flex items-center gap-4 md:gap-8 lg:gap-10 backdrop-blur-2xl border border-white/10 rounded-2xl pl-3 md:pl-5 pr-3 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] ring-1 ring-white/10"
+        <div className="flex items-center gap-3 md:gap-5 lg:gap-6 backdrop-blur-2xl border border-white/10 rounded-2xl pl-3 md:pl-5 pr-3 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] ring-1 ring-white/10"
           style={{
             background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(0,242,255,0.08) 50%, rgba(59,130,246,0.03) 100%)',
           }}
@@ -113,7 +113,7 @@ export default function Navigation({ show = true, delay = 0 }) {
           {/* LOGO SECTION */}
           <motion.div 
             variants={item} 
-            className="flex items-center group -ml-1 md:-ml-2 pr-4 md:pr-6"
+            className="flex items-center group -ml-1 md:-ml-2 pr-2 md:pr-4"
           >
             <div className="relative cursor-pointer py-1" onClick={() => lenis?.scrollTo(0)}>
                 <img
