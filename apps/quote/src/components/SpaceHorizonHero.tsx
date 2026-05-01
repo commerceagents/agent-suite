@@ -3,7 +3,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
-import ParticleGlobe from './ParticleGlobe';
  
  
 function TetrisSimulation() {
@@ -528,10 +527,7 @@ export default function SpaceHorizonHero() {
 
 
 
-            {/* 3. PARTICLE HEMISPHERE DOME */}
-            <div className="absolute inset-0 z-[1] pointer-events-auto overflow-hidden rounded-[48px]">
-              <ParticleGlobe />
-            </div>
+
 
             {/* BRAND TEXT */}
             <style>{`
