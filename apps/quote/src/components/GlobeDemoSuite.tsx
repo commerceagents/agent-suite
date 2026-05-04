@@ -53,7 +53,7 @@ function InteractiveHalftone({ mode }: { mode: string }) {
   useFrame((state) => {
     if (!meshRef.current) return;
     const time = state.clock.elapsedTime;
-    const uniforms = meshRef.current.material.uniforms;
+    const uniforms = (meshRef.current.material as THREE.ShaderMaterial).uniforms;
 
     // 1. MAJESTIC ROTATION
     let rotSpeed = 0.0025;
