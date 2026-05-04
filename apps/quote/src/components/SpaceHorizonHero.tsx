@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './Navigation';
 import dynamic from 'next/dynamic';
+import LiquidGlassCard from './LiquidGlassCard';
 const GlobeDemoSuite = dynamic(() => import('./GlobeDemoSuite'), { ssr: false });
  
  
@@ -505,84 +506,95 @@ export default function SpaceHorizonHero() {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ease: [0.16, 1, 0.3, 1] as any 
             }}
-            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
-            style={{ 
-              isolation: 'isolate',
-              willChange: 'transform, opacity',
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
-            }}
+            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] flex flex-col items-center justify-center transform-gpu"
           >
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* Subtle white glow at the bottom edge */}
-                <div 
-                  className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 40%, transparent 70%)',
-                    filter: 'blur(40px)',
-                    opacity: 0.6
-                  }}
-                />
-              </div>
-            </div>            {/* GLOBE DEMO SUITE (7 MODES) */}
-            <div className="absolute inset-0 z-[1] pointer-events-none">
-              <GlobeDemoSuite />
-            </div>
-
-            {/* BRAND TEXT */}
-            <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
-              
-              @keyframes shimmer {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .shimmer-text {
-                background: linear-gradient(90deg, 
-                  rgba(255,255,255,0.6) 0%, 
-                  rgba(255,255,255,1) 50%, 
-                  rgba(255,255,255,0.6) 100%
-                );
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                background-clip: text;
-                animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-                text-shadow: 0 0 30px rgba(255,255,255,0.15);
-              }
-            `}</style>
-            <div className="relative z-10 flex flex-col items-center">
-              
-              <motion.h1
-                initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
-                animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
-                transition={{ 
-                  opacity: { duration: 2, delay: 10.7 },
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  scale: { duration: 4, delay: 10.7, ease: [0.16, 1, 0.3, 1] as any },
-                  letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
-                  filter: { duration: 2, delay: 10.7 }
-                }}
-                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
+            <LiquidGlassCard
+              className="rounded-[48px]"
+              containerClassName="w-full h-full"
+            >
+              <div 
+                className="relative w-full h-full p-6 md:p-12 lg:p-20 flex flex-col items-center justify-center"
                 style={{ 
-                  fontFamily: "'Alexandria', sans-serif",
-                  fontSize: "clamp(32px, 6vw, 72px)",
+                  isolation: 'isolate',
+                  willChange: 'transform, opacity',
+                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
                 }}
               >
-                COMMERCE AGENTS
-              </motion.h1>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transition={{ duration: 2, delay: 14.0, ease: [0.16, 1, 0.3, 1] as any }}
-                className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
-                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                Autonomous Intelligence for Modern Commerce
-              </motion.p>
-            </div>
+                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
+                  <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                    {/* Subtle white glow at the bottom edge */}
+                    <div 
+                      className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
+                      style={{
+                        background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 40%, transparent 70%)',
+                        filter: 'blur(40px)',
+                        opacity: 0.6
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* GLOBE DEMO SUITE (7 MODES) */}
+                <div className="absolute inset-0 z-[1] pointer-events-none">
+                  <GlobeDemoSuite />
+                </div>
+
+                {/* BRAND TEXT */}
+                <style>{`
+                  @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
+                  
+                  @keyframes shimmer {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                  }
+                  .shimmer-text {
+                    background: linear-gradient(90deg, 
+                      rgba(255,255,255,0.6) 0%, 
+                      rgba(255,255,255,1) 50%, 
+                      rgba(255,255,255,0.6) 100%
+                    );
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                    text-shadow: 0 0 30px rgba(255,255,255,0.15);
+                  }
+                `}</style>
+                <div className="relative z-10 flex flex-col items-center">
+                  
+                  <motion.h1
+                    initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
+                    animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
+                    transition={{ 
+                      opacity: { duration: 2, delay: 10.7 },
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      scale: { duration: 4, delay: 10.7, ease: [0.16, 1, 0.3, 1] as any },
+                      letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
+                      filter: { duration: 2, delay: 10.7 }
+                    }}
+                    className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
+                    style={{ 
+                      fontFamily: "'Alexandria', sans-serif",
+                      fontSize: "clamp(32px, 6vw, 72px)",
+                    }}
+                  >
+                    COMMERCE AGENTS
+                  </motion.h1>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    transition={{ duration: 2, delay: 14.0, ease: [0.16, 1, 0.3, 1] as any }}
+                    className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
+                    style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
+                  >
+                    Autonomous Intelligence for Modern Commerce
+                  </motion.p>
+                </div>
+              </div>
+            </LiquidGlassCard>
           </motion.div>
         </div>
       </div>

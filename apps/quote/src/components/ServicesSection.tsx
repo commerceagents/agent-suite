@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import LiquidGlassCard from './LiquidGlassCard';
 
 const services = [
   {
@@ -92,34 +93,40 @@ export default function ServicesSection() {
               viewport={{ once: false }}
               transition={{ duration: 0.8, delay: idx * 0.15 }}
               whileHover={{ y: "-1vw" }}
-              className="relative group p-[2.5vw] rounded-[3vw] bg-white/[0.03] border border-white/5 hover:border-white/20 transition-all duration-500 backdrop-blur-3xl flex flex-col justify-start h-full overflow-hidden"
-              style={{ minHeight: "22vw" }}
+              className="h-full"
             >
-              {/* INTERNAL GLOWS */}
-              <div className={`absolute -bottom-[5vw] -right-[5vw] w-[15vw] h-[15vw] blur-[6vw] rounded-full transition-opacity duration-1000 ${
-                idx % 3 === 0 ? 'bg-blue-500/20' : idx % 3 === 1 ? 'bg-cyan-500/20' : 'bg-purple-500/20'
-              }`} />
-              
-              <div className="relative z-10 space-y-[1.5vw]">
-                <motion.div 
-                  whileHover={{ scale: 1.1, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
-                  whileTap={{ scale: 0.95 }}
-                  style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
-                  className="w-[4.5vw] h-[4.5vw] rounded-full border border-white/10 flex items-center justify-center text-white transition-all duration-500 cursor-pointer group/icon shadow-inner"
-                >
-                  <div className="group-hover/icon:text-black transition-colors scale-[0.6] md:scale-100">
-                    {service.icon}
+              <LiquidGlassCard
+                className="rounded-[3vw]"
+                containerClassName="h-full"
+              >
+                <div className="p-[2.5vw] h-full flex flex-col justify-start relative overflow-hidden" style={{ minHeight: "22vw" }}>
+                  {/* INTERNAL GLOWS */}
+                  <div className={`absolute -bottom-[5vw] -right-[5vw] w-[15vw] h-[15vw] blur-[6vw] rounded-full transition-opacity duration-1000 ${
+                    idx % 3 === 0 ? 'bg-blue-500/20' : idx % 3 === 1 ? 'bg-cyan-500/20' : 'bg-purple-500/20'
+                  }`} />
+                  
+                  <div className="relative z-10 space-y-[1.5vw]">
+                    <motion.div 
+                      whileHover={{ scale: 1.1, backgroundColor: '#FFFFFF', color: '#000000', boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
+                      whileTap={{ scale: 0.95 }}
+                      style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+                      className="w-[4.5vw] h-[4.5vw] rounded-full border border-white/10 flex items-center justify-center text-white transition-all duration-500 cursor-pointer group/icon shadow-inner"
+                    >
+                      <div className="group-hover/icon:text-black transition-colors scale-[0.6] md:scale-100">
+                        {service.icon}
+                      </div>
+                    </motion.div>
+                    
+                    <h3 className="text-white font-bold leading-tight" style={{ fontSize: "clamp(10px, 1.8vw, 32px)", fontFamily: "var(--font-montserrat), sans-serif" }}>
+                      {service.title}
+                    </h3>
+                    
+                    <p className="text-white/40 leading-relaxed font-light" style={{ fontSize: "clamp(8px, 0.9vw, 16px)" }}>
+                      {service.desc}
+                    </p>
                   </div>
-                </motion.div>
-                
-                <h3 className="text-white font-bold leading-tight" style={{ fontSize: "clamp(10px, 1.8vw, 32px)", fontFamily: "var(--font-montserrat), sans-serif" }}>
-                  {service.title}
-                </h3>
-                
-                <p className="text-white/40 leading-relaxed font-light" style={{ fontSize: "clamp(8px, 0.9vw, 16px)" }}>
-                  {service.desc}
-                </p>
-              </div>
+                </div>
+              </LiquidGlassCard>
             </motion.div>
           ))}
         </div>

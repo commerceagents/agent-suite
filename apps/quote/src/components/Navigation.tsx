@@ -155,9 +155,12 @@ export default function Navigation({ show = true, delay = 0 }) {
                       <div className="absolute inset-0 bg-white/5 backdrop-blur-xl border border-white/20 rounded-xl" />
                       
                       {/* Hover Gradients mimicking LiquidGlassButton */}
-                      <div className={`absolute inset-0 bg-gradient-to-br from-[#1e40af] via-[#2563eb] to-[#3b82f6] transition-opacity duration-500 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
-                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,242,255,0.4),transparent_70%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
-                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.6),transparent_60%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
+                      <div 
+                        className={`absolute inset-0 transition-opacity duration-500 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} 
+                        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #a1a1aa 45%, #27272a 100%)' }}
+                      />
+                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.8),transparent_70%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
+                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.2),transparent_60%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
                       
                       {/* Edge Glow */}
                       <div className={`absolute inset-0 rounded-xl border border-white/40 transition-opacity duration-500 pointer-events-none ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
@@ -172,7 +175,7 @@ export default function Navigation({ show = true, delay = 0 }) {
                     href={link.href}
                     suppressHydrationWarning
                     className={`relative z-10 text-[13px] lg:text-[14px] font-medium tracking-wide transition-colors duration-300 select-none ${
-                      isActive ? 'text-white' : 'text-white/60 group-hover:text-white'
+                      isActive ? (hoveredSection === link.name ? 'text-zinc-950' : 'text-white') : 'text-white/60 group-hover:text-white'
                     }`}
                     style={{ 
                       fontFamily: "var(--font-montserrat), sans-serif",

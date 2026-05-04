@@ -45,17 +45,18 @@ export default function LiquidGlassButton({ label, onClick, className = "" }: Li
 
       {/* Main Gradient Overlay */}
       <div 
-        className={`absolute inset-0 bg-gradient-to-br from-[#1e40af] via-[#2563eb] to-[#3b82f6] transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #a1a1aa 45%, #27272a 100%)' }}
       />
 
-      {/* Secondary Depth Gradient */}
+      {/* Secondary Depth Gradient (Top Left Highlight) */}
       <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,242,255,0.4),transparent_70%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.8),transparent_70%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       />
 
-      {/* Tertiary Depth Gradient */}
+      {/* Tertiary Depth Gradient (Bottom Right Shadow) */}
       <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.6),transparent_60%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.2),transparent_60%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* Edge Glow */}
@@ -63,7 +64,7 @@ export default function LiquidGlassButton({ label, onClick, className = "" }: Li
 
       {/* Text Label */}
       <span 
-        className="relative z-10 text-white font-medium tracking-wide text-[13px] lg:text-[14px]"
+        className={`relative z-10 font-medium tracking-wide text-[13px] lg:text-[14px] transition-colors duration-300 ${isHovered ? 'text-zinc-950' : 'text-white'}`}
         style={{ 
           textShadow: "0 2px 4px rgba(0,0,0,0.3)",
           fontFamily: "var(--font-montserrat), sans-serif"
