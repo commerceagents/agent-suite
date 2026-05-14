@@ -43,20 +43,9 @@ export default function LiquidGlassButton({ label, onClick, className = "" }: Li
         className="absolute inset-0 bg-white/5 backdrop-blur-xl border border-white/20 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
       />
 
-      {/* Main Gradient Overlay */}
+      {/* Solid White Overlay */}
       <div 
-        className={`absolute inset-0 transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #a1a1aa 45%, #27272a 100%)' }}
-      />
-
-      {/* Secondary Depth Gradient (Top Left Highlight) */}
-      <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.8),transparent_70%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-      />
-
-      {/* Tertiary Depth Gradient (Bottom Right Shadow) */}
-      <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.2),transparent_60%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* Edge Glow */}

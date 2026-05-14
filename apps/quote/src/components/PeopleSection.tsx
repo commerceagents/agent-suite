@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import LiquidGlassCard from './LiquidGlassCard';
 
 const team = [
   {
@@ -43,15 +42,7 @@ export default function PeopleSection() {
         
         {/* SECTION HEADER */}
         <div className="mb-[12vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            style={{ color: 'rgba(255, 255, 255, 0.4)' }}
-            className="inline-block text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
-          >
-            Our Visionaries
-          </motion.span>
+
           
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -60,7 +51,7 @@ export default function PeopleSection() {
             transition={{ duration: 1, delay: 0.2 }}
             className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
           >
-            People.
+            PEOPLE
           </motion.h2>
         </div>
 
@@ -119,15 +110,9 @@ export default function PeopleSection() {
                   </motion.div>
                 </div>
 
-                {/* Internal Designation Overlay - Using LiquidGlassCard */}
-                <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 z-20">
-                  <LiquidGlassCard
-                    className="rounded-2xl"
-                  >
-                    <div className="p-4">
-                      <p className="text-white/80 text-[11px] font-light leading-relaxed">&quot;{member.bio}&quot;</p>
-                    </div>
-                  </LiquidGlassCard>
+                {/* Internal Designation Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500 z-20">
+                  <p className="text-white/80 text-[11px] font-light leading-relaxed">&quot;{member.bio}&quot;</p>
                 </div>
               </div>
 

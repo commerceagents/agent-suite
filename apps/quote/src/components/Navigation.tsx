@@ -103,7 +103,7 @@ export default function Navigation({ show = true, delay = 0 }) {
         variants={container}
         initial="hidden"
         animate={show ? "show" : "hidden"}
-        className="fixed top-0 left-0 w-full z-50 flex justify-center items-center px-6 py-8"
+        className="fixed top-8 left-0 w-full z-50 flex justify-center items-center px-6"
       >
         <div className="flex items-center gap-4 md:gap-6 lg:gap-8 backdrop-blur-2xl border border-white/10 rounded-2xl pl-3 md:pl-5 pr-3 py-1 shadow-[0_8px_32px_rgba(0,0,0,0.4)] ring-1 ring-white/10"
           style={{
@@ -154,13 +154,10 @@ export default function Navigation({ show = true, delay = 0 }) {
                       {/* Glass Base Layer */}
                       <div className="absolute inset-0 bg-white/5 backdrop-blur-xl border border-white/20 rounded-xl" />
                       
-                      {/* Hover Gradients mimicking LiquidGlassButton */}
+                      {/* Solid White Overlay */}
                       <div 
-                        className={`absolute inset-0 transition-opacity duration-500 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} 
-                        style={{ background: 'linear-gradient(135deg, #ffffff 0%, #a1a1aa 45%, #27272a 100%)' }}
+                        className={`absolute inset-0 bg-white transition-opacity duration-300 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} 
                       />
-                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.8),transparent_70%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
-                      <div className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.2),transparent_60%)] transition-opacity duration-700 ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
                       
                       {/* Edge Glow */}
                       <div className={`absolute inset-0 rounded-xl border border-white/40 transition-opacity duration-500 pointer-events-none ${hoveredSection === link.name ? 'opacity-100' : 'opacity-0'}`} />
