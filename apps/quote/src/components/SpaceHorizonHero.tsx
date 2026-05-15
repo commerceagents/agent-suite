@@ -119,18 +119,18 @@ export default function SpaceHorizonHero() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           onMouseEnter={() => setIsMenuOpen(true)}
           onMouseLeave={() => setIsMenuOpen(false)}
-          className="pointer-events-auto flex flex-col items-center bg-black/60 backdrop-blur-3xl border border-white/10 rounded-2xl p-6 shadow-2xl transition-all duration-500 hover:border-white/20 min-w-[300px]"
+          className="pointer-events-auto flex flex-row items-center bg-black/60 backdrop-blur-3xl border border-white/10 rounded-none pl-2 pr-2 py-0 shadow-2xl transition-all duration-500 hover:border-white/20 gap-0"
         >
           {/* LOGO SECTION */}
           <button
             onClick={() => lenis?.scrollTo(0)}
-            className="flex items-center gap-4 py-2 transition-all hover:opacity-80"
+            className="flex items-center gap-1 py-2 pr-4 transition-all hover:opacity-80"
             suppressHydrationWarning
           >
             <img
               src="/image/CA_logo-PNG.png"
               alt="Logo"
-              className="w-10 h-10 object-contain brightness-0 invert flex-shrink-0"
+              className="w-16 h-16 object-contain brightness-0 invert flex-shrink-0"
             />
             <div className="flex flex-col items-center leading-[0.85] gap-0">
               <span className="text-[9px] font-medium text-white/40 uppercase tracking-[0.3em]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>COMMERCE</span>
@@ -138,18 +138,19 @@ export default function SpaceHorizonHero() {
             </div>
           </button>
 
-          {/* THE UNDERLINE */}
-          <div className="w-[180px] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent mt-5 mb-5" />
+          {/* VERTICAL SEPARATOR */}
+          <div className="w-[1.5px] self-stretch bg-white/10" />
 
           {/* MENU / NAV LINKS AREA */}
-          <div className="relative flex flex-col items-center min-h-[40px] justify-center">
+          <div className="relative flex-1 flex items-center self-stretch justify-center">
             <AnimatePresence mode="wait">
               {!isMenuOpen ? (
                 <motion.div
                   key="menu-label"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 5 }}
+                  transition={{ duration: 0.2 }}
                   className="flex items-center"
                 >
                   <span 
@@ -162,38 +163,42 @@ export default function SpaceHorizonHero() {
               ) : (
                 <motion.div
                   key="nav-links"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex flex-row items-center gap-6 whitespace-nowrap"
+                  initial={{ opacity: 0, x: 5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 5 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="flex flex-row items-center gap-0 whitespace-nowrap self-stretch"
                 >
                   {NAV_LINKS.map((link, i) => (
-                    <motion.button
-                      key={link.label}
-                      onClick={() => {
-                        lenis?.scrollTo(link.href);
-                      }}
-                      className="group/item relative py-2"
-                    >
-                      <span className="relative inline-block overflow-hidden px-4 py-1.5 rounded-sm">
-                        <motion.div
-                          initial={{ y: "-100%" }}
-                          whileHover={{ y: "0%" }}
-                          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                          className="absolute inset-0 bg-white"
-                        />
-                        <span className="relative z-10 text-[10px] font-bold text-white/40 group-hover/item:text-black transition-colors duration-300 uppercase tracking-[0.4em] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-                          {link.label}
+                    <React.Fragment key={link.label}>
+                      <motion.button
+                        onClick={() => {
+                          lenis?.scrollTo(link.href);
+                        }}
+                        className="group/item relative self-stretch flex items-center"
+                        whileHover="hover"
+                      >
+                        <span className="relative h-full flex items-center overflow-hidden">
+                          {/* White Background (Drop Effect) */}
+                          <div className="absolute inset-0 bg-white -translate-y-full group-hover/item:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                          
+                          <span className="relative z-10 px-6 text-[10px] font-bold text-white/40 group-hover/item:text-black transition-colors duration-0 uppercase tracking-[0.4em] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                            {link.label}
+                          </span>
                         </span>
-                      </span>
-                    </motion.button>
+                      </motion.button>
+                      {i < NAV_LINKS.length - 1 && (
+                        <div className="w-[1.5px] self-stretch bg-white/10" />
+                      )}
+                    </React.Fragment>
                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </motion.div>
+
+
       </div>
 
 
@@ -289,6 +294,11 @@ export default function SpaceHorizonHero() {
         </motion.div>
       </div>
 
+
+      {/* ── Rotating circular text badge (Top Right) ── */}
+      <div className="absolute top-10 right-10 z-40 pointer-events-none">
+        <RotatingBadge />
+      </div>
 
     </section>
   );
