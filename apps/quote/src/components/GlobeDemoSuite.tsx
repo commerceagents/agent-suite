@@ -53,7 +53,7 @@ function InteractiveHalftone({ mode }: { mode: string }) {
   useFrame((state) => {
     if (!meshRef.current) return;
     const time = state.clock.elapsedTime;
-    const uniforms = meshRef.current.material.uniforms;
+    const uniforms = (meshRef.current.material as THREE.ShaderMaterial).uniforms;
 
     // 1. MAJESTIC ROTATION
     let rotSpeed = 0.0025;
@@ -178,20 +178,7 @@ export default function GlobeDemoSuite() {
 
   return (
     <div className="absolute inset-0 w-full h-full group">
-      {/* DEMO SELECTOR OVERLAY */}
-      <div className="absolute top-10 left-10 z-[100] flex flex-wrap gap-2 pointer-events-auto">
-        {modes.map((m) => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${
-              mode === m ? 'bg-white text-black border-white' : 'text-white/40 border-white/10 hover:border-white/40'
-            }`}
-          >
-            {m}
-          </button>
-        ))}
-      </div>
+
 
       <Canvas camera={{ position: [0, 0, 15], fov: 40 }} gl={{ antialias: true, alpha: true }} dpr={[1, 2]}>
         <group position={[0, -7.8, 0]}>

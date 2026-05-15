@@ -1,591 +1,305 @@
 'use client';
- 
-import React from 'react';
-import { motion } from 'framer-motion';
-import Navigation from './Navigation';
-import dynamic from 'next/dynamic';
-const GlobeDemoSuite = dynamic(() => import('./GlobeDemoSuite'), { ssr: false });
- 
- 
-function TetrisSimulation() {
-  const [gridDim, setGridDim] = React.useState({ cols: 20, rows: 20 });
-  const cellSize = 40; // Perfect match for GridBackground
-  const [stackedBlocks, setStackedBlocks] = React.useState<{x: number, y: number, color: string, isClearing?: boolean}[]>([]);
-  
-  // Minimalist White Glass Palette (Unified Style)
-  const TETRIMINOS = React.useMemo(() => [
-    { name: 'I', cells: [[0,1], [1,1], [2,1], [3,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'O', cells: [[0,0], [1,0], [0,1], [1,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'T', cells: [[1,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'S', cells: [[1,0], [2,0], [0,1], [1,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'Z', cells: [[0,0], [1,0], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'J', cells: [[0,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
-    { name: 'L', cells: [[2,0], [0,1], [1,1], [2,1]], color: 'rgba(255, 255, 255, 0.3)' },
-  ], []);
 
-  const [activeShapes, setActiveShapes] = React.useState<{
-    id: number;
-    cells: [number, number][];
-    x: number;
-    y: number;
-    color: string;
-  }[]>([]);
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import HalftoneCanvas from './HalftoneCanvas';
+import { useLenis } from 'lenis/react';
 
-  const spawnShape = React.useCallback((id: number, cols: number) => {
-    const type = TETRIMINOS[Math.floor(Math.random() * TETRIMINOS.length)];
-    let cells = [...type.cells] as [number, number][];
-    const rotations = Math.floor(Math.random() * 4);
-    for (let i = 0; i < rotations; i++) {
-      cells = cells.map(([cx, cy]) => [-cy, cx]) as [number, number][];
-    }
-    
-    return {
-      id,
-      cells,
-      x: Math.floor(Math.random() * (cols - 4)) + 2,
-      y: -4 - Math.floor(Math.random() * 10),
-      color: type.color
-    };
-  }, [TETRIMINOS]);
+const NAV_LINKS = [
+  { label: 'About us', href: '#about' },
+  { label: 'Service', href: '#services' },
+  { label: 'Project', href: '#projects' },
+  { label: 'Contact us', href: '#contact' },
+];
 
-  // Initial calculation and spawn
-  React.useEffect(() => {
-    const updateGrid = () => {
-      const cols = Math.floor(window.innerWidth / cellSize);
-      const rows = Math.floor((window.innerHeight * 0.8) / cellSize);
-      setGridDim({ cols, rows });
-      setActiveShapes(Array.from({ length: 5 }, (_, i) => spawnShape(i, cols)));
-    };
-    updateGrid();
-    window.addEventListener('resize', updateGrid);
-    return () => window.removeEventListener('resize', updateGrid);
-  }, [spawnShape]);
+const HEADER_HEIGHT = 72; // px — keep in sync with HalftoneCanvas prop
 
-  React.useEffect(() => {
-    const tick = setInterval(() => {
-      setStackedBlocks(prevStacked => {
-        let newStacked = [...prevStacked];
-        
-        // Only keep blocks that aren't marked for removal
-        newStacked = newStacked.filter(b => !b.isClearing);
-
-        setActiveShapes(prevShapes => {
-          return prevShapes.map(shape => {
-            const nextY = shape.y + 1;
-            
-            const collision = shape.cells.some(([cx, cy]) => {
-              const absX = shape.x + cx;
-              const absY = nextY + cy;
-              return absY >= gridDim.rows || newStacked.some(b => b.x === absX && b.y === absY);
-            });
-
-            if (collision && shape.y >= -2) {
-              // LOCK PIECE PERMANENTLY
-              shape.cells.forEach(([cx, cy]) => {
-                const lx = shape.x + cx;
-                const ly = Math.floor(shape.y + cy);
-                if (ly >= 0) {
-                  newStacked.push({ x: lx, y: ly, color: shape.color });
-                }
-              });
-
-              // LINE CLEAR - ONLY 100% FULL ROWS (Real Game Logic)
-              let linesToClear: number[] = [];
-              for (let r = gridDim.rows - 1; r >= 0; r--) {
-                const rowBlocks = newStacked.filter(b => b.y === r);
-                // Must be exactly equal to columns to clear
-                if (rowBlocks.length >= gridDim.cols) {
-                  linesToClear.push(r);
-                }
-              }
-
-              if (linesToClear.length > 0) {
-                // Trigger the "Pop" animation
-                newStacked = newStacked.map(b => linesToClear.includes(b.y) ? { ...b, isClearing: true } : b);
-                
-                setTimeout(() => {
-                  setStackedBlocks(current => {
-                    let next = current.filter(b => !linesToClear.includes(b.y));
-                    linesToClear.sort((a, b) => a - b).forEach(r => {
-                      next = next.map(b => b.y < r ? { ...b, y: b.y + 1 } : b);
-                    });
-                    return next;
-                  });
-                }, 400);
-              }
-
-              return spawnShape(shape.id, gridDim.cols);
-            } else if (collision && shape.y < -2) {
-              return spawnShape(shape.id, gridDim.cols);
-            }
-
-            return { ...shape, y: nextY };
-          });
-        });
-
-        // MASSIVE STACK CAPACITY: Allow up to 2000 blocks for giant structures
-        if (newStacked.length > 2000) {
-           newStacked = newStacked.filter(b => b.y > gridDim.rows / 5);
-        }
-
-        return newStacked;
-      });
-    }, 450);
-
-    return () => clearInterval(tick);
-  }, [spawnShape, gridDim]);
+// ── Rotating circular text badge ──
+function RotatingBadge() {
+  // radius=44 → circumference = 2*π*44 ≈ 276.5px
+  // Text fills exactly using textLength to close the gap
+  const R = 44;
+  const SIZE = 110;
+  const CX = SIZE / 2;
+  const CY = SIZE / 2;
+  const circumference = 2 * Math.PI * R; // ~276.5
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40 flex justify-center">
-      <div 
-        className="relative" 
-        style={{ 
-          width: gridDim.cols * cellSize, 
-          height: gridDim.rows * cellSize 
-        }}
+    <div className="relative flex items-center justify-center flex-shrink-0" style={{ width: SIZE, height: SIZE }}>
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        className="absolute inset-0"
       >
-        {/* Falling Pieces */}
-        {activeShapes.map(shape => (
-          <div 
-            key={shape.id} 
-            className="absolute"
-            style={{ 
-              left: shape.x * cellSize,
-              top: shape.y * cellSize,
-              transition: shape.y <= 0 ? 'none' : 'top 0.4s linear'
-            }}
+        <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE}>
+          <defs>
+            {/* Full circle path: starts at leftmost point, goes clockwise */}
+            <path
+              id="badge-ring"
+              d={`M ${CX},${CY} m -${R},0 a ${R},${R} 0 1,1 ${R * 2},0 a ${R},${R} 0 1,1 -${R * 2},0`}
+            />
+          </defs>
+          {/* textLength forces text to fill the full circumference — no gap */}
+          <text
+            fill="rgba(255,255,255,0.5)"
+            fontSize="8.5"
+            fontFamily="'Space Grotesk', sans-serif"
+            fontWeight="700"
+            style={{ textTransform: 'uppercase' }}
           >
-            {shape.cells.map(([cx, cy], i) => (
-              <div 
-                key={i}
-                className="absolute"
-                style={{ 
-                  width: cellSize, 
-                  height: cellSize,
-                  left: cx * cellSize,
-                  top: cy * cellSize,
-                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                  border: '1px solid rgba(255, 255, 255, 0.25)',
-                  boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.05)'
-                }}
-              />
-            ))}
-          </div>
-        ))}
-
-        {/* Stacked Pieces */}
-        {stackedBlocks.map((block, i) => (
-          <motion.div 
-            key={`stacked-${i}-${block.x}-${block.y}`}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={block.isClearing ? { 
-              scale: 1.8, 
-              opacity: 0,
-              backgroundColor: '#ffffff',
-              boxShadow: '0 0 60px #ffffff'
-            } : { 
-              scale: 1, 
-              opacity: 1 
-            }}
-            transition={{ duration: block.isClearing ? 0.4 : 0.2 }}
-            className="absolute"
-            style={{ 
-              width: cellSize, 
-              height: cellSize,
-              left: block.x * cellSize,
-              top: block.y * cellSize,
-              backgroundColor: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              zIndex: block.isClearing ? 10 : 1
-            }}
-          />
-        ))}
-      </div>
+            <textPath
+              href="#badge-ring"
+              textLength={circumference.toFixed(1)}
+              lengthAdjust="spacing"
+            >
+              AUTONOMOUS · INTELLIGENCE · AUTONOMOUS · INTELLIGENCE ·
+            </textPath>
+          </text>
+        </svg>
+      </motion.div>
+      {/* Reticle icon — increased size */}
+      <svg width="32" height="32" viewBox="0 0 26 26" fill="none" className="relative z-10">
+        <circle cx="13" cy="13" r="10.5" stroke="rgba(255,255,255,0.28)" strokeWidth="0.8" />
+        <circle cx="13" cy="13" r="5" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" />
+        <circle cx="13" cy="13" r="1.5" fill="rgba(255,255,255,0.9)" />
+        <line x1="13" y1="2" x2="13" y2="7.5" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+        <line x1="13" y1="18.5" x2="13" y2="24" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+        <line x1="2" y1="13" x2="7.5" y2="13" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+        <line x1="18.5" y1="13" x2="24" y2="13" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" />
+      </svg>
     </div>
   );
 }
 
-function RippleGrid() {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-
-  React.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const CONFIG = {
-      spacing: 32,
-      dotRadius: 1.5,
-      color: { r: 255, g: 255, b: 255 }, // Neon White
-      centerDeadzone: 80,
-      centerFade: 160,
-      autoWaveSpeed: 200,
-      autoWaveInterval: 2.0,
-      autoWaveDecay: 0.002,
-      autoWaveStrength: 18,
-      mouseWaveSpeed: 200,
-      mouseWaveDecay: 0.004,
-      mouseWaveStrength: 18,
-      maxMouseWaves: 8,
-      ambientStrength: 1.5,
-    };
-
-    let w = 0, h = 0, cx = 0, cy = 0;
-    let dots: any[] = [];
-    const autoWaves: any[] = [];
-    const mouseWaves: any[] = [];
-    let lastAutoWave = 0;
-    let mouse = { x: -1000, y: -1000, active: false };
-    let mouseMoveDist = 0;
-    const startTime = performance.now();
-
-    class GridDot {
-      ox: number; oy: number; x: number; y: number; centerDist: number;
-      baseAlpha: number; alpha: number; radius: number; baseRadius: number; phase: number;
-      constructor(ox: number, oy: number, centerDist: number) {
-        this.ox = ox; this.oy = oy; this.x = ox; this.y = oy; this.centerDist = centerDist;
-        if (centerDist < CONFIG.centerDeadzone) this.baseAlpha = 0;
-        else if (centerDist < CONFIG.centerDeadzone + CONFIG.centerFade) this.baseAlpha = ((centerDist - CONFIG.centerDeadzone) / CONFIG.centerFade) * 0.07;
-        else this.baseAlpha = 0.04 + Math.random() * 0.04;
-        this.alpha = this.baseAlpha;
-        this.radius = CONFIG.dotRadius;
-        this.baseRadius = CONFIG.dotRadius * (0.8 + Math.random() * 0.4);
-        this.phase = Math.random() * Math.PI * 2;
-      }
-    }
-
-    const resize = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      const dpr = window.devicePixelRatio || 1;
-      w = parent.clientWidth;
-      h = parent.clientHeight;
-      cx = w / 2;
-      cy = h / 2;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      buildGrid();
-    };
-
-    const buildGrid = () => {
-      dots = [];
-      const sp = CONFIG.spacing;
-      const cols = Math.ceil(w / sp) + 2;
-      const rows = Math.ceil(h / sp) + 2;
-      const offsetX = (w - (cols - 1) * sp) / 2;
-      const offsetY = (h - (rows - 1) * sp) / 2;
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const ox = offsetX + c * sp;
-          const oy = offsetY + r * sp;
-          const dx = ox - cx;
-          const dy = oy - cy;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          dots.push(new GridDot(ox, oy, dist));
-        }
-      }
-    };
-
-    const spawnMouseWave = (time: number) => {
-      mouseWaves.push({ cx: mouse.x, cy: mouse.y, birthTime: time, speed: CONFIG.mouseWaveSpeed, decay: CONFIG.mouseWaveDecay, strength: CONFIG.mouseWaveStrength });
-      if (mouseWaves.length > CONFIG.maxMouseWaves) mouseWaves.shift();
-    };
-
-    const computeWaveDisplacement = (dot: any, waves: any[], time: number) => {
-      let dispX = 0, dispY = 0, brightness = 0;
-      for (const wave of waves) {
-        const age = time - wave.birthTime;
-        const waveFront = age * wave.speed;
-        const dx = dot.ox - wave.cx;
-        const dy = dot.oy - wave.cy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const distFromFront = Math.abs(dist - waveFront);
-        const waveWidth = 60;
-        if (distFromFront < waveWidth) {
-          const envelope = (1 - distFromFront / waveWidth);
-          const distFade = Math.exp(-dist * wave.decay);
-          const ageFade = Math.exp(-age * 0.4);
-          const intensity = envelope * distFade * ageFade * wave.strength;
-          if (dist > 1) {
-            dispX += (dx / dist) * intensity;
-            dispY += (dy / dist) * intensity;
-          }
-          brightness += envelope * distFade * ageFade * 1.8;
-        }
-      }
-      return { dispX, dispY, brightness };
-    };
-
-    const animate = () => {
-      const time = (performance.now() - startTime) / 1000;
-      const { r, g, b } = CONFIG.color;
-
-      if (time - lastAutoWave > CONFIG.autoWaveInterval) {
-        autoWaves.push({ cx, cy, birthTime: time, speed: CONFIG.autoWaveSpeed, decay: CONFIG.autoWaveDecay, strength: CONFIG.autoWaveStrength });
-        if (autoWaves.length > 6) autoWaves.shift();
-        lastAutoWave = time;
-      }
-
-      if (mouse.active && mouseMoveDist > 40) {
-        spawnMouseWave(time);
-        mouseMoveDist = 0;
-      }
-
-      ctx.clearRect(0, 0, w, h);
-      for (const dot of dots) {
-        if (dot.baseAlpha === 0) continue;
-        const ambient = Math.sin(time * 0.8 + dot.phase) * CONFIG.ambientStrength;
-        const ambientX = Math.sin(dot.oy * 0.01 + time * 0.3) * ambient * 0.3;
-        const ambientY = Math.cos(dot.ox * 0.01 + time * 0.3) * ambient * 0.3;
-
-        const auto = computeWaveDisplacement(dot, autoWaves, time);
-        const mouseD = computeWaveDisplacement(dot, mouseWaves, time);
-        const totalDispX = auto.dispX + mouseD.dispX + ambientX;
-        const totalDispY = auto.dispY + mouseD.dispY + ambientY;
-        const totalBright = auto.brightness + mouseD.brightness;
-
-        dot.x = dot.ox + totalDispX;
-        dot.y = dot.oy + totalDispY;
-        dot.alpha = dot.baseAlpha + totalBright * 0.5;
-        dot.radius = dot.baseRadius + totalBright * 1.2;
-
-        if (mouse.active) {
-          const mdx = dot.ox - mouse.x;
-          const mdy = dot.oy - mouse.y;
-          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
-          if (mDist < 120) {
-            const proximity = (120 - mDist) / 120;
-            dot.alpha += proximity * 0.3;
-            dot.radius += proximity * 0.8;
-            dot.x -= (mdx / mDist) * proximity * 3;
-            dot.y -= (mdy / mDist) * proximity * 3;
-          }
-        }
-
-        dot.alpha = Math.min(dot.alpha, 0.95);
-
-        // 1. Draw persistent soft glow/halo for every dot (Brighter)
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.radius * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.25})`;
-        ctx.fill();
-
-        // 2. Extra bloom for active/bright dots (waves)
-        if (dot.radius > CONFIG.dotRadius * 1.2) {
-          ctx.beginPath();
-          ctx.arc(dot.x, dot.y, dot.radius * 5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${dot.alpha * 0.15})`;
-          ctx.fill();
-        }
-
-        // 3. Core dot (Solid Alpha)
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(dot.alpha * 1.5, 1)})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(animate);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const nx = e.clientX - rect.left;
-      const ny = e.clientY - rect.top;
-      const dx = nx - mouse.x;
-      const dy = ny - mouse.y;
-      mouseMoveDist += Math.sqrt(dx * dx + dy * dy);
-      mouse.x = nx;
-      mouse.y = ny;
-      mouse.active = true;
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', handleMouseMove);
-    const animId = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animId);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none opacity-100" />;
-}
-
-function GridBackground() {
+// ── Blueprint corner mark ──
+function CornerMark({ pos, label }: { pos: string; label: string }) {
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-      {/* Grassroot Foundation Physics with Purple Aesthetic */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-500/20 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute top-[40%] -right-[10%] w-[30%] h-[30%] bg-blue-900/10 rounded-full blur-[100px]" />
-      </div>
-      <RippleGrid />
+    <div className={`absolute ${pos} flex items-center gap-1 pointer-events-none z-10`}>
+      <span className="text-white/18 font-mono text-[8px]">+</span>
+      <span className="text-white/10 font-mono text-[7px] tracking-widest hidden md:inline">{label}</span>
     </div>
   );
 }
-
-function DrawingStroke({ delay }: { delay: number }) {
-  return (
-    <svg 
-      className="absolute inset-0 w-full h-full pointer-events-none z-50 overflow-visible"
-      preserveAspectRatio="none"
-      viewBox="0 0 100 100"
-    >
-      {/* Path 1: Bottom-Center -> Left -> Top-Center */}
-      <motion.path
-        d="M 50 100 L 5 100 C 2 100 0 98 0 95 L 0 5 C 0 2 2 0 5 0 L 50 0"
-        fill="none"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ 
-          pathLength: 1, 
-          opacity: 1 
-        }}
-        transition={{ 
-          duration: 2.5, 
-          delay: delay, 
-          ease: "linear" 
-        }}
-        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
-      />
-      {/* Path 2: Bottom-Center -> Right -> Top-Center */}
-      <motion.path
-        d="M 50 100 L 95 100 C 98 100 100 98 100 95 L 100 5 C 100 2 98 0 95 0 L 50 0"
-        fill="none"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={{ 
-          pathLength: 1, 
-          opacity: 1 
-        }}
-        transition={{ 
-          duration: 2.5, 
-          delay: delay, 
-          ease: "linear" 
-        }}
-        style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.8))" }}
-      />
-    </svg>
-  );
-}
-
 
 export default function SpaceHorizonHero() {
-  return (
-    <section className="relative h-[100dvh] w-full bg-black overflow-hidden font-sans select-none flex items-center justify-center">
+  const [ready, setReady] = useState(false);
+  const [time, setTime] = useState('');
+  const [mounted, setMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lenis = useLenis();
 
-      {/* NAVIGATION LAYER */}
-      <div className="absolute top-0 left-0 right-0 z-50 pt-5 flex justify-center">
-        <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20">
-          <Navigation show={true} delay={13.0} />
-        </div>
+  useEffect(() => {
+    setMounted(true);
+    const updateTime = () => {
+      const now = new Date().toISOString().split('T')[1].replace('Z', '');
+      setTime(now);
+      requestAnimationFrame(updateTime);
+    };
+    const frame = requestAnimationFrame(updateTime);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <section
+      id="hero"
+      className="relative w-full min-h-screen bg-[#060608] flex flex-col overflow-hidden select-none"
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+      `}</style>
+
+      {/* ═══════════════════════════════════════
+          DECENTRALIZED HUD INTERFACE (Unique Style)
+      ═══════════════════════════════════════ */}
+      <div className="absolute top-10 left-0 right-0 z-50 pointer-events-none flex justify-center">
+        {/* CENTERED VERTICAL HEADER */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          onMouseEnter={() => setIsMenuOpen(true)}
+          onMouseLeave={() => setIsMenuOpen(false)}
+          className="pointer-events-auto flex flex-row items-center bg-black/60 backdrop-blur-3xl border border-white/10 rounded-none pl-2 pr-2 py-0 shadow-2xl transition-all duration-500 hover:border-white/20 gap-0"
+        >
+          {/* LOGO SECTION */}
+          <button
+            onClick={() => lenis?.scrollTo(0)}
+            className="flex items-center gap-1 py-2 pr-4 transition-all hover:opacity-80"
+            suppressHydrationWarning
+          >
+            <img
+              src="/image/CA_logo-PNG.png"
+              alt="Logo"
+              className="w-16 h-16 object-contain brightness-0 invert flex-shrink-0"
+            />
+            <div className="flex flex-col items-center leading-[0.85] gap-0">
+              <span className="text-[9px] font-medium text-white/40 uppercase tracking-[0.3em]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>COMMERCE</span>
+              <span className="text-[20px] font-black text-white uppercase tracking-[0.02em] mt-0.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>AGENTS</span>
+            </div>
+          </button>
+
+          {/* VERTICAL SEPARATOR */}
+          <div className="w-[1.5px] self-stretch bg-white/10" />
+
+          {/* MENU / NAV LINKS AREA */}
+          <div className="relative flex-1 flex items-center self-stretch justify-center">
+            <AnimatePresence mode="wait">
+              {!isMenuOpen ? (
+                <motion.div
+                  key="menu-label"
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 5 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center"
+                >
+                  <span 
+                    className="text-[10px] font-bold text-white/25 uppercase tracking-[0.6em]"
+                    style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                  >
+                    MENU
+                  </span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="nav-links"
+                  initial={{ opacity: 0, x: 5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 5 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="flex flex-row items-center gap-0 whitespace-nowrap self-stretch"
+                >
+                  {NAV_LINKS.map((link, i) => (
+                    <React.Fragment key={link.label}>
+                      <motion.button
+                        onClick={() => {
+                          lenis?.scrollTo(link.href);
+                        }}
+                        className="group/item relative self-stretch flex items-center"
+                        whileHover="hover"
+                      >
+                        <span className="relative h-full flex items-center overflow-hidden">
+                          {/* White Background (Drop Effect) */}
+                          <div className="absolute inset-0 bg-white -translate-y-full group-hover/item:translate-y-0 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                          
+                          <span className="relative z-10 px-6 text-[10px] font-bold text-white/40 group-hover/item:text-black transition-colors duration-0 uppercase tracking-[0.4em] whitespace-nowrap" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                            {link.label}
+                          </span>
+                        </span>
+                      </motion.button>
+                      {i < NAV_LINKS.length - 1 && (
+                        <div className="w-[1.5px] self-stretch bg-white/10" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+
       </div>
 
-      <div className="relative z-20 h-full w-full flex items-end justify-center pb-[4vh]">
-        <div className="w-full max-w-[1800px] px-6 md:px-12 lg:px-20 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ 
-              duration: 3.5, 
-              delay: 10.2, // Reveal AFTER Loading complete (10.2s)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ease: [0.16, 1, 0.3, 1] as any 
-            }}
-            className="relative w-full min-h-[50vh] h-[75vh] md:h-[80vh] p-6 md:p-12 lg:p-20 rounded-[48px] overflow-hidden backdrop-blur-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.6)] flex flex-col items-center justify-center transform-gpu"
-            style={{ 
-              isolation: 'isolate',
-              willChange: 'transform, opacity',
-              maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%, black 100%)'
+
+
+      {/* ═══════════════════════════════════════
+          HALFTONE CANVAS (hands start below header)
+      ═══════════════════════════════════════ */}
+      <HalftoneCanvas
+        onTitleReady={() => setReady(true)}
+        headerHeight={HEADER_HEIGHT}
+      />
+
+      {/* Blueprint corner markers */}
+      <CornerMark pos="top-[62px] left-4" label="X:0000 Y:0000" />
+      <CornerMark pos="bottom-4 left-4"  label="X:0000 Y:1080" />
+      <CornerMark pos="bottom-4 right-4" label="X:1920 Y:1080" />
+
+      {/* Thin side lines */}
+      <div className="absolute top-[54px] bottom-0 left-0 w-[1px] bg-gradient-to-b from-white/6 via-transparent to-transparent pointer-events-none z-10" />
+      <div className="absolute top-[54px] bottom-0 right-0 w-[1px] bg-gradient-to-b from-white/6 via-transparent to-transparent pointer-events-none z-10" />
+
+      {/* ═══════════════════════════════════════
+          NEW REFINED UI ELEMENTS (Inspired by References)
+      ═══════════════════════════════════════ */}
+
+      {/* BLUEPRINT GRID BACKGROUND */}
+      <div 
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)
+          `,
+          backgroundSize: '100px 100px',
+        }}
+      />
+
+      {/* BLUEPRINT DRAFTING MARKS (+) */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
+        {[...Array(24)].map((_, i) => (
+          <div 
+            key={i}
+            className="absolute text-[10px] text-white/40 font-thin select-none pointer-events-none"
+            style={{
+              left: `${(i % 6) * 20 + 2}%`,
+              top: `${Math.floor(i / 6) * 25 + 5}%`,
             }}
           >
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-end">
-              <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                {/* Subtle white glow at the bottom edge */}
-                <div 
-                  className="absolute -bottom-[45%] left-[-50%] w-[200%] h-[120%] rounded-[100%] z-10 pointer-events-none"
-                  style={{
-                    background: 'radial-gradient(ellipse at bottom, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 40%, transparent 70%)',
-                    filter: 'blur(40px)',
-                    opacity: 0.6
-                  }}
-                />
-              </div>
-            </div>            {/* GLOBE DEMO SUITE (7 MODES) */}
-            <div className="absolute inset-0 z-[1] pointer-events-none">
-              <GlobeDemoSuite />
-            </div>
-
-            {/* BRAND TEXT */}
-            <style>{`
-              @import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800;900&display=swap');
-              
-              @keyframes shimmer {
-                0% { background-position: -200% center; }
-                100% { background-position: 200% center; }
-              }
-              .shimmer-text {
-                background: linear-gradient(90deg, 
-                  rgba(255,255,255,0.6) 0%, 
-                  rgba(255,255,255,1) 50%, 
-                  rgba(255,255,255,0.6) 100%
-                );
-                background-size: 200% auto;
-                -webkit-background-clip: text;
-                background-clip: text;
-                animation: shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-                text-shadow: 0 0 30px rgba(255,255,255,0.15);
-              }
-            `}</style>
-            <div className="relative z-10 flex flex-col items-center">
-              
-              <motion.h1
-                initial={{ opacity: 0, scale: 5, letterSpacing: "0em", filter: 'blur(20px)' }}
-                animate={{ opacity: 1, scale: 1, letterSpacing: "0.2em", filter: 'blur(0px)' }}
-                transition={{ 
-                  opacity: { duration: 2, delay: 10.7 },
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  scale: { duration: 4, delay: 10.7, ease: [0.16, 1, 0.3, 1] as any },
-                  letterSpacing: { duration: 5, delay: 11.2, ease: "easeOut" },
-                  filter: { duration: 2, delay: 10.7 }
-                }}
-                className="shimmer-text relative z-10 text-transparent font-bold leading-tight uppercase select-none text-center max-w-full break-words tracking-widest mb-10"
-                style={{ 
-                  fontFamily: "'Alexandria', sans-serif",
-                  fontSize: "clamp(32px, 6vw, 72px)",
-                }}
-              >
-                COMMERCE AGENTS
-              </motion.h1>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transition={{ duration: 2, delay: 14.0, ease: [0.16, 1, 0.3, 1] as any }}
-                className="text-white/80 font-medium text-sm md:text-base lg:text-lg tracking-[0.2em] uppercase text-center"
-                style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
-              >
-                Autonomous Intelligence for Modern Commerce
-              </motion.p>
-            </div>
-          </motion.div>
-        </div>
+            +
+          </div>
+        ))}
       </div>
+
+      {/* DRAFTING ARCS (Construction Lines around Star) */}
+      <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center opacity-10">
+        <div className="relative w-[480px] h-[480px] border border-white rounded-full translate-y-[36px]" />
+        <div className="absolute w-[680px] h-[680px] border border-dashed border-white/50 rounded-full translate-y-[36px]" />
+        <div className="absolute w-[880px] h-[880px] border border-white/20 rounded-full translate-y-[36px]" />
+      </div>
+
+
+
+      {/* ═══════════════════════════════════════
+          TITLE (Bottom Left) — Clean & Sharp
+      ═══════════════════════════════════════ */}
+      <div className="absolute bottom-16 left-10 md:left-14 z-30 pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+        >
+          <h1
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: 'clamp(32px, 5.5vw, 72px)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              lineHeight: '0.95',
+              color: '#FFFFFF',
+              textShadow: '0 0 40px rgba(255,255,255,0.1)',
+            } as React.CSSProperties}
+          >
+            NEURAL<br />COMMERCE SYSTEMS
+          </h1>
+          
+          <div className="mt-6 flex items-center gap-6">
+            <div className="w-12 h-[1px] bg-white/40" />
+            <p className="text-white/40 text-[10px] md:text-[11px] tracking-[0.45em] uppercase font-mono">
+              Autonomous Intelligence Protocol
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+
+      {/* ── Rotating circular text badge (Top Right) ── */}
+      <div className="absolute top-10 right-10 z-40 pointer-events-none">
+        <RotatingBadge />
+      </div>
+
     </section>
   );
 }

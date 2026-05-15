@@ -43,19 +43,9 @@ export default function LiquidGlassButton({ label, onClick, className = "" }: Li
         className="absolute inset-0 bg-white/5 backdrop-blur-xl border border-white/20 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]"
       />
 
-      {/* Main Gradient Overlay */}
+      {/* Solid White Overlay */}
       <div 
-        className={`absolute inset-0 bg-gradient-to-br from-[#1e40af] via-[#2563eb] to-[#3b82f6] transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-      />
-
-      {/* Secondary Depth Gradient */}
-      <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,242,255,0.4),transparent_70%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-      />
-
-      {/* Tertiary Depth Gradient */}
-      <div 
-        className={`absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.6),transparent_60%)] transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-white transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* Edge Glow */}
@@ -63,7 +53,7 @@ export default function LiquidGlassButton({ label, onClick, className = "" }: Li
 
       {/* Text Label */}
       <span 
-        className="relative z-10 text-white font-medium tracking-wide text-[13px] lg:text-[14px]"
+        className={`relative z-10 font-medium tracking-wide text-[13px] lg:text-[14px] transition-colors duration-300 ${isHovered ? 'text-zinc-950' : 'text-white'}`}
         style={{ 
           textShadow: "0 2px 4px rgba(0,0,0,0.3)",
           fontFamily: "var(--font-montserrat), sans-serif"

@@ -41,15 +41,7 @@ export default function ProjectsSection() {
         
         {/* SECTION TITLE (ABOVE THE BOX) */}
         <div className="px-6 md:px-12 lg:px-24 mb-[12vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            style={{ color: 'rgba(255, 255, 255, 0.4)' }}
-            className="inline-block text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
-          >
-            Portfolio
-          </motion.span>
+
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -57,7 +49,7 @@ export default function ProjectsSection() {
             className="text-4xl md:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ fontFamily: 'var(--font-montserrat), sans-serif' }}
           >
-            Projects
+            PROJECTS
           </motion.h2>
         </div>
 

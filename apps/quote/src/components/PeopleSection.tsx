@@ -42,15 +42,7 @@ export default function PeopleSection() {
         
         {/* SECTION HEADER */}
         <div className="mb-[12vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            style={{ color: 'rgba(255, 255, 255, 0.4)' }}
-            className="inline-block text-[12px] font-bold tracking-[0.4em] uppercase mb-4"
-          >
-            Our Visionaries
-          </motion.span>
+
           
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -59,7 +51,7 @@ export default function PeopleSection() {
             transition={{ duration: 1, delay: 0.2 }}
             className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
           >
-            People.
+            PEOPLE
           </motion.h2>
         </div>
 

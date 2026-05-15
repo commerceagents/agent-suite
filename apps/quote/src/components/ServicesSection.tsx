@@ -54,18 +54,7 @@ export default function ServicesSection() {
         
         {/* SECTION HEADER */}
         <div className="mb-[12vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            style={{ 
-              color: 'rgba(255, 255, 255, 0.4)',
-              fontSize: 'clamp(8px, 0.7vw, 12px)'
-            }}
-            className="inline-block font-bold tracking-[0.6em] uppercase mb-[1vw]"
-          >
-            Capabilities
-          </motion.span>
+
           
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -78,7 +67,7 @@ export default function ServicesSection() {
               fontSize: "clamp(24px, 5.5vw, 100px)"
             }}
           >
-            Services.
+            SERVICES
           </motion.h2>
         </div>
 

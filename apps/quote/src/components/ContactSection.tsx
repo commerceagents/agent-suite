@@ -20,17 +20,12 @@ export default function ContactSection() {
           {/* LEFT: CONTENT */}
           <div className="w-full lg:w-1/2">
             <div className="mb-[12vh]">
-              <span 
-                style={{ color: 'rgba(255, 255, 255, 0.4)' }}
-                className="inline-block text-[10px] font-bold tracking-[0.6em] uppercase mb-4"
-              >
-                Connect
-              </span>
+  
               <h2 
                 className="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
                 style={{ fontFamily: "var(--font-montserrat), sans-serif" }}
               >
-                Get in Touch.
+                CONTACT
               </h2>
             </div>
             <p className="text-white/40 text-xl font-light leading-relaxed max-w-xl mb-16">

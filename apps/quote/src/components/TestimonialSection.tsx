@@ -34,15 +34,7 @@ export default function TestimonialSection() {
         
         {/* SECTION HEADER */}
         <div className="mb-[12vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            className="inline-block text-white/40 font-bold tracking-[0.6em] uppercase mb-[1vw]"
-            style={{ fontSize: 'clamp(8px, 0.7vw, 12px)' }}
-          >
-            Trust Nexus
-          </motion.span>
+
           <h2 
             className="font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-400 to-slate-700"
             style={{ 
@@ -50,7 +42,7 @@ export default function TestimonialSection() {
               fontSize: "clamp(24px, 5.5vw, 100px)"
             }}
           >
-            Testimonial.
+            TESTIMONIALS
           </h2>
         </div>
 

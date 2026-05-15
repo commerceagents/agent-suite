@@ -60,8 +60,9 @@ function HalftoneHemisphere() {
       
       meshRef.current.rotation.y += 0.0025;
 
-      meshRef.current.material.uniforms.uProgress.value = progress;
-      meshRef.current.material.uniforms.uTime.value = state.clock.elapsedTime;
+      const material = meshRef.current.material as THREE.ShaderMaterial;
+      material.uniforms.uProgress.value = progress;
+      material.uniforms.uTime.value = state.clock.elapsedTime;
     }
   });
 

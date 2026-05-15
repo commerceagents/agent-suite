@@ -30,6 +30,8 @@ export default function LoadingScreen() {
     const hideTimeout = setTimeout(() => {
       setShow(false);
       document.body.style.overflow = "unset";
+      // Signal to other components that loading is finished
+      window.dispatchEvent(new CustomEvent('loadingComplete'));
     }, TIMELINE.TOTAL_HIDE_DELAY * 1000);
  
     return () => {
@@ -68,41 +70,7 @@ export default function LoadingScreen() {
               </div>
             ))}
  
-            {/* Vertical blueprint text — left */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0, duration: 1.5 }}
-              className="absolute left-6 top-1/2 -translate-y-1/2"
-              style={{
-                writingMode: "vertical-lr",
-                color: "rgba(192, 192, 200, 0.08)",
-                fontFamily: "monospace",
-                fontSize: "9px",
-                letterSpacing: "0.35em",
-                textTransform: "uppercase",
-              }}
-            >
-              COMMERCE AGENTS — AGENT SUITE
-            </motion.div>
- 
-            {/* Vertical blueprint text — right */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 1.5 }}
-              className="absolute right-6 top-1/2 -translate-y-1/2"
-              style={{
-                writingMode: "vertical-lr",
-                color: "rgba(192, 192, 200, 0.08)",
-                fontFamily: "monospace",
-                fontSize: "9px",
-                letterSpacing: "0.35em",
-                textTransform: "uppercase",
-              }}
-            >
-              SYSTEM LOADING — V2.0
-            </motion.div>
+
  
             {/* Center content */}
             <div className="relative flex items-center justify-center w-full h-full" style={{ zIndex: 10 }}>
@@ -139,16 +107,7 @@ export default function LoadingScreen() {
               </div>
             </div>
  
-            {/* Bottom text */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.0, duration: 1.5 }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-[10px] tracking-[0.2em] uppercase"
-              style={{ color: "rgba(192, 192, 200, 0.15)", zIndex: 10 }}
-            >
-              INITIALIZING SYSTEM
-            </motion.div>
+
  
             {/* Film grain */}
             <div

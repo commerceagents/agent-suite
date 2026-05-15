@@ -21,19 +21,7 @@ export default function AboutSection() {
         
         {/* SECTION HEADER */}
         <div className="mb-[8vh]">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.8 }}
-            style={{ 
-              color: 'rgba(255, 255, 255, 0.4)',
-              fontSize: 'clamp(8px, 0.8vw, 14px)'
-            }}
-            className="inline-block font-bold tracking-[0.4em] uppercase mb-[1vw]"
-          >
-            Our Identity
-          </motion.span>
+
           
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -46,7 +34,7 @@ export default function AboutSection() {
               fontSize: "clamp(24px, 5.5vw, 100px)"
             }}
           >
-            About us.
+            ABOUT
           </motion.h2>
         </div>
 
